@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/constants.dart';
-import 'package:frontegg/auth/widget/login.dart';
+import 'package:frontegg/auth/screens/login.dart';
 import 'auth/auth.dart';
 
 class Frontegg {
   FronteggUser _user;
 
-  Frontegg({@required baseUrl}) : _user = FronteggUser() {
+  Frontegg(baseUrl, headerImage) : _user = FronteggUser() {
     url = baseUrl;
+    logo = headerImage;
   }
 
   Widget login() {

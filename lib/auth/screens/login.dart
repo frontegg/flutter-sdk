@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:frontegg/auth/auth.dart';
+import 'package:frontegg/auth/constants.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
+import 'package:frontegg/auth/widget/logo.dart';
 
 class Login extends StatefulWidget {
   final FronteggUser user;
@@ -13,6 +16,9 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool sended = false;
   String? email;
+  Widget paddings(Widget child, {bool onlyBottom = false}) {
+    return Padding(padding: EdgeInsets.only(top: onlyBottom ? 0 : 30, bottom: 30), child: child);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +28,24 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Text('Email'),
-              const SizedBox(height: 30),
-              InputField('name@example.com', _controller),
-              const SizedBox(height: 30),
+              const Logo(),
+              paddings(const Text(
+                'Sign in',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              )),
+              paddings(
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Text("Don't have an account? "),
+                      TextButton(
+                        child: const Text('Sign up'),
+                        onPressed: () {},
+                      )
+                    ],
+                  ),
+                  onlyBottom: true),
+              paddings(InputField('name@example.com', _controller, label: "Email"), onlyBottom: true),
               ElevatedButton(
                 child: const Text('Continue'),
                 onPressed: () async {
