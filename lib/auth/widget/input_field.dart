@@ -30,10 +30,8 @@ class InputField extends StatelessWidget {
             controller: controller,
             decoration: InputDecoration(
                 labelText: label,
-                // labelStyle: TextStyle(color: purpleColor),
                 filled: true,
                 fillColor: const Color(0xFFF2F2F2),
-                // focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: purpleColor)),
                 border: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFF2F2F2))),
                 hintText: hint),
           ),
