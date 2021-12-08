@@ -11,8 +11,17 @@ class Frontegg {
     logo = headerImage;
   }
 
-  Widget login() {
-    return LoginCommon(_user);
+  void login(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Scaffold(
+                body: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Center(child: LoginCommon(_user)),
+                ),
+              )),
+    );
   }
 
   FronteggUser signin(String email) {

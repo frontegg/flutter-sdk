@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
+import 'package:frontegg/auth/widget/signup_button.dart';
 import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
 import 'package:frontegg/auth/widget/logo.dart';
@@ -67,18 +68,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                 'Sign in',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               )),
-              paddings(
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text("Don't have an account? "),
-                      TextButton(
-                        child: const Text('Sign up'),
-                        onPressed: () {},
-                      )
-                    ],
-                  ),
-                  onlyBottom: true),
+              const SignupButton(),
               paddings(
                   InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
                     setState(() {
