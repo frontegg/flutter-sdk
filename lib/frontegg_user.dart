@@ -1,47 +1,70 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
+
 import 'package:frontegg/auth/constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
 
 class FronteggUser {
   String? email;
-  String? name;
-  String? profilePictureUrl;
+  late String name;
+  late String profilePictureUrl;
+  late bool activatedForTenant;
+  late DateTime createdAt;
+  late String id;
+  late bool isLocked;
+  late DateTime lastLogin;
+  late dynamic metadata;
+  late bool mfaEnrolled;
+  late dynamic permissions;
+  late String phoneNumber;
+  late String provider;
+  late dynamic roles;
+  late String sub;
+  late String tenantId;
+  late String tenantIds;
+  late dynamic tenants;
+  late bool verified;
 
   FronteggUser();
 
   Future<bool> login(String email) async {
     try {
       this.email = email;
-      var dio = Dio();
-      dio.options.headers['content-Type'] = 'application/json';
-      final response =
-          await dio.post('$url/frontegg/identity/resources/auth/v1/passwordless/code/prelogin', data: {"email": email});
-
-      return response.statusCode == 200;
+      var response = await http.post(Uri.parse('$url/frontegg/identity/resources/auth/v1/passwordless/code/prelogin'),
+          body: jsonEncode({"email": email}), headers: {'Content-type': 'application/json'});
+      if (response.statusCode != 200) {
+        throw jsonDecode(response.body)['errors'][0];
+      }
+      return true;
     } catch (e) {
-      return false;
+      throw 'Invalid authentication';
     }
   }
 
   Future<bool> checkCode(String code) async {
     try {
-      var dio = Dio();
-      dio.options.headers['content-Type'] = 'application/json';
-      final response =
-          await dio.post('$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin', data: {"token": code});
-      if (response.statusCode == 200) {
-        // final SharedPreferences prefs = await SharedPreferences.getInstance();
-        // prefs.setString('accessToken', response.data['accessToken']);
-        // prefs.setString('expires', response.data['expires']);
-        // prefs.setInt('expiresIn', response.data['expiresIn']);
-        // prefs.setBool('mfaRequired', response.data['mfaRequired']);
-        // prefs.setString('refreshToken', response.data['refreshToken']);
+      print(code);
+      var response = await http.post(Uri.parse('$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin'),
+          body: jsonEncode({"token": code}),
+          headers: {
+            'Content-type': 'application/json',
+            'Accept': 'application/json',
+          });
+      print('${response.statusCode} ${response.body}');
+      print(response.headers);
+      // final SharedPreferences prefs = await SharedPreferences.getInstance();
+      // prefs.setString('accessToken', response.data['accessToken']);
+      // prefs.setString('expires', response.data['expires']);
+      // prefs.setInt('expiresIn', response.data['expiresIn']);
+      // prefs.setBool('mfaRequired', response.data['mfaRequired']);
+      // prefs.setString('refreshToken', response.data['refreshToken']);
 
-        // return getUserInfo();
-        return true;
-      }
-      return false;
+      // return getUserInfo();
+
+      return response.statusCode == 200;
     } catch (e) {
+      print(e);
+
       return false;
     }
   }

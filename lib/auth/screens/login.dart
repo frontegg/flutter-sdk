@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
-import 'package:frontegg/auth/auth.dart';
+import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
 import 'package:frontegg/auth/widget/logo.dart';
 
@@ -16,13 +16,13 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   bool sended = false;
   String? email;
-  // String kuhkjkbkbkb = '';
   Widget paddings(Widget child, {bool onlyBottom = false}) {
     return Padding(padding: EdgeInsets.only(top: onlyBottom ? 0 : 30, bottom: 30), child: child);
   }
 
   List<InputCode> codeDigits = List.generate(6, (index) => InputCode(FocusNode(), TextEditingController()));
   final TextEditingController _controller = TextEditingController();
+  String? error;
 
   @override
   Widget build(BuildContext context) {
@@ -32,12 +32,18 @@ class _LoginState extends State<Login> {
           width: 50,
           height: 50,
           child: TextFormField(
+            keyboardType: TextInputType.number,
             onChanged: (String value) {
               if (value.isNotEmpty) {
                 if (index < 5) {
                   FocusScope.of(context).requestFocus(codeDigits[index + 1].focusNode);
                 } else {
                   FocusScope.of(context).unfocus();
+                }
+              }
+              if (value.isEmpty) {
+                if (index > 0) {
+                  FocusScope.of(context).requestFocus(codeDigits[index - 1].focusNode);
                 }
               }
             },
@@ -74,12 +80,30 @@ class _LoginState extends State<Login> {
                     ],
                   ),
                   onlyBottom: true),
-              paddings(InputField('name@example.com', _controller, label: "Email"), onlyBottom: true),
+              paddings(
+                  InputField('name@example.com', _controller, label: "Email", onChange: (_) {
+                    setState(() {
+                      error = null;
+                    });
+                  }),
+                  onlyBottom: true),
+              if (error != null)
+                paddings(
+                    Text(
+                      error ?? '',
+                      style: const TextStyle(color: Colors.red),
+                    ),
+                    onlyBottom: true),
               ElevatedButton(
                 child: const Text('Continue'),
                 onPressed: () async {
                   email = _controller.text;
-                  sended = await widget.user.login(_controller.text);
+                  try {
+                    sended = await widget.user.login(_controller.text);
+                    error = null;
+                  } catch (e) {
+                    error = e.toString();
+                  }
                   setState(() {});
                 },
               )
@@ -107,12 +131,11 @@ class _LoginState extends State<Login> {
                   for (InputCode item in codeDigits) {
                     code += item.controller.text;
                   }
-                  await widget.user.checkCode(code);
-                  // kuhkjkbkbkb = '${await widget.user.checkCode(code)}';
-                  // setState(() {});
+                  error = '${await widget.user.checkCode(code)}';
+                  setState(() {});
                 },
               ),
-              // Text(kuhkjkbkbkb),
+              Text(error ?? ''),
               paddings(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

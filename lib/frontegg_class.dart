@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/constants.dart';
 import 'package:frontegg/auth/screens/login.dart';
-import 'auth/auth.dart';
+import 'frontegg_user.dart';
 
 class Frontegg {
   FronteggUser _user;
