@@ -5,15 +5,15 @@ import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
 import 'package:frontegg/auth/widget/logo.dart';
 
-class Login extends StatefulWidget {
+class LoginWithCode extends StatefulWidget {
   final FronteggUser user;
-  const Login(this.user, {Key? key}) : super(key: key);
+  const LoginWithCode(this.user, {Key? key}) : super(key: key);
 
   @override
-  _LoginState createState() => _LoginState();
+  _LoginWithCodeState createState() => _LoginWithCodeState();
 }
 
-class _LoginState extends State<Login> {
+class _LoginWithCodeState extends State<LoginWithCode> {
   bool sended = false;
   String? email;
   Widget paddings(Widget child, {bool onlyBottom = false}) {
@@ -63,7 +63,6 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Logo(),
               paddings(const Text(
                 'Sign in',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
@@ -81,7 +80,7 @@ class _LoginState extends State<Login> {
                   ),
                   onlyBottom: true),
               paddings(
-                  InputField('name@example.com', _controller, label: "Email", onChange: (_) {
+                  InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
                     setState(() {
                       error = null;
                     });
@@ -113,7 +112,6 @@ class _LoginState extends State<Login> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Logo(),
               paddings(const Text(
                 "Check your email",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),

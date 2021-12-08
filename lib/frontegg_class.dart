@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/constants.dart';
-import 'package:frontegg/auth/screens/login.dart';
+import 'package:frontegg/auth/screens/login_common.dart';
 import 'frontegg_user.dart';
 
 class Frontegg {
@@ -12,7 +12,7 @@ class Frontegg {
   }
 
   Widget login() {
-    return Login(_user);
+    return LoginCommon(_user);
   }
 
   FronteggUser signin(String email) {
