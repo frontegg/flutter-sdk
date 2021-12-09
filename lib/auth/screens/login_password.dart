@@ -14,8 +14,6 @@ class LoginWithPassword extends StatefulWidget {
 }
 
 class _LoginWithPasswordState extends State<LoginWithPassword> {
-  bool sended = false;
-  String? email;
   Widget paddings(Widget child, {bool onlyBottom = false}) {
     return Padding(padding: EdgeInsets.only(top: onlyBottom ? 0 : 30, bottom: 30), child: child);
   }
@@ -26,51 +24,50 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
 
   @override
   Widget build(BuildContext context) {
-    return !sended
-        ? Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              paddings(const Text(
-                'Sign in',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-              )),
-              const SignupButton(),
-              paddings(
-                  InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
-                    setState(() {
-                      error = null;
-                    });
-                  }),
-                  onlyBottom: true),
-              paddings(InputField('Enter Your Password', _controllerPassword, label: "Password", showIcon: true),
-                  onlyBottom: true),
-              TextButton(
-                child: const Text('Forgot Password?'),
-                onPressed: () {},
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        paddings(const Text(
+          'Sign in',
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        )),
+        const SignupButton(),
+        paddings(
+            InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
+              setState(() {
+                error = null;
+              });
+            }),
+            onlyBottom: true),
+        paddings(InputField('Enter Your Password', _controllerPassword, label: "Password", showIcon: true),
+            onlyBottom: true),
+        TextButton(
+          child: const Text('Forgot Password?'),
+          onPressed: () {},
+        ),
+        if (error != null)
+          paddings(
+              Text(
+                error ?? '',
+                style: const TextStyle(color: Colors.red),
               ),
-              if (error != null)
-                paddings(
-                    Text(
-                      error ?? '',
-                      style: const TextStyle(color: Colors.red),
-                    ),
-                    onlyBottom: true),
-              ElevatedButton(
-                child: const Text('Login'),
-                onPressed: () async {
-                  email = _controller.text;
-                  try {
-                    // sended = await widget.user.login(_controller.text);
-                    error = null;
-                  } catch (e) {
-                    error = e.toString();
-                  }
-                  setState(() {});
-                },
-              )
-            ],
-          )
-        : Container();
+              onlyBottom: true),
+        ElevatedButton(
+          child: const Text('Login'),
+          onPressed: () async {
+            try {
+              bool sended = await widget.user.loginPassword(_controller.text, _controllerPassword.text);
+              if (sended) {
+                Navigator.pop(context, widget.user.isAuthorized);
+              }
+            } catch (e) {
+              error = e.toString();
+            }
+            setState(() {});
+          },
+        )
+      ],
+    );
   }
 }

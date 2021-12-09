@@ -88,7 +88,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                 onPressed: () async {
                   email = _controller.text;
                   try {
-                    sended = await widget.user.login(_controller.text);
+                    sended = await widget.user.loginCode(_controller.text);
                     error = null;
                   } catch (e) {
                     error = e.toString();
@@ -132,7 +132,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                       TextButton(
                         child: const Text('Resend a new code'),
                         onPressed: () async {
-                          sended = await widget.user.login(email ?? _controller.text);
+                          sended = await widget.user.loginCode(email ?? _controller.text);
                           setState(() {});
                         },
                       )

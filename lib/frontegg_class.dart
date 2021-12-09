@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/constants.dart';
 import 'package:frontegg/auth/screens/login_common.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'frontegg_user.dart';
 
 class Frontegg {
@@ -11,8 +12,8 @@ class Frontegg {
     logo = headerImage;
   }
 
-  void login(BuildContext context) {
-    Navigator.push(
+  Future<FronteggUser?> login(BuildContext context) async {
+    final bool data = await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => Scaffold(
@@ -22,6 +23,11 @@ class Frontegg {
                 ),
               )),
     );
+    if (data) {
+      return _user;
+    } else {
+      return null;
+    }
   }
 
   FronteggUser signin(String email) {
@@ -29,8 +35,15 @@ class Frontegg {
     return _user.signin();
   }
 
-  bool logout() {
-    return _user.logout();
+  Future<FronteggUser?> logout() async {
+    _user = FronteggUser();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('accessToken');
+    await prefs.remove('expires');
+    await prefs.remove('expiresIn');
+    await prefs.remove('mfaRequired');
+    await prefs.remove('refreshToken');
+    return _user;
   }
 
   FronteggUser get user => _user;
