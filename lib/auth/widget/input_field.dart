@@ -1,11 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/constants.dart';
 
-class InputField extends StatelessWidget {
+class InputField extends StatefulWidget {
   final String hint;
   final TextEditingController controller;
   final String? label;
-  const InputField(this.hint, this.controller, {Key? key, this.label}) : super(key: key);
+  final Function(String)? onChange;
+  final bool showIcon;
+  final bool validateEmail;
+  const InputField(this.hint, this.controller,
+      {Key? key, this.label, this.onChange, this.showIcon = false, this.validateEmail = false})
+      : super(key: key);
+
+  @override
+  State<InputField> createState() => _InputFieldState();
+}
+
+class _InputFieldState extends State<InputField> {
+  late bool visible;
 
   String? validateEmail(String? value) {
     String pattern = r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
@@ -20,22 +32,41 @@ class InputField extends StatelessWidget {
   }
 
   @override
+  void initState() {
+    visible = !widget.showIcon;
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SizedBox(
         width: MediaQuery.of(context).size.width * 0.7,
         child: Form(
-          autovalidateMode: AutovalidateMode.always,
+          autovalidateMode: widget.validateEmail ? AutovalidateMode.always : AutovalidateMode.disabled,
           child: TextFormField(
-            validator: validateEmail,
-            controller: controller,
+            validator: widget.validateEmail ? validateEmail : null,
+            controller: widget.controller,
+            onChanged: widget.onChange,
+            obscureText: !visible,
             decoration: InputDecoration(
-                labelText: label,
-                // labelStyle: TextStyle(color: purpleColor),
+                labelText: widget.label,
                 filled: true,
                 fillColor: const Color(0xFFF2F2F2),
-                // focusedBorder: OutlineInputBorder(borderSide: BorderSide(color: purpleColor)),
                 border: const OutlineInputBorder(borderSide: BorderSide(color: Color(0xFFF2F2F2))),
-                hintText: hint),
+                hintText: widget.hint,
+                suffixIcon: widget.showIcon
+                    ? IconButton(
+                        icon: const Padding(
+                          padding: EdgeInsets.only(top: 15.0),
+                          child: Icon(Icons.lock),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            visible = !visible;
+                          });
+                        },
+                      )
+                    : null),
           ),
         ));
   }
