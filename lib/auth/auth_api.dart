@@ -70,9 +70,9 @@ class AuthApi {
   Future<dynamic> getUserInfo() async {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      final String? token = prefs.getString('accessToken');
+      final String token = prefs.getString('accessToken') ?? '';
       dio.options.headers['content-Type'] = 'application/json';
-      dio.options.headers["Authorization"] = "Bearer " + (token ?? '');
+      dio.options.headers["Authorization"] = "Bearer " + token;
       var response = await dio.get('$url/frontegg/identity/resources/users/v2/me');
       if (response.statusCode == 200) {
         return response.data;

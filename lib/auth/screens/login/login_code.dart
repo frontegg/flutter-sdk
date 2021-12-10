@@ -82,7 +82,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                 'Sign in',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               )),
-              SignupButton(widget.user),
+              SignupButton(widget.user, true),
               paddings(
                   InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
                     setState(() {

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:frontegg/auth/screens/login/login_common.dart';
 import 'package:frontegg/auth/signup.dart';
 import 'package:frontegg/frontegg_user.dart';
 
 class SignupButton extends StatelessWidget {
   final FronteggUser user;
-  const SignupButton(this.user, {Key? key}) : super(key: key);
+  final bool signup;
+  const SignupButton(this.user, this.signup, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,9 +15,9 @@ class SignupButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text("Don't have an account? "),
+          Text(signup ? "Don't have an account? " : "Already have an account? "),
           TextButton(
-            child: const Text('Sign up'),
+            child: Text(signup ? 'Sign up' : 'Log in'),
             onPressed: () {
               Navigator.pushReplacement(
                 context,
@@ -23,7 +25,7 @@ class SignupButton extends StatelessWidget {
                     builder: (context) => Scaffold(
                           body: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(child: Signup(user)),
+                            child: Center(child: signup ? Signup(user) : LoginCommon(user)),
                           ),
                         )),
               );
