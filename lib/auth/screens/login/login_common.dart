@@ -1,13 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/screens/login_code.dart';
-import 'package:frontegg/auth/screens/login_password.dart';
+import 'package:frontegg/auth/auth_api.dart';
+import 'package:frontegg/auth/screens/login/login_code.dart';
+import 'package:frontegg/auth/screens/login/login_password.dart';
 import 'package:frontegg/auth/widget/logo.dart';
 import 'package:frontegg/frontegg_user.dart';
-import 'package:http/http.dart' as http;
 
-import '../constants.dart';
+import '../../constants.dart';
 
 class LoginCommon extends StatefulWidget {
   final FronteggUser user;
@@ -20,10 +18,23 @@ class LoginCommon extends StatefulWidget {
 class _LoginCommonState extends State<LoginCommon> {
   LoginType? type;
   String? error;
+
+  final AuthApi _api = AuthApi();
+
   @override
   void initState() {
     checkType();
     super.initState();
+  }
+
+  checkType() async {
+    try {
+      type = await _api.checkType();
+      error = null;
+    } catch (e) {
+      error = e.toString();
+    }
+    setState(() {});
   }
 
   @override
@@ -43,35 +54,6 @@ class _LoginCommonState extends State<LoginCommon> {
         return LoginWithPassword(widget.user);
       default:
         return Text(error ?? 'Something went wrong');
-    }
-  }
-
-  Future<void> checkType() async {
-    try {
-      var response = await http.get(Uri.parse('$url/frontegg/identity/resources/configurations/v1/public'),
-          headers: {'Content-type': 'application/json'});
-      if (response.statusCode == 200) {
-        String data = jsonDecode(response.body)['authStrategy'];
-        setState(() {
-          switch (data) {
-            case 'Code':
-              type = LoginType.code;
-              error = null;
-              break;
-            case 'EmailAndPassword':
-              type = LoginType.password;
-              break;
-            default:
-              error = data;
-          }
-        });
-      } else {
-        throw response.statusCode;
-      }
-    } catch (e) {
-      setState(() {
-        error = 'Something went wrong';
-      });
     }
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:frontegg/auth/widget/signup_button.dart';
 import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
-import 'package:frontegg/auth/widget/logo.dart';
 
 class LoginWithCode extends StatefulWidget {
   final FronteggUser user;
@@ -17,6 +16,7 @@ class LoginWithCode extends StatefulWidget {
 class _LoginWithCodeState extends State<LoginWithCode> {
   bool sended = false;
   String? email;
+  bool loading = false;
   Widget paddings(Widget child, {bool onlyBottom = false}) {
     return Padding(padding: EdgeInsets.only(top: onlyBottom ? 0 : 30, bottom: 30), child: child);
   }
@@ -33,8 +33,24 @@ class _LoginWithCodeState extends State<LoginWithCode> {
           width: 50,
           height: 50,
           child: TextFormField(
+            onTap: () {
+              if (index > 0 && codeDigits[index].controller.text.isEmpty) {
+                InputCode firstEmpty = codeDigits.firstWhere((element) => element.controller.text.isEmpty);
+                FocusScope.of(context).requestFocus(firstEmpty.focusNode);
+              }
+              if (index > 0 && codeDigits[index].controller.text.isNotEmpty) {
+                InputCode firstEmpty = codeDigits.lastWhere((element) => element.controller.text.isNotEmpty);
+                FocusScope.of(context).requestFocus(firstEmpty.focusNode);
+              }
+            },
             keyboardType: TextInputType.number,
             onChanged: (String value) {
+              if (value.length > 1) {
+                if (index < 5) {
+                  codeDigits[index + 1].controller.text = value[value.length - 1];
+                }
+                codeDigits[index].controller.text = value.substring(0, value.length - 1);
+              }
               if (value.isNotEmpty) {
                 if (index < 5) {
                   FocusScope.of(context).requestFocus(codeDigits[index + 1].focusNode);
@@ -42,10 +58,8 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                   FocusScope.of(context).unfocus();
                 }
               }
-              if (value.isEmpty) {
-                if (index > 0) {
-                  FocusScope.of(context).requestFocus(codeDigits[index - 1].focusNode);
-                }
+              if (value.isEmpty && index > 0) {
+                FocusScope.of(context).requestFocus(codeDigits[index - 1].focusNode);
               }
             },
             style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
@@ -68,7 +82,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                 'Sign in',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               )),
-              const SignupButton(),
+              SignupButton(widget.user),
               paddings(
                   InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
                     setState(() {
@@ -113,17 +127,33 @@ class _LoginWithCodeState extends State<LoginWithCode> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: codeInputs),
               const SizedBox(height: 30),
               ElevatedButton(
-                child: const Text('Continue', style: TextStyle(fontSize: 18)),
-                onPressed: () async {
-                  String code = '';
-                  for (InputCode item in codeDigits) {
-                    code += item.controller.text;
-                  }
-                  error = '${await widget.user.checkCode(code)}';
-                  setState(() {});
-                },
+                child: loading
+                    ? const CircularProgressIndicator()
+                    : const Text('Continue', style: TextStyle(fontSize: 18)),
+                onPressed: loading
+                    ? null
+                    : () async {
+                        setState(() {
+                          loading = true;
+                        });
+                        try {
+                          if (_controller.text.isEmpty) {
+                            error = 'Email is required';
+                            loading = false;
+                          } else {
+                            print('dlkvjhkdjfbhjkvbdfkjvbdfn');
+                            bool sended = await widget.user.checkCode(_controller.text);
+                            if (sended) {
+                              Navigator.pop(context, widget.user.isAuthorized);
+                            }
+                          }
+                        } catch (e) {
+                          error = e.toString();
+                          loading = false;
+                        }
+                      },
               ),
-              Text(error ?? ''),
+              if (error != null) Text(error!),
               paddings(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

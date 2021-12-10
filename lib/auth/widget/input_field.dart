@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/constants.dart';
 
 class InputField extends StatefulWidget {
   final String hint;

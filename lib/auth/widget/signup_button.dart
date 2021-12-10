@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:frontegg/auth/signup.dart';
+import 'package:frontegg/frontegg_user.dart';
 
 class SignupButton extends StatelessWidget {
-  const SignupButton({Key? key}) : super(key: key);
+  final FronteggUser user;
+  const SignupButton(this.user, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +16,18 @@ class SignupButton extends StatelessWidget {
           const Text("Don't have an account? "),
           TextButton(
             child: const Text('Sign up'),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => Scaffold(
+                          body: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Center(child: Signup(user)),
+                          ),
+                        )),
+              );
+            },
           )
         ],
       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/constants.dart';
-import 'package:frontegg/auth/screens/login_common.dart';
+import 'package:frontegg/auth/screens/login/login_common.dart';
+import 'package:frontegg/auth/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'frontegg_user.dart';
 
@@ -13,7 +14,7 @@ class Frontegg {
   }
 
   Future<FronteggUser?> login(BuildContext context) async {
-    final bool data = await Navigator.push(
+    final bool? data = await Navigator.push(
       context,
       MaterialPageRoute(
           builder: (context) => Scaffold(
@@ -23,16 +24,29 @@ class Frontegg {
                 ),
               )),
     );
-    if (data) {
+    if (data == true) {
       return _user;
     } else {
       return null;
     }
   }
 
-  FronteggUser signin(String email) {
-    _user.email = email;
-    return _user.signin();
+  Future<FronteggUser?> signup(BuildContext context) async {
+    final bool? data = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Scaffold(
+                body: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Center(child: Signup(_user)),
+                ),
+              )),
+    );
+    if (data == true) {
+      return _user;
+    } else {
+      return null;
+    }
   }
 
   Future<FronteggUser?> logout() async {
