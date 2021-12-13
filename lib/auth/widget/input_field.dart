@@ -7,8 +7,14 @@ class InputField extends StatefulWidget {
   final Function(String)? onChange;
   final bool showIcon;
   final bool validateEmail;
+  final bool validateNotEmpty;
   const InputField(this.hint, this.controller,
-      {Key? key, this.label, this.onChange, this.showIcon = false, this.validateEmail = false})
+      {Key? key,
+      this.label,
+      this.onChange,
+      this.showIcon = false,
+      this.validateEmail = false,
+      this.validateNotEmpty = true})
       : super(key: key);
 
   @override
@@ -23,8 +29,20 @@ class _InputFieldState extends State<InputField> {
         r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
         r"{0,253}[a-zA-Z0-9])?)*$";
     RegExp regex = RegExp(pattern);
-    if (value != null && !regex.hasMatch(value)) {
-      return 'Must be a valid email';
+    if (value != null && value.isEmpty) {
+      return 'Required';
+    } else {
+      if (value != null && !regex.hasMatch(value)) {
+        return 'Must be a valid email';
+      } else {
+        return null;
+      }
+    }
+  }
+
+  String? validateNotEmpty(String? value) {
+    if (value != null && value.isEmpty) {
+      return 'Required';
     } else {
       return null;
     }
@@ -43,7 +61,11 @@ class _InputFieldState extends State<InputField> {
         child: Form(
           autovalidateMode: widget.validateEmail ? AutovalidateMode.always : AutovalidateMode.disabled,
           child: TextFormField(
-            validator: widget.validateEmail ? validateEmail : null,
+            validator: widget.validateEmail
+                ? validateEmail
+                : widget.validateNotEmpty
+                    ? validateNotEmpty
+                    : null,
             controller: widget.controller,
             onChanged: widget.onChange,
             obscureText: !visible,

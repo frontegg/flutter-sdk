@@ -88,7 +88,12 @@ class FronteggUser {
     }
   }
 
-  FronteggUser signin() {
-    return this;
+  Future<bool> signup(String email, String name, String company) async {
+    try {
+      this.email = email;
+      return await _api.signup(email, name, company);
+    } catch (e) {
+      throw 'Invalid authentication';
+    }
   }
 }

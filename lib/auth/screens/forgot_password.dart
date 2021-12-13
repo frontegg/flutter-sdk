@@ -15,7 +15,7 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   String? error;
   bool loading = false;
-  bool sended = true;
+  bool sended = false;
   final TextEditingController _controller = TextEditingController();
 
   @override
