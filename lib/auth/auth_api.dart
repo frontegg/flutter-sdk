@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:frontegg/auth/constants.dart';
+import 'package:frontegg/auth/social_class.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApi {
@@ -20,6 +21,20 @@ class AuthApi {
         default:
           throw data;
       }
+    } catch (e) {
+      if (e is DioError && e.response != null) {
+        throw e.response!.data['errors'][0];
+      }
+      throw 'Something went wrong';
+    }
+  }
+
+  Future<List<SocialType>> checkSocials() async {
+    try {
+      dio.options.headers['content-Type'] = 'application/json';
+      var response = await dio.get('$url/frontegg/identity/resources/sso/v2');
+      final List<SocialType> res = response.data.map<SocialType>((e) => SocialType.fromJson(e)).toList();
+      return res;
     } catch (e) {
       if (e is DioError && e.response != null) {
         throw e.response!.data['errors'][0];
