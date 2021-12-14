@@ -107,7 +107,9 @@ class _LoginCommonState extends State<LoginCommon> {
                         e.type != null ? '${e.type![0].toUpperCase()}${e.type!.substring(1)}' : '',
                         style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.secondary),
                       ),
-                      onPressed: () async {},
+                      onPressed: () async {
+                        widget.user.loginGoogle();
+                      },
                     )
                   : Container())
             ],
