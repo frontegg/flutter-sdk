@@ -71,6 +71,10 @@ class _LoginCommonState extends State<LoginCommon> {
         return LoginWithCode(widget.user);
       case LoginType.password:
         return LoginWithPassword(widget.user);
+      case LoginType.link:
+        return const Center(
+            child: Text('Authentification with Magic Link is not available on mobile devices',
+                style: TextStyle(color: Colors.red)));
       default:
         return Text(error ?? 'Something went wrong');
     }

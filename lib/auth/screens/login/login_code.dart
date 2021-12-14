@@ -141,7 +141,6 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                             error = 'Email is required';
                             loading = false;
                           } else {
-                            print('dlkvjhkdjfbhjkvbdfkjvbdfn');
                             bool sended = await widget.user.checkCode(_controller.text);
                             if (sended) {
                               Navigator.pop(context, widget.user.isAuthorized);

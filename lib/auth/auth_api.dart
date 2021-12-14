@@ -18,6 +18,8 @@ class AuthApi {
           return LoginType.code;
         case 'EmailAndPassword':
           return LoginType.password;
+        case "MagicLink":
+          return LoginType.link;
         default:
           throw data;
       }
@@ -115,31 +117,28 @@ class AuthApi {
 
   Future<dynamic> checkCode(String code) async {
     try {
-      print(cookies);
       dio.options.headers["cookie"] = cookies?[0].split(';')[0];
       dio.options.headers['content-Type'] = 'application/json';
       print(dio.options.headers);
-      print('$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin');
 
       var response = await dio.post(
         '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin',
         data: {"token": code},
       );
       print('${response.statusCode} ${response.data} ${response.headers}');
-      if (response.statusCode == 200) {
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('accessToken', response.data['accessToken']);
-        prefs.setString('expires', response.data['expires']);
-        prefs.setInt('expiresIn', response.data['expiresIn']);
-        prefs.setBool('mfaRequired', response.data['mfaRequired']);
-        prefs.setString('refreshToken', response.data['refreshToken']);
-        return await getUserInfo();
-      }
 
-      throw response.data['errors'][0];
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('accessToken', response.data['accessToken']);
+      prefs.setString('expires', response.data['expires']);
+      prefs.setInt('expiresIn', response.data['expiresIn']);
+      prefs.setBool('mfaRequired', response.data['mfaRequired']);
+      prefs.setString('refreshToken', response.data['refreshToken']);
+      return await getUserInfo();
     } catch (e) {
+      print(e);
       if (e is DioError && e.response != null) {
-        throw e.response!.data['errors'][0];
+        print(e.response!.headers);
+        throw e.response!.data['errors'][0] ?? 'Something went wrong';
       }
       throw 'Something went wrong';
     }
