@@ -1,4 +1,5 @@
 import 'package:frontegg/auth/auth_api.dart';
+import 'package:frontegg/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FronteggUser {
@@ -33,38 +34,6 @@ class FronteggUser {
       return true;
     } catch (e) {
       throw 'Invalid authentication';
-    }
-  }
-
-  Future<bool> loginGoogle() async {
-    try {
-      GoogleSignIn _googleSignIn = GoogleSignIn(
-        scopes: [
-          'email',
-          'https://www.googleapis.com/auth/userinfo.profile',
-        ],
-      );
-
-      GoogleSignInAccount? account = await _googleSignIn.signIn();
-      if (account != null) {
-        GoogleSignInAuthentication auth = await account.authentication;
-        print(account.id);
-        print(account.serverAuthCode);
-        // print(auth.accessToken);
-        print(auth.accessToken);
-        await _api.loginGoogle(auth);
-        // if (auth.idToken != null) {
-        //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-        //   prefs.setString('accessToken', auth.idToken!);
-
-        //   setUserInfo(await _api.refresh());
-        //   return true;
-        // }
-      }
-      throw 'Invalid authentication';
-    } catch (e) {
-      print(e);
-      rethrow;
     }
   }
 
@@ -127,6 +96,106 @@ class FronteggUser {
       return await _api.signup(email, name, company);
     } catch (e) {
       throw 'Invalid authentication';
+    }
+  }
+
+  Future<bool> loginOrSignUpGoogle(AuthType type) async {
+    try {
+      GoogleSignIn _googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'https://www.googleapis.com/auth/userinfo.profile',
+        ],
+      );
+      if (type == AuthType.login) {
+        GoogleSignInAccount? account = await _googleSignIn.signIn();
+        if (account != null) {
+          GoogleSignInAuthentication auth = await account.authentication;
+          print(account.id);
+          print(account.serverAuthCode);
+          // print(auth.accessToken);
+          print(auth.accessToken);
+          await _api.loginGoogle(auth);
+          // if (auth.idToken != null) {
+          //   final SharedPreferences prefs = await SharedPreferences.getInstance();
+          //   prefs.setString('accessToken', auth.idToken!);
+
+          //   setUserInfo(await _api.refresh());
+          //   return true;
+          // }
+        }
+        throw 'Invalid authentication';
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<bool> loginOrSignUpFacebook(AuthType type) async {
+    try {
+      if (type == AuthType.login) {
+        return true;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<bool> loginOrSignUpGithub(AuthType type) async {
+    try {
+      if (type == AuthType.login) {
+        return true;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<bool> loginOrSignUpGitlab(AuthType type) async {
+    try {
+      if (type == AuthType.login) {
+        return true;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<bool> loginOrSignUpLinedIn(AuthType type) async {
+    try {
+      if (type == AuthType.login) {
+        return true;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<bool> loginOrSignUpMicrosoft(AuthType type) async {
+    try {
+      if (type == AuthType.login) {
+        return true;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
     }
   }
 }

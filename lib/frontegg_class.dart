@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/constants.dart';
+import 'package:frontegg/constants.dart';
 import 'package:frontegg/auth/screens/login/login_common.dart';
 import 'package:frontegg/auth/signup.dart';
 import 'package:shared_preferences/shared_preferences.dart';

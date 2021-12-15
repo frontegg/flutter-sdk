@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:frontegg/auth/constants.dart';
 import 'package:frontegg/auth/social_class.dart';
+import 'package:frontegg/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -32,11 +32,62 @@ class AuthApi {
     }
   }
 
-  Future<List<SocialType>> checkSocials() async {
+  Future<List<Social>> checkSocials() async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
       var response = await dio.get('$url/frontegg/identity/resources/sso/v2');
-      final List<SocialType> res = response.data.map<SocialType>((e) => SocialType.fromJson(e)).toList();
+      // final List<SocialType> res = response.data.map<SocialType>((e) => SocialType.fromJson(e)).toList();
+
+      final List<Social> res = [
+        {
+          "type": "github",
+          "active": true,
+          "customised": false,
+          "clientId": null,
+          "redirectUrl": "http://localhost:3000/account/social/success",
+          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/github/prelogin"
+        },
+        {
+          "type": "google",
+          "active": true,
+          "customised": false,
+          "clientId": null,
+          "redirectUrl": "http://localhost:3000/account/social/success",
+          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/google/prelogin"
+        },
+        {
+          "type": "microsoft",
+          "active": true,
+          "customised": false,
+          "clientId": null,
+          "redirectUrl": "http://localhost:3000/account/social/success",
+          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/microsoft/prelogin"
+        },
+        {
+          "type": "facebook",
+          "active": true,
+          "customised": false,
+          "clientId": null,
+          "redirectUrl": "http://localhost:3000/account/social/success",
+          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/facebook/prelogin"
+        },
+        {
+          "type": "gitlab",
+          "active": true,
+          "customised": false,
+          "clientId": null,
+          "redirectUrl": "http://localhost:3000/account/social/success",
+          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/gitlab/prelogin"
+        },
+        {
+          "type": "linkedin",
+          "active": true,
+          "customised": false,
+          "clientId": null,
+          "redirectUrl": "http://localhost:3000/account/social/success",
+          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/linkedin/prelogin"
+        }
+      ].map<Social>((e) => Social.fromJson(e)).toList();
       return res;
     } catch (e) {
       if (e is DioError && e.response != null) {
