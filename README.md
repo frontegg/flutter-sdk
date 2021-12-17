@@ -73,4 +73,16 @@ User Information
 
 ## Additional information
 
-To login with google do integration steps from https://pub.dev/packages/google_sign_in
+To login with google
+do integration steps from https://pub.dev/packages/google_sign_in and https://console.cloud.google.com/
+facebook
+also requires firebase and Register your app in the https://developers.facebook.com/ as per steps.
+and setting like in quide https://medium.com/flutter-community/social-authentication-in-customized-flutter-applications-5c972bff17f3
+
+for ios minimal Deployment target to 10
+microsoft
+https://pub.dev/packages/flutter_microsoft_authentication
+github
+register app like in https://stacktiger.github.io/flutter_auth/#/github/overview?id=getting-started
+
+need to run with --no-sound-null-safety flag

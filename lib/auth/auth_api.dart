@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:frontegg/auth/social_class.dart';
 import 'package:frontegg/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -215,27 +216,27 @@ class AuthApi {
     }
   }
 
-  Future<dynamic> refresh() async {
-    try {
-      dio.options.headers['content-Type'] = 'application/json';
-      var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/token/refresh');
+  // Future<dynamic> refresh() async {
+  //   try {
+  //     dio.options.headers['content-Type'] = 'application/json';
+  //     var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/token/refresh');
 
-      final data = response.data;
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('accessToken', data['accessToken']);
-      prefs.setString('expires', data['expires']);
-      prefs.setInt('expiresIn', data['expiresIn']);
-      prefs.setBool('mfaRequired', data['mfaRequired']);
-      prefs.setString('refreshToken', data['refreshToken']);
-      return await getUserInfo();
-    } catch (e) {
-      print(e);
-      if (e is DioError) {
-        rethrow;
-      }
-      throw 'Invalid authentication';
-    }
-  }
+  //     final data = response.data;
+  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
+  //     prefs.setString('accessToken', data['accessToken']);
+  //     prefs.setString('expires', data['expires']);
+  //     prefs.setInt('expiresIn', data['expiresIn']);
+  //     prefs.setBool('mfaRequired', data['mfaRequired']);
+  //     prefs.setString('refreshToken', data['refreshToken']);
+  //     return await getUserInfo();
+  //   } catch (e) {
+  //     print(e);
+  //     if (e is DioError) {
+  //       rethrow;
+  //     }
+  //     throw 'Invalid authentication';
+  //   }
+  // }
 
   Future<bool> loginGoogle(GoogleSignInAuthentication user) async {
     try {
@@ -244,9 +245,32 @@ class AuthApi {
       //     '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=4%2F0AX4XfWiVzOVvVAjU3FK-zeG7iy18ne-cbZPTK-n2e95wI7jH2XtZulfV4w27F9NLE4AHTA&state=eyJ2ZW5kb3JJZCI6ImRjYmY0ZmI4LWI3NzItNGZjYi05ZWNkLTM5NjliMWQ0ZTA5NCIsInNlc3Npb25JZCI6ImVlNzVjZGE1LTJjMmMtNGY4Yi1hODM5LTc3Y2YwZjBhZjg0NCIsImJ5dGVzIjoicnl1UW10bzlXLWdPODNMUTI5MmFKVW1Cd2RtSnFfZFl1WTBOUjBRbUpmUSJ9',
       //     data: {});
 
+      print('google 2 ${user.hashCode}\n!!! =>${user.accessToken}\n${user.idToken}');
+
       var response = await dio.post(
-          '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=4%2F0AX4XfWiVzOVvVAjU3FK-zeG7iy18ne-cbZPTK-n2e95wI7jH2XtZulfV4w27F9NLE4AHTA&state=${user.accessToken}',
+          '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=${user.hashCode}=${user.accessToken}',
           data: {});
+
+      final data = response.data;
+      print(response.statusCode);
+      return response.statusCode == 200;
+    } catch (e) {
+      print(e);
+      if (e is DioError) {
+        print(e.response!.data);
+        rethrow;
+      }
+      throw 'Invalid authentication';
+    }
+  }
+
+  Future<bool> loginGitHub(OAuthCredential githubCreds) async {
+    try {
+      dio.options.headers['content-Type'] = 'application/json';
+      // https://ira-123.frontegg.com/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=91c33e0e0194b65bc83e&state=eyJ2ZW5kb3JJZCI6ImRjYmY0ZmI4LWI3NzItNGZjYi05ZWNkLTM5NjliMWQ0ZTA5NCIsInNlc3Npb25JZCI6IjQyYjBjZjVjLTVjN2QtNGJkYS1iMmFlLWZiYTI5YTc3MmQ4ZiIsImJ5dGVzIjoiY2ZCSGYyTjFfNTNIUW9PMHlJME8wY015MDFYS1g1NlBNRUswQjZCWTJKVSJ9
+      print('github 2 ${githubCreds.idToken}\n===> ${githubCreds.secret}\n===> ${githubCreds.accessToken}');
+      var response =
+          await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=&state=', data: {});
 
       final data = response.data;
       print(response.statusCode);

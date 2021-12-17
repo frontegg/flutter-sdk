@@ -89,20 +89,16 @@ class _SocialButtonsState extends State<SocialButtons> {
         widget.user.loginOrSignUpFacebook(widget.type);
         break;
       case SocialType.github:
-        widget.user.loginOrSignUpGithub(widget.type);
-        break;
-      case SocialType.gitlab:
-        widget.user.loginOrSignUpGitlab(widget.type);
+        widget.user.loginOrSignUpGithub(widget.type, context);
         break;
       case SocialType.google:
         widget.user.loginOrSignUpGoogle(widget.type);
         break;
-      case SocialType.linkedin:
-        widget.user.loginOrSignUpLinedIn(widget.type);
-        break;
       case SocialType.microsoft:
         widget.user.loginOrSignUpMicrosoft(widget.type);
         break;
+      case SocialType.gitlab:
+      case SocialType.linkedin:
       default:
         break;
     }

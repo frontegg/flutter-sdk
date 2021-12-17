@@ -1,5 +1,8 @@
+import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
+import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/constants.dart';
+import 'package:github_sign_in/github_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class FronteggUser {
@@ -107,27 +110,53 @@ class FronteggUser {
           'https://www.googleapis.com/auth/userinfo.profile',
         ],
       );
-      if (type == AuthType.login) {
-        GoogleSignInAccount? account = await _googleSignIn.signIn();
-        if (account != null) {
-          GoogleSignInAuthentication auth = await account.authentication;
-          print(account.id);
-          print(account.serverAuthCode);
-          // print(auth.accessToken);
-          print(auth.accessToken);
+      GoogleSignInAccount? account = await _googleSignIn.signIn();
+      if (account != null) {
+        GoogleSignInAuthentication auth = await account.authentication;
+        // print(account.id);
+        // print(auth.serverAuthCode);
+        // print(auth.accessToken);
+        print(
+            'google ${account.id}\n ====> ${account.serverAuthCode}\n ===> ${account.displayName}\n ===> ${account.photoUrl}');
+        if (type == AuthType.login) {
           await _api.loginGoogle(auth);
-          // if (auth.idToken != null) {
-          //   final SharedPreferences prefs = await SharedPreferences.getInstance();
-          //   prefs.setString('accessToken', auth.idToken!);
-
-          //   setUserInfo(await _api.refresh());
-          //   return true;
-          // }
+        } else {
+          return true;
         }
-        throw 'Invalid authentication';
-      } else {
-        return true;
       }
+
+      throw 'Invalid authentication';
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<bool> loginOrSignUpGithub(AuthType type, BuildContext context) async {
+    try {
+      final GitHubSignIn gitHubSignIn = GitHubSignIn(
+          clientId: '580ac5fa976c7f60f47b',
+          clientSecret: '8adff860eb19498b781e9f1e154473503829466a',
+          redirectUrl: 'https://frontegg.com/');
+
+      final GitHubSignInResult result = await gitHubSignIn.signIn(context);
+      switch (result.status) {
+        case GitHubSignInResultStatus.ok:
+          if (type == AuthType.login) {
+            final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token);
+            print('github 1 ${result.token} ');
+            await _api.loginGitHub(githubAuthCredential);
+            return true;
+          } else {
+            return true;
+          }
+
+        case GitHubSignInResultStatus.cancelled:
+        case GitHubSignInResultStatus.failed:
+          print(result.errorMessage);
+          break;
+      }
+      throw 'Invalid authentication';
     } catch (e) {
       print(e);
       rethrow;
@@ -136,50 +165,16 @@ class FronteggUser {
 
   Future<bool> loginOrSignUpFacebook(AuthType type) async {
     try {
-      if (type == AuthType.login) {
-        return true;
-      } else {
-        return true;
-      }
-    } catch (e) {
-      print(e);
-      rethrow;
-    }
-  }
-
-  Future<bool> loginOrSignUpGithub(AuthType type) async {
-    try {
-      if (type == AuthType.login) {
-        return true;
-      } else {
-        return true;
-      }
-    } catch (e) {
-      print(e);
-      rethrow;
-    }
-  }
-
-  Future<bool> loginOrSignUpGitlab(AuthType type) async {
-    try {
-      if (type == AuthType.login) {
-        return true;
-      } else {
-        return true;
-      }
-    } catch (e) {
-      print(e);
-      rethrow;
-    }
-  }
-
-  Future<bool> loginOrSignUpLinedIn(AuthType type) async {
-    try {
-      if (type == AuthType.login) {
-        return true;
-      } else {
-        return true;
-      }
+      // final LoginResult loginResult = await FacebookAuth.instance.login();
+      // if (loginResult.accessToken != null) {
+      //   final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+      //   if (type == AuthType.login) {
+      //     return true;
+      //   } else {
+      //     return true;
+      //   }
+      // }
+      throw 'Invalid authentication';
     } catch (e) {
       print(e);
       rethrow;
@@ -188,6 +183,25 @@ class FronteggUser {
 
   Future<bool> loginOrSignUpMicrosoft(AuthType type) async {
     try {
+//       FlutterMicrosoftAuthentication fma = FlutterMicrosoftAuthentication(
+//           kClientID: "<client-id>",
+//           kAuthority: "https://login.microsoftonline.com/organizations",
+//           kScopes: ["User.Read", "User.ReadBasic.All"],
+//           androidConfigAssetPath: "assets/auth_config.json" // Android MSAL Config file
+//           );
+
+// // Sign in interactively
+//       String authToken = await fma.acquireTokenInteractively;
+
+// // // Sign in silently
+// // String authToken = await fma.acquireTokenSilently;
+
+// // Sign out
+//       await fma.signOut;
+
+// // Android load account username
+//       await fma.loadAccount;
+
       if (type == AuthType.login) {
         return true;
       } else {
