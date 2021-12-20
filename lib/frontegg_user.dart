@@ -29,7 +29,11 @@ class FronteggUser {
   bool isAuthorized = false;
   AuthApi _api = AuthApi();
 
-  FronteggUser();
+  GitHubSignIn? _gitHubSignIn;
+
+  FronteggUser({GitHubSignIn? git}) {
+    _gitHubSignIn = git;
+  }
 
   Future<bool> loginPassword(String email, String password) async {
     try {
@@ -135,27 +139,27 @@ class FronteggUser {
 
   Future<bool> loginOrSignUpGithub(AuthType type, BuildContext context) async {
     try {
-      final GitHubSignIn gitHubSignIn = GitHubSignIn(
-          clientId: '580ac5fa976c7f60f47b',
-          clientSecret: '8adff860eb19498b781e9f1e154473503829466a',
-          redirectUrl: 'https://frontegg.com/');
+      if (_gitHubSignIn != null) {
+        final GitHubSignInResult result = await _gitHubSignIn!.signIn(context);
+        switch (result.status) {
+          case GitHubSignInResultStatus.ok:
+            if (type == AuthType.login) {
+              final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token);
+              print('github 1 ${result.token} ');
+              return await _api.loginGitHub(githubAuthCredential);
+            } else {
+              return true;
+            }
 
-      final GitHubSignInResult result = await gitHubSignIn.signIn(context);
-      switch (result.status) {
-        case GitHubSignInResultStatus.ok:
-          if (type == AuthType.login) {
-            final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token);
-            print('github 1 ${result.token} ');
-            return await _api.loginGitHub(githubAuthCredential);
-          } else {
-            return true;
-          }
-
-        case GitHubSignInResultStatus.cancelled:
-        case GitHubSignInResultStatus.failed:
-          print(result.errorMessage);
-          break;
+          case GitHubSignInResultStatus.cancelled:
+          case GitHubSignInResultStatus.failed:
+            print(result.errorMessage);
+            break;
+        }
+      } else {
+        throw 'Set GitHubSignIn';
       }
+
       throw 'Invalid authentication';
     } catch (e) {
       print(e);

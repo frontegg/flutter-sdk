@@ -8,7 +8,7 @@ import 'frontegg_user.dart';
 class Frontegg {
   FronteggUser _user;
 
-  Frontegg(baseUrl, headerImage) : _user = FronteggUser() {
+  Frontegg(baseUrl, headerImage, {gitHubSignIn}) : _user = FronteggUser(git: gitHubSignIn) {
     url = baseUrl;
     logo = headerImage;
   }
