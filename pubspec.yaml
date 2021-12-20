@@ -9,13 +9,14 @@ environment:
 
 dependencies:
   dio: ^4.0.4
-  firebase_auth_platform_interface: ^6.1.9
   flutter:
     sdk: flutter
   flutter_svg: ^1.0.0
-  github_sign_in: ^0.0.4
   google_sign_in: ^5.2.1
-  shared_preferences: ^2.0.9
+  github_sign_in: ^0.0.4
+  firebase_auth_platform_interface: ^6.1.9
+  shared_preferences: ^2.0.11
+  flutter_facebook_auth: ^3.5.7
 
 dev_dependencies:
   flutter_test:

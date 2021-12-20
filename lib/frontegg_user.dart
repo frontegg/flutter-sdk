@@ -1,5 +1,6 @@
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/constants.dart';
 import 'package:github_sign_in/github_sign_in.dart';
@@ -119,7 +120,7 @@ class FronteggUser {
         print(
             'google ${account.id}\n ====> ${account.serverAuthCode}\n ===> ${account.displayName}\n ===> ${account.photoUrl}');
         if (type == AuthType.login) {
-          await _api.loginGoogle(auth);
+          return await _api.loginGoogle(auth);
         } else {
           return true;
         }
@@ -145,8 +146,7 @@ class FronteggUser {
           if (type == AuthType.login) {
             final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token);
             print('github 1 ${result.token} ');
-            await _api.loginGitHub(githubAuthCredential);
-            return true;
+            return await _api.loginGitHub(githubAuthCredential);
           } else {
             return true;
           }
@@ -165,15 +165,16 @@ class FronteggUser {
 
   Future<bool> loginOrSignUpFacebook(AuthType type) async {
     try {
-      // final LoginResult loginResult = await FacebookAuth.instance.login();
-      // if (loginResult.accessToken != null) {
-      //   final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
-      //   if (type == AuthType.login) {
-      //     return true;
-      //   } else {
-      //     return true;
-      //   }
-      // }
+      final LoginResult loginResult = await FacebookAuth.instance.login();
+      if (loginResult.accessToken != null) {
+        final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
+        print('facebook 1 ${loginResult.accessToken!.token}');
+        if (type == AuthType.login) {
+          return await _api.loginFacebook(facebookAuthCredential);
+        } else {
+          return true;
+        }
+      }
       throw 'Invalid authentication';
     } catch (e) {
       print(e);

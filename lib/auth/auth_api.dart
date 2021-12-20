@@ -264,13 +264,34 @@ class AuthApi {
     }
   }
 
-  Future<bool> loginGitHub(OAuthCredential githubCreds) async {
+  Future<bool> loginGitHub(OAuthCredential creds) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
       // https://ira-123.frontegg.com/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=91c33e0e0194b65bc83e&state=eyJ2ZW5kb3JJZCI6ImRjYmY0ZmI4LWI3NzItNGZjYi05ZWNkLTM5NjliMWQ0ZTA5NCIsInNlc3Npb25JZCI6IjQyYjBjZjVjLTVjN2QtNGJkYS1iMmFlLWZiYTI5YTc3MmQ4ZiIsImJ5dGVzIjoiY2ZCSGYyTjFfNTNIUW9PMHlJME8wY015MDFYS1g1NlBNRUswQjZCWTJKVSJ9
-      print('github 2 ${githubCreds.idToken}\n===> ${githubCreds.secret}\n===> ${githubCreds.accessToken}');
+      print('github 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
       var response =
-          await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=&state=', data: {});
+          await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=&state=', data: {});
+
+      final data = response.data;
+      print(response.statusCode);
+      return response.statusCode == 200;
+    } catch (e) {
+      print(e);
+      if (e is DioError) {
+        print(e.response!.data);
+        rethrow;
+      }
+      throw 'Invalid authentication';
+    }
+  }
+
+  Future<bool> loginFacebook(OAuthCredential creds) async {
+    try {
+      dio.options.headers['content-Type'] = 'application/json';
+      // https://ira-123.frontegg.com/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=91c33e0e0194b65bc83e&state=eyJ2ZW5kb3JJZCI6ImRjYmY0ZmI4LWI3NzItNGZjYi05ZWNkLTM5NjliMWQ0ZTA5NCIsInNlc3Npb25JZCI6IjQyYjBjZjVjLTVjN2QtNGJkYS1iMmFlLWZiYTI5YTc3MmQ4ZiIsImJ5dGVzIjoiY2ZCSGYyTjFfNTNIUW9PMHlJME8wY015MDFYS1g1NlBNRUswQjZCWTJKVSJ9
+      print('facebook 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
+      var response =
+          await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?code=&state=', data: {});
 
       final data = response.data;
       print(response.statusCode);
