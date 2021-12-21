@@ -1,3 +1,5 @@
+import 'package:aad_oauth/aad_oauth.dart';
+import 'package:aad_oauth/model/config.dart';
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -107,15 +109,17 @@ class FronteggUser {
     }
   }
 
+  GoogleSignIn? _googleSignIn;
+
   Future<bool> loginOrSignUpGoogle(AuthType type) async {
     try {
-      GoogleSignIn _googleSignIn = GoogleSignIn(
+      _googleSignIn = GoogleSignIn(
         scopes: [
           'email',
           'https://www.googleapis.com/auth/userinfo.profile',
         ],
       );
-      GoogleSignInAccount? account = await _googleSignIn.signIn();
+      GoogleSignInAccount? account = await _googleSignIn!.signIn();
       if (account != null) {
         GoogleSignInAuthentication auth = await account.authentication;
         // print(account.id);
@@ -144,7 +148,7 @@ class FronteggUser {
         switch (result.status) {
           case GitHubSignInResultStatus.ok:
             if (type == AuthType.login) {
-              final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token);
+              final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token ?? '');
               print('github 1 ${result.token} ');
               return await _api.loginGitHub(githubAuthCredential);
             } else {
@@ -167,12 +171,15 @@ class FronteggUser {
     }
   }
 
+  LoginResult? _facebookLoginResult;
+
   Future<bool> loginOrSignUpFacebook(AuthType type) async {
     try {
-      final LoginResult loginResult = await FacebookAuth.instance.login();
-      if (loginResult.accessToken != null) {
-        final OAuthCredential facebookAuthCredential = FacebookAuthProvider.credential(loginResult.accessToken!.token);
-        print('facebook 1 ${loginResult.accessToken!.token}');
+      _facebookLoginResult = await FacebookAuth.instance.login();
+      if (_facebookLoginResult!.accessToken != null) {
+        final OAuthCredential facebookAuthCredential =
+            FacebookAuthProvider.credential(_facebookLoginResult!.accessToken!.token);
+        print('facebook 1 ${_facebookLoginResult!.accessToken!.token}');
         if (type == AuthType.login) {
           return await _api.loginFacebook(facebookAuthCredential);
         } else {
@@ -186,26 +193,18 @@ class FronteggUser {
     }
   }
 
+  AadOAuth? _microsoftAuth;
+
   Future<bool> loginOrSignUpMicrosoft(AuthType type) async {
     try {
-//       FlutterMicrosoftAuthentication fma = FlutterMicrosoftAuthentication(
-//           kClientID: "<client-id>",
-//           kAuthority: "https://login.microsoftonline.com/organizations",
-//           kScopes: ["User.Read", "User.ReadBasic.All"],
-//           androidConfigAssetPath: "assets/auth_config.json" // Android MSAL Config file
-//           );
-
-// // Sign in interactively
-//       String authToken = await fma.acquireTokenInteractively;
-
-// // // Sign in silently
-// // String authToken = await fma.acquireTokenSilently;
-
-// // Sign out
-//       await fma.signOut;
-
-// // Android load account username
-//       await fma.loadAccount;
+      _microsoftAuth = AadOAuth(Config(
+          tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+          clientId: "1a29eadd-4e5d-4029-a808-991825ae2dda",
+          scope: "openid profile offline_access",
+          redirectUri: "msauth.com.example.testApp://auth"));
+      await _microsoftAuth!.login();
+      String? accessToken = await _microsoftAuth!.getAccessToken();
+      print(accessToken);
 
       if (type == AuthType.login) {
         return true;
@@ -215,6 +214,18 @@ class FronteggUser {
     } catch (e) {
       print(e);
       rethrow;
+    }
+  }
+
+  Future<void> logOut() async {
+    if (_googleSignIn != null) {
+      _googleSignIn!.signOut();
+    }
+    if (_facebookLoginResult != null) {
+      await FacebookAuth.instance.logOut();
+    }
+    if (_microsoftAuth != null) {
+      await _microsoftAuth!.logout();
     }
   }
 }

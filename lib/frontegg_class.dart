@@ -50,6 +50,7 @@ class Frontegg {
   }
 
   Future<FronteggUser?> logout() async {
+    await _user.logOut();
     _user = FronteggUser();
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
