@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
 import 'package:frontegg/auth/widget/logo.dart';
 import 'package:frontegg/auth/widget/signup_button.dart';
+import 'package:frontegg/auth/widget/social_buttons.dart';
+import 'package:frontegg/constants.dart';
 import 'package:frontegg/frontegg_user.dart';
 
 class Signup extends StatefulWidget {
@@ -23,6 +25,7 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     List<Widget> common = [
+      const SizedBox(height: 100),
       const Logo(),
       const Padding(
         padding: EdgeInsets.only(top: 30, bottom: 30),
@@ -85,7 +88,9 @@ class _SignupState extends State<Signup> {
                 }
                 setState(() {});
               },
-      )
+      ),
+      SocialButtons(AuthType.signup, widget.user),
+      const SizedBox(height: 50)
     ];
 
     List<Widget> signed = const [
@@ -98,7 +103,7 @@ class _SignupState extends State<Signup> {
     ];
 
     return Scaffold(
-      body: Center(
+      body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,

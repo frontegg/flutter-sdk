@@ -1,4 +1,12 @@
+import 'package:aad_oauth/aad_oauth.dart';
+import 'package:aad_oauth/model/config.dart';
+import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:frontegg/auth/auth_api.dart';
+import 'package:frontegg/constants.dart';
+import 'package:github_sign_in/github_sign_in.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class FronteggUser {
   String? email;
@@ -23,7 +31,11 @@ class FronteggUser {
   bool isAuthorized = false;
   AuthApi _api = AuthApi();
 
-  FronteggUser();
+  GitHubSignIn? _gitHubSignIn;
+
+  FronteggUser({GitHubSignIn? git}) {
+    _gitHubSignIn = git;
+  }
 
   Future<bool> loginPassword(String email, String password) async {
     try {
@@ -94,6 +106,126 @@ class FronteggUser {
       return await _api.signup(email, name, company);
     } catch (e) {
       throw 'Invalid authentication';
+    }
+  }
+
+  GoogleSignIn? _googleSignIn;
+
+  Future<bool> loginOrSignUpGoogle(AuthType type) async {
+    try {
+      _googleSignIn = GoogleSignIn(
+        scopes: [
+          'email',
+          'https://www.googleapis.com/auth/userinfo.profile',
+        ],
+      );
+      GoogleSignInAccount? account = await _googleSignIn!.signIn();
+      if (account != null) {
+        GoogleSignInAuthentication auth = await account.authentication;
+        // print(account.id);
+        // print(auth.serverAuthCode);
+        // print(auth.accessToken);
+        print(
+            'google ${account.id}\n ====> ${account.serverAuthCode}\n ===> ${account.displayName}\n ===> ${account.photoUrl}');
+        if (type == AuthType.login) {
+          return await _api.loginGoogle(auth);
+        } else {
+          return true;
+        }
+      }
+
+      throw 'Invalid authentication';
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<bool> loginOrSignUpGithub(AuthType type, BuildContext context) async {
+    try {
+      if (_gitHubSignIn != null) {
+        final GitHubSignInResult result = await _gitHubSignIn!.signIn(context);
+        switch (result.status) {
+          case GitHubSignInResultStatus.ok:
+            if (type == AuthType.login) {
+              final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token ?? '');
+              print('github 1 ${result.token} ');
+              return await _api.loginGitHub(githubAuthCredential);
+            } else {
+              return true;
+            }
+
+          case GitHubSignInResultStatus.cancelled:
+          case GitHubSignInResultStatus.failed:
+            print(result.errorMessage);
+            break;
+        }
+      } else {
+        throw 'Set GitHubSignIn';
+      }
+
+      throw 'Invalid authentication';
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  LoginResult? _facebookLoginResult;
+
+  Future<bool> loginOrSignUpFacebook(AuthType type) async {
+    try {
+      _facebookLoginResult = await FacebookAuth.instance.login();
+      if (_facebookLoginResult!.accessToken != null) {
+        final OAuthCredential facebookAuthCredential =
+            FacebookAuthProvider.credential(_facebookLoginResult!.accessToken!.token);
+        print('facebook 1 ${_facebookLoginResult!.accessToken!.token}');
+        if (type == AuthType.login) {
+          return await _api.loginFacebook(facebookAuthCredential);
+        } else {
+          return true;
+        }
+      }
+      throw 'Invalid authentication';
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  AadOAuth? _microsoftAuth;
+
+  Future<bool> loginOrSignUpMicrosoft(AuthType type) async {
+    try {
+      _microsoftAuth = AadOAuth(Config(
+          tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
+          clientId: "33d42446-b97e-4a50-a0d4-625ac6b4f6bc",
+          scope: "openid profile offline_access",
+          redirectUri: "msauth.com.example.testApp://auth"));
+      await _microsoftAuth!.login();
+      String? accessToken = await _microsoftAuth!.getAccessToken();
+      print(accessToken);
+
+      if (type == AuthType.login) {
+        return true;
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print(e);
+      rethrow;
+    }
+  }
+
+  Future<void> logOut() async {
+    if (_googleSignIn != null) {
+      _googleSignIn!.signOut();
+    }
+    if (_facebookLoginResult != null) {
+      await FacebookAuth.instance.logOut();
+    }
+    if (_microsoftAuth != null) {
+      await _microsoftAuth!.logout();
     }
   }
 }
