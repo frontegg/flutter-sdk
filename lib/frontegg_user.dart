@@ -199,7 +199,7 @@ class FronteggUser {
     try {
       _microsoftAuth = AadOAuth(Config(
           tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
-          clientId: "1a29eadd-4e5d-4029-a808-991825ae2dda",
+          clientId: "33d42446-b97e-4a50-a0d4-625ac6b4f6bc",
           scope: "openid profile offline_access",
           redirectUri: "msauth.com.example.testApp://auth"));
       await _microsoftAuth!.login();
