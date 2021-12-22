@@ -198,10 +198,7 @@ and create Frontegg like
 
 ```dart
  final frontegg = Frontegg("baseUrl", "logoImage",
-      gitHubSignIn: GitHubSignIn(
-          clientId: 'your-client-id',
-          clientSecret: 'your-client-secret',
-          redirectUrl: 'https://frontegg.com/'));
+      gitHubSignIn:gitHubSignIn: {'clientId': 'your-client-id', 'clientSecret': 'your-client-secret'});
 ```
 
 ## Microsoft
