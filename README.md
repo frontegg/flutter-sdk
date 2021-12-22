@@ -6,8 +6,10 @@ TODO: List what your package can do. Maybe include images, gifs, or videos.
 
 import 'package:frontegg/frontegg.dart';
 
+```dart
 final frontegg = Frontegg("baseUrl", "logoImage");
 FronteggUser? user;
+```
 
 ## Usage
 
@@ -50,8 +52,10 @@ TextButton(
 
 User Information
 
+after login
+
 ```dart
-    after login
+
     user?.email, user?.name, user?.phoneNumber
 ```
 
