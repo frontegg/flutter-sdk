@@ -121,7 +121,7 @@ Add some string-related values to `strings.xml` file.
 ```
 
 Add the below permission in `AndroidManifest.xml` file after application element.
-'''<uses-permission android:name="android.permission.INTERNET"/>```
+`<uses-permission android:name="android.permission.INTERNET"/>`
 
 Add the following meta-data element, an activity for Facebook, and activity and intent filter for Chrome Custom Tabs inside your application element
 
