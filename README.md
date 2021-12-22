@@ -55,11 +55,11 @@ User Information
     user?.email, user?.name, user?.phoneNumber
 ```
 
-## Social Login and Signup
+# Social Login and Signup
 
-### Google
+## Google
 
-**Android integration**
+## **Android integration**
 
 To access Google Sign-In, you'll need to make sure to [register your application](https://firebase.google.com/docs/android/setup).
 
@@ -68,7 +68,7 @@ You do need to enable the OAuth APIs that you want, using the [Google Cloud Plat
 Make sure you've filled out all required fields in the console for [OAuth consent screen](https://console.developers.google.com/apis/credentials/consent).
 Otherwise, you may encounter `APIException` errors.
 
-**iOS integration**
+## **iOS integration**
 
 This plugin requires iOS 9.0 or higher.
 
@@ -99,11 +99,12 @@ This plugin requires iOS 9.0 or higher.
 <!-- End of the Google Sign-in Section -->
 ```
 
-### Facebook
+## Facebook
 
 [Register your application in Facebook Developer Console](https://developers.facebook.com/). Create a new app and fill the form as requested. Select Facebook login setup and skip the 2nd & 3rd steps.
 
-**Android integration**
+## **Android integration**
+
 Add some string-related values to `strings.xml` file.
 
 ```xml
@@ -152,7 +153,8 @@ Now you have to add native platforms in-app. so let's do this by a tap on Add pl
 Registration Of Android Platform
 ![](https://miro.medium.com/max/1400/1*d_BnLgLkuSQNfQxRUrtqNA.png)
 
-**iOS integration**
+## **iOS integration**
+
 Set ios minimal Deployment target to 10
 Please add the below code in `Info.plist` file.
 
@@ -180,11 +182,11 @@ Please add the below code in `Info.plist` file.
 	</array>
 ```
 
-### Github
+## Github
 
 register app like in https://stacktiger.github.io/flutter_auth/#/github/overview?id=getting-started
 
-### Microsoft
+## Microsoft
 
 https://pub.dev/packages/aad_oauth
 
