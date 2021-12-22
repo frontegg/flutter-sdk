@@ -141,6 +141,7 @@ Add the following meta-data element, an activity for Facebook, and activity and 
 Rebuild your project to cross-verify the whole configuration.
 
 ![](https://miro.medium.com/max/1400/1*r4sDKXcsC1ueUm9spSbSvQ.jpeg)
+
 Package Name : <Your Package name>
 Default Activity Class Name : <Your Package name.activity name>
 
@@ -148,6 +149,7 @@ You can generate a key hash using the below command in the terminal.
 `keytool -exportcert -alias androiddebugkey -keystore ~/.android/debug.keystore | openssl sha1 -binary | openssl base64`
 
 ![](https://miro.medium.com/max/1400/1*ZiWpialrdx1ysXD73d_R0A.png)
+
 Now you have to add native platforms in-app. so let's do this by a tap on Add platform button which is located at the Setting -> Basics menu
 
 Registration Of Android Platform
