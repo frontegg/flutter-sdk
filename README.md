@@ -195,12 +195,11 @@ Configure your app by setting a callbackUrl, this can be any url.
 
 Once registered, you’ll be given a OAuth token and OAuth secret.
 
-`import 'package:github_sign_in/github_sign_in.dart';`
-and create Frontegg like
+Create Frontegg like
 
 ```dart
  final frontegg = Frontegg("baseUrl", "logoImage",
-      gitHubSignIn:gitHubSignIn: {'clientId': 'your-client-id', 'clientSecret': 'your-client-secret'});
+      gitHubSignIn:gitHubSignIn: {"clientId": "your-client-id", "clientSecret": "your-client-secret"});
 ```
 
 ## Microsoft
