@@ -29,7 +29,7 @@ class FronteggUser {
   dynamic _tenants;
   bool? verified;
   bool isAuthorized = false;
-  AuthApi _api = AuthApi();
+  final AuthApi _api = AuthApi();
 
   GitHubSignIn? _gitHubSignIn;
 
@@ -37,10 +37,14 @@ class FronteggUser {
     _gitHubSignIn = git;
   }
 
-  Future<bool> loginPassword(String email, String password) async {
+  Future<bool> loginPassword(String email, String password, BuildContext context) async {
     try {
       this.email = email;
-      setUserInfo(await _api.loginPassword(email, password));
+      dynamic res = await _api.loginPassword(email, password, context);
+      if (res == false) {
+        return false;
+      }
+      setUserInfo(res);
       return true;
     } catch (e) {
       throw 'Invalid authentication';
@@ -199,7 +203,7 @@ class FronteggUser {
     try {
       _microsoftAuth = AadOAuth(Config(
           tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
-          clientId: "33d42446-b97e-4a50-a0d4-625ac6b4f6bc",
+          clientId: "affcc54c-4ad9-4599-8da3-036a489686e5",
           scope: "openid profile offline_access",
           redirectUri: "msauth.com.example.testApp://auth"));
       await _microsoftAuth!.login();

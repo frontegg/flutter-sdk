@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
+import 'package:flutter/material.dart';
+import 'package:frontegg/auth/screens/mfa/mfa.dart';
 import 'package:frontegg/auth/social_class.dart';
 import 'package:frontegg/constants.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -37,58 +39,7 @@ class AuthApi {
     try {
       dio.options.headers['content-Type'] = 'application/json';
       var response = await dio.get('$url/frontegg/identity/resources/sso/v2');
-      // final List<SocialType> res = response.data.map<SocialType>((e) => SocialType.fromJson(e)).toList();
-
-      final List<Social> res = [
-        {
-          "type": "github",
-          "active": true,
-          "customised": false,
-          "clientId": null,
-          "redirectUrl": "http://localhost:3000/account/social/success",
-          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/github/prelogin"
-        },
-        {
-          "type": "google",
-          "active": true,
-          "customised": false,
-          "clientId": null,
-          "redirectUrl": "http://localhost:3000/account/social/success",
-          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/google/prelogin"
-        },
-        {
-          "type": "microsoft",
-          "active": true,
-          "customised": false,
-          "clientId": null,
-          "redirectUrl": "http://localhost:3000/account/social/success",
-          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/microsoft/prelogin"
-        },
-        {
-          "type": "facebook",
-          "active": true,
-          "customised": false,
-          "clientId": null,
-          "redirectUrl": "http://localhost:3000/account/social/success",
-          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/facebook/prelogin"
-        },
-        {
-          "type": "gitlab",
-          "active": true,
-          "customised": false,
-          "clientId": null,
-          "redirectUrl": "http://localhost:3000/account/social/success",
-          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/gitlab/prelogin"
-        },
-        {
-          "type": "linkedin",
-          "active": true,
-          "customised": false,
-          "clientId": null,
-          "redirectUrl": "http://localhost:3000/account/social/success",
-          "authorizationUrl": "/identity/resources/auth/v2/user/sso/default/linkedin/prelogin"
-        }
-      ].map<Social>((e) => Social.fromJson(e)).toList();
+      final List<Social> res = response.data.map<Social>((e) => Social.fromJson(e)).toList();
       return res;
     } catch (e) {
       if (e is DioError && e.response != null) {
@@ -98,7 +49,7 @@ class AuthApi {
     }
   }
 
-  Future<dynamic> loginPassword(String email, String password) async {
+  Future<dynamic> loginPassword(String email, String password, BuildContext context) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
       var response =
@@ -106,16 +57,33 @@ class AuthApi {
 
       final data = response.data;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('accessToken', data['accessToken']);
-      prefs.setString('expires', data['expires']);
-      prefs.setInt('expiresIn', data['expiresIn']);
-      prefs.setBool('mfaRequired', data['mfaRequired']);
-      prefs.setString('refreshToken', data['refreshToken']);
-      return await getUserInfo();
+      if (data['mfaRequired'] != null && data['mfaRequired']) {
+        prefs.setString('mfaToken', data['mfaToken']);
+        final verified = await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const TwoFactor(),
+            ));
+        if (verified == null) {
+          return false;
+        }
+        if (verified == true) {
+          return await getUserInfo();
+        }
+      } else {
+        prefs.setString('accessToken', data['accessToken']);
+        prefs.setString('expires', data['expires']);
+        prefs.setInt('expiresIn', data['expiresIn']);
+        prefs.setString('refreshToken', data['refreshToken']);
+        prefs.setString('emailForRecover', email);
+
+        return await getUserInfo();
+      }
     } catch (e) {
       if (e is DioError && e.response != null) {
         throw e.response!.data['errors'][0];
       }
+      print(e);
       throw 'Invalid authentication';
     }
   }
@@ -128,6 +96,49 @@ class AuthApi {
       return true;
     } catch (e) {
       if (e is DioError && e.response != null) {
+        throw e.response!.data['errors'][0];
+      }
+      throw 'Invalid authentication';
+    }
+  }
+
+  Future<bool> mfaCheck(String code, bool rememberDevice) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? token = prefs.getString('mfaToken');
+      dio.options.headers['content-Type'] = 'application/json';
+      print('$token $code');
+      var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/verify',
+          data: {"mfaToken": token, "value": code, "rememberDevice": rememberDevice});
+
+      final data = response.data;
+      prefs.setString('accessToken', data['accessToken']);
+      prefs.setString('expires', data['expires']);
+      prefs.setInt('expiresIn', data['expiresIn']);
+      prefs.setString('refreshToken', data['refreshToken']);
+      return true;
+    } catch (e) {
+      if (e is DioError && e.response != null) {
+        throw e.response!.data['errors'][0];
+      }
+      throw 'Invalid authentication';
+    }
+  }
+
+  Future<bool> mfaRecover(String code) async {
+    try {
+      dio.options.headers['content-Type'] = 'application/json';
+      print(code);
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      final String? email = prefs.getString('emailForRecover');
+      var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/recover',
+          data: {"recoveryCode": code, 'email': email});
+
+      return true;
+    } catch (e) {
+      if (e is DioError && e.response != null) {
+        print(e.message);
+
         throw e.response!.data['errors'][0];
       }
       throw 'Invalid authentication';
