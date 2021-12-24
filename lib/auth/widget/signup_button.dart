@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontegg/auth/screens/login/login_common.dart';
 import 'package:frontegg/auth/signup.dart';
 import 'package:frontegg/frontegg_user.dart';
+import 'package:frontegg/locatization.dart';
 
 class SignupButton extends StatelessWidget {
   final FronteggUser user;
@@ -15,9 +16,10 @@ class SignupButton extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(signup ? "Don't have an account? " : "Already have an account? "),
+          Text(signup ? tr('dont_have_an_account') : tr('already_have_an_account')),
+          const SizedBox(width: 5),
           TextButton(
-            child: Text(signup ? 'Sign up' : 'Log in'),
+            child: Text(signup ? tr('signup') : tr('login')),
             onPressed: () {
               Navigator.pushReplacement(
                 context,

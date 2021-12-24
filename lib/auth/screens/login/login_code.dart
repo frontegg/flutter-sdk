@@ -5,6 +5,7 @@ import 'package:frontegg/auth/widget/code_input_container.dart';
 import 'package:frontegg/auth/widget/signup_button.dart';
 import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
+import 'package:frontegg/locatization.dart';
 
 class LoginWithCode extends StatefulWidget {
   final FronteggUser user;
@@ -37,13 +38,13 @@ class _LoginWithCodeState extends State<LoginWithCode> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              paddings(const Text(
-                'Sign in',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              paddings(Text(
+                tr('login'),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               )),
               SignupButton(widget.user, true),
               paddings(
-                  InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
+                  InputField('name@example.com', _controller, label: tr('email'), validateEmail: true, onChange: (_) {
                     setState(() {
                       error = null;
                     });

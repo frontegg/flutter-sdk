@@ -128,7 +128,6 @@ class AuthApi {
   Future<bool> mfaRecover(String code) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
-      print(code);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? email = prefs.getString('emailForRecover');
       var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/recover',
@@ -137,8 +136,6 @@ class AuthApi {
       return true;
     } catch (e) {
       if (e is DioError && e.response != null) {
-        print(e.message);
-
         throw e.response!.data['errors'][0];
       }
       throw 'Invalid authentication';
@@ -185,13 +182,11 @@ class AuthApi {
     try {
       dio.options.headers["cookie"] = cookies?[0].split(';')[0];
       dio.options.headers['content-Type'] = 'application/json';
-      print(dio.options.headers);
 
       var response = await dio.post(
         '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin',
         data: {"token": code},
       );
-      print('${response.statusCode} ${response.data} ${response.headers}');
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('accessToken', response.data['accessToken']);
@@ -201,9 +196,7 @@ class AuthApi {
       prefs.setString('refreshToken', response.data['refreshToken']);
       return await getUserInfo();
     } catch (e) {
-      print(e);
       if (e is DioError && e.response != null) {
-        print(e.response!.headers);
         throw e.response!.data['errors'][0] ?? 'Something went wrong';
       }
       throw 'Something went wrong';
