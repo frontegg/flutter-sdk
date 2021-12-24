@@ -4,6 +4,7 @@ import 'package:frontegg/auth/screens/login/login_code.dart';
 import 'package:frontegg/auth/screens/mfa/recover_mfa.dart';
 import 'package:frontegg/auth/widget/code_input_container.dart';
 import 'package:frontegg/auth/widget/logo.dart';
+import 'package:frontegg/locatization.dart';
 
 class TwoFactor extends StatefulWidget {
   const TwoFactor({Key? key}) : super(key: key);
@@ -35,15 +36,12 @@ class _TwoFactorState extends State<TwoFactor> {
         children: [
           const Logo(),
           const SizedBox(height: 30),
-          const Text(
-            'Two-Factor authentication',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+          Text(
+            tr('twofactor_authentication'),
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
           ),
           const SizedBox(height: 30),
-          const Text(
-            'Please enter the 6 digit code from your authenticator app',
-            textAlign: TextAlign.center,
-          ),
+          Text(tr('enter_code_from_app'), textAlign: TextAlign.center),
           const SizedBox(height: 10),
           Row(mainAxisAlignment: MainAxisAlignment.center, children: codeInputs),
           const SizedBox(height: 30),
@@ -59,7 +57,7 @@ class _TwoFactorState extends State<TwoFactor> {
                   });
                 },
               ),
-              const Text("Don't ask again on this device for 365 day")
+              Text(tr('dont_ask_for_365_days'))
             ],
           ),
           if (error != null)
@@ -68,7 +66,7 @@ class _TwoFactorState extends State<TwoFactor> {
               style: const TextStyle(color: Colors.red),
             ),
           ElevatedButton(
-            child: const Text('Continue'),
+            child: Text(tr('continue')),
             onPressed: loading
                 ? null
                 : () async {
@@ -90,9 +88,12 @@ class _TwoFactorState extends State<TwoFactor> {
                   },
           ),
           const SizedBox(height: 30),
-          const Text("Having trouble?", style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(tr('having_trouble'), style: const TextStyle(fontWeight: FontWeight.bold)),
           TextButton(
-              child: const Text('Click here to disable Multi-Factor with recovery code'),
+              child: Text(
+                tr('disable_multifactor_with_code'),
+                textAlign: TextAlign.center,
+              ),
               onPressed: () async {
                 final bool? res = await Navigator.push<bool>(
                   context,

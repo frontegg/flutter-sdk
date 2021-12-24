@@ -5,6 +5,7 @@ import 'package:frontegg/auth/widget/signup_button.dart';
 import 'package:frontegg/auth/widget/social_buttons.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/frontegg_user.dart';
+import 'package:frontegg/locatization.dart';
 
 class Signup extends StatefulWidget {
   final FronteggUser user;
@@ -27,29 +28,29 @@ class _SignupState extends State<Signup> {
     List<Widget> common = [
       const SizedBox(height: 100),
       const Logo(),
-      const Padding(
-        padding: EdgeInsets.only(top: 30, bottom: 30),
+      Padding(
+        padding: const EdgeInsets.only(top: 30, bottom: 30),
         child: Text(
-          'Sign Up',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+          tr('signup'),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         ),
       ),
     ];
     List<Widget> notSigned = [
       SignupButton(widget.user, false),
-      InputField('Enter your email', _controllerEmail, label: "Email", validateEmail: true, onChange: (_) {
+      InputField(tr('enter_email'), _controllerEmail, label: tr('email'), validateEmail: true, onChange: (_) {
         setState(() {
           error = null;
         });
       }),
       const SizedBox(height: 10),
-      InputField('Enter your name', _controllerName, label: "Name", onChange: (_) {
+      InputField(tr('enter_name'), _controllerName, label: tr('name'), onChange: (_) {
         setState(() {
           error = null;
         });
       }),
       const SizedBox(height: 10),
-      InputField('Enter your company name', _controllerCompany, label: "Company name", onChange: (_) {
+      InputField(tr('enter_company_name'), _controllerCompany, label: tr('company_name'), onChange: (_) {
         setState(() {
           error = null;
         });
@@ -75,7 +76,7 @@ class _SignupState extends State<Signup> {
                   if (_controllerEmail.text.isEmpty ||
                       _controllerName.text.isEmpty ||
                       _controllerCompany.text.isEmpty) {
-                    error = 'All data is required';
+                    error = tr('data_required');
                     loading = false;
                   } else {
                     sended =
@@ -93,11 +94,11 @@ class _SignupState extends State<Signup> {
       const SizedBox(height: 50)
     ];
 
-    List<Widget> signed = const [
-      Text('Thanks for signing up!', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-      SizedBox(height: 30),
+    List<Widget> signed = [
+      Text(tr('thanks_for_signing_up'), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+      const SizedBox(height: 30),
       Text(
-        'Please check your inbox in order to activate your account.',
+        tr('check_inbox_to_activate_account'),
         textAlign: TextAlign.center,
       )
     ];

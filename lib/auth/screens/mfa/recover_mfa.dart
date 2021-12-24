@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
 import 'package:frontegg/auth/widget/logo.dart';
+import 'package:frontegg/locatization.dart';
 
 class RecoverMFA extends StatefulWidget {
   const RecoverMFA({Key? key}) : super(key: key);
@@ -25,26 +26,26 @@ class _RecoverMFAState extends State<RecoverMFA> {
           children: [
             const Logo(),
             const SizedBox(height: 30),
-            const Text(
-              ' Recover MFA',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+            Text(
+              tr('recover_MFA'),
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
             ),
             const SizedBox(height: 30),
-            const Text('Please enter your MFA recovery code'),
+            Text(tr('enter_MFA_recovery_code')),
             const SizedBox(height: 10),
-            InputField('', _controller, label: "Code"),
+            InputField('', _controller, label: tr('code')),
             if (error != null)
               Text(
                 error ?? '',
                 style: const TextStyle(color: Colors.red),
               ),
             ElevatedButton(
-              child: const Text('Continue'),
+              child: Text(tr('continue')),
               onPressed: loading
                   ? null
                   : () async {
                       if (_controller.text.isEmpty) {
-                        error = "Input code";
+                        error = tr('input_code');
                       } else {
                         setState(() {
                           loading = true;
