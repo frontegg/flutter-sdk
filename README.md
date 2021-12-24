@@ -61,7 +61,7 @@ after login
 
 ## Localization
 
-If you need localization create folder localization in a root folder of application and json file `filename.json` and add it like
+If you need localization create folder localization in a root folder of application and json file `filename.json`(don't forget to add it in `pubspec.yaml`) and add it to package:
 
 ```dart
 final frontegg = Frontegg("baseUrl", "logoImage", localizationFileName: 'filename.json');
