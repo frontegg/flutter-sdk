@@ -5,6 +5,7 @@ import 'package:frontegg/auth/widget/code_input_container.dart';
 import 'package:frontegg/auth/widget/signup_button.dart';
 import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
+import 'package:frontegg/locatization.dart';
 
 class LoginWithCode extends StatefulWidget {
   final FronteggUser user;
@@ -37,13 +38,13 @@ class _LoginWithCodeState extends State<LoginWithCode> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              paddings(const Text(
-                'Sign in',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              paddings(Text(
+                tr('login'),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               )),
               SignupButton(widget.user, true),
               paddings(
-                  InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
+                  InputField('name@example.com', _controller, label: tr('email'), validateEmail: true, onChange: (_) {
                     setState(() {
                       error = null;
                     });
@@ -57,7 +58,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                     ),
                     onlyBottom: true),
               ElevatedButton(
-                child: const Text('Continue'),
+                child: Text(tr('continue')),
                 onPressed: () async {
                   email = _controller.text;
                   try {
@@ -75,20 +76,22 @@ class _LoginWithCodeState extends State<LoginWithCode> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              paddings(const Text(
-                "Check your email",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+              paddings(Text(
+                tr('check_our_email'),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               )),
-              paddings(Text('We sent you a six digit code at ${email ?? _controller.text}'), onlyBottom: true),
+              paddings(Text('${tr('we_sent_code_at')} ${email ?? _controller.text}', textAlign: TextAlign.center),
+                  onlyBottom: true),
               paddings(
-                  const Text('Enter the generated 6-digit code below', style: TextStyle(fontWeight: FontWeight.bold)),
+                  Text(tr('enter_code_below'),
+                      style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                   onlyBottom: true),
               Row(mainAxisAlignment: MainAxisAlignment.center, children: codeInputs),
               const SizedBox(height: 30),
               ElevatedButton(
                 child: loading
                     ? const CircularProgressIndicator()
-                    : const Text('Continue', style: TextStyle(fontSize: 18)),
+                    : Text(tr('continue'), style: const TextStyle(fontSize: 18)),
                 onPressed: loading
                     ? null
                     : () async {
@@ -97,7 +100,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                         });
                         try {
                           if (_controller.text.isEmpty) {
-                            error = 'Email is required';
+                            error = tr('email_required');
                             loading = false;
                           } else {
                             bool sended = await widget.user.checkCode(_controller.text);
@@ -116,9 +119,10 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text("Haven’t received it? "),
+                      Text(tr('havent_received_it')),
+                      const SizedBox(width: 5),
                       TextButton(
-                        child: const Text('Resend a new code'),
+                        child: Text(tr('resend_code')),
                         onPressed: () async {
                           sended = await widget.user.loginCode(email ?? _controller.text);
                           setState(() {});

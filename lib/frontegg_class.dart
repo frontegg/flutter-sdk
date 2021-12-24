@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/auth/screens/login/login_common.dart';
 import 'package:frontegg/auth/signup.dart';
+import 'package:frontegg/locatization.dart';
 import 'package:github_sign_in/github_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'frontegg_user.dart';
@@ -9,7 +10,7 @@ import 'frontegg_user.dart';
 class Frontegg {
   FronteggUser _user;
 
-  Frontegg(baseUrl, headerImage, {gitHubSignIn})
+  Frontegg(baseUrl, headerImage, {gitHubSignIn, localizationFileName})
       : _user = FronteggUser(
             git: GitHubSignIn(
                 clientId: gitHubSignIn['clientId'],
@@ -17,6 +18,7 @@ class Frontegg {
                 redirectUrl: 'https://frontegg.com/')) {
     url = baseUrl;
     logo = headerImage;
+    localTranslations = LocalTranslations(localizationFileName);
   }
 
   Future<FronteggUser?> login(BuildContext context) async {

@@ -5,6 +5,7 @@ import 'package:frontegg/auth/screens/login/login_password.dart';
 import 'package:frontegg/auth/widget/logo.dart';
 import 'package:frontegg/auth/widget/social_buttons.dart';
 import 'package:frontegg/frontegg_user.dart';
+import 'package:frontegg/locatization.dart';
 
 import '../../../constants.dart';
 
@@ -62,11 +63,9 @@ class _LoginCommonState extends State<LoginCommon> {
       case LoginType.password:
         return LoginWithPassword(widget.user);
       case LoginType.link:
-        return const Center(
-            child: Text('Authentification with Magic Link is not available on mobile devices',
-                style: TextStyle(color: Colors.red)));
+        return Center(child: Text(tr('magic_link_error'), style: const TextStyle(color: Colors.red)));
       default:
-        return Text(error ?? 'Something went wrong');
+        return Text(error ?? tr('something_went_wrong'));
     }
   }
 }

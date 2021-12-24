@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:frontegg/auth/screens/mfa/mfa.dart';
 import 'package:frontegg/auth/social_class.dart';
 import 'package:frontegg/constants.dart';
+import 'package:frontegg/locatization.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,7 +32,7 @@ class AuthApi {
       if (e is DioError && e.response != null) {
         throw e.response!.data['errors'][0];
       }
-      throw 'Something went wrong';
+      throw tr('something_went_wrong');
     }
   }
 
@@ -45,7 +46,7 @@ class AuthApi {
       if (e is DioError && e.response != null) {
         throw e.response!.data['errors'][0];
       }
-      throw 'Something went wrong';
+      throw tr('something_went_wrong');
     }
   }
 
@@ -84,7 +85,7 @@ class AuthApi {
         throw e.response!.data['errors'][0];
       }
       print(e);
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
@@ -98,7 +99,7 @@ class AuthApi {
       if (e is DioError && e.response != null) {
         throw e.response!.data['errors'][0];
       }
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
@@ -121,14 +122,13 @@ class AuthApi {
       if (e is DioError && e.response != null) {
         throw e.response!.data['errors'][0];
       }
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
   Future<bool> mfaRecover(String code) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
-      print(code);
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? email = prefs.getString('emailForRecover');
       var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/recover',
@@ -137,11 +137,9 @@ class AuthApi {
       return true;
     } catch (e) {
       if (e is DioError && e.response != null) {
-        print(e.message);
-
         throw e.response!.data['errors'][0];
       }
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
@@ -177,7 +175,7 @@ class AuthApi {
       if (e is DioError && e.response != null) {
         throw e.response!.data['errors'][0];
       }
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
@@ -185,13 +183,11 @@ class AuthApi {
     try {
       dio.options.headers["cookie"] = cookies?[0].split(';')[0];
       dio.options.headers['content-Type'] = 'application/json';
-      print(dio.options.headers);
 
       var response = await dio.post(
         '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin',
         data: {"token": code},
       );
-      print('${response.statusCode} ${response.data} ${response.headers}');
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('accessToken', response.data['accessToken']);
@@ -201,12 +197,10 @@ class AuthApi {
       prefs.setString('refreshToken', response.data['refreshToken']);
       return await getUserInfo();
     } catch (e) {
-      print(e);
       if (e is DioError && e.response != null) {
-        print(e.response!.headers);
-        throw e.response!.data['errors'][0] ?? 'Something went wrong';
+        throw e.response!.data['errors'][0] ?? tr('something_went_wrong');
       }
-      throw 'Something went wrong';
+      throw tr('something_went_wrong');
     }
   }
 
@@ -223,7 +217,7 @@ class AuthApi {
           throw e.response!.data['errors'][0];
         }
       }
-      throw 'Something went wrong';
+      throw tr('something_went_wrong');
     }
   }
 
@@ -245,7 +239,7 @@ class AuthApi {
   //     if (e is DioError) {
   //       rethrow;
   //     }
-  //     throw 'Invalid authentication';
+  //     throw tr('invalid_authentication');
   //   }
   // }
 
@@ -271,14 +265,13 @@ class AuthApi {
         print(e.response!.data);
         rethrow;
       }
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
   Future<bool> loginGitHub(OAuthCredential creds) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
-      // https://ira-123.frontegg.com/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=91c33e0e0194b65bc83e&state=eyJ2ZW5kb3JJZCI6ImRjYmY0ZmI4LWI3NzItNGZjYi05ZWNkLTM5NjliMWQ0ZTA5NCIsInNlc3Npb25JZCI6IjQyYjBjZjVjLTVjN2QtNGJkYS1iMmFlLWZiYTI5YTc3MmQ4ZiIsImJ5dGVzIjoiY2ZCSGYyTjFfNTNIUW9PMHlJME8wY015MDFYS1g1NlBNRUswQjZCWTJKVSJ9
       print('github 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
       var response =
           await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=&state=', data: {});
@@ -292,14 +285,13 @@ class AuthApi {
         print(e.response!.data);
         rethrow;
       }
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
   Future<bool> loginFacebook(OAuthCredential creds) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
-      // https://ira-123.frontegg.com/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=91c33e0e0194b65bc83e&state=eyJ2ZW5kb3JJZCI6ImRjYmY0ZmI4LWI3NzItNGZjYi05ZWNkLTM5NjliMWQ0ZTA5NCIsInNlc3Npb25JZCI6IjQyYjBjZjVjLTVjN2QtNGJkYS1iMmFlLWZiYTI5YTc3MmQ4ZiIsImJ5dGVzIjoiY2ZCSGYyTjFfNTNIUW9PMHlJME8wY015MDFYS1g1NlBNRUswQjZCWTJKVSJ9
       print('facebook 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
       var response =
           await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?code=&state=', data: {});
@@ -313,7 +305,7 @@ class AuthApi {
         print(e.response!.data);
         rethrow;
       }
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 }

@@ -4,6 +4,7 @@ import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/auth/social_class.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/frontegg_user.dart';
+import 'package:frontegg/locatization.dart';
 
 class SocialButtons extends StatefulWidget {
   final AuthType type;
@@ -52,7 +53,8 @@ class _SocialButtonsState extends State<SocialButtons> {
         ? Column(
             children: [
               const SizedBox(height: 10),
-              Text('------OR ${widget.type == AuthType.login ? "SIGN IN" : "SIGN UP"} WITH------'),
+              Text(
+                  '------${tr('or').toUpperCase()} ${widget.type == AuthType.login ? tr('login').toUpperCase() : tr('signup').toUpperCase()} ${tr('with').toUpperCase()}------'),
               const SizedBox(height: 10),
               ...socials!.map((e) => e.active ?? false
                   ? SizedBox(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontegg/locatization.dart';
 
 class InputField extends StatefulWidget {
   final String hint;
@@ -30,10 +31,10 @@ class _InputFieldState extends State<InputField> {
         r"{0,253}[a-zA-Z0-9])?)*$";
     RegExp regex = RegExp(pattern);
     if (value != null && value.isEmpty) {
-      return 'Required';
+      return tr('required');
     } else {
       if (value != null && !regex.hasMatch(value)) {
-        return 'Must be a valid email';
+        return tr('must_be_a_valid_email');
       } else {
         return null;
       }
@@ -42,7 +43,7 @@ class _InputFieldState extends State<InputField> {
 
   String? validateNotEmpty(String? value) {
     if (value != null && value.isEmpty) {
-      return 'Required';
+      return tr('required');
     } else {
       return null;
     }

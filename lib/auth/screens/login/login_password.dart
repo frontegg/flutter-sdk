@@ -5,6 +5,7 @@ import 'package:frontegg/auth/screens/forgot_password.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
 import 'package:frontegg/auth/widget/signup_button.dart';
 import 'package:frontegg/frontegg_user.dart';
+import 'package:frontegg/locatization.dart';
 
 class LoginWithPassword extends StatefulWidget {
   final FronteggUser user;
@@ -30,22 +31,22 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        paddings(const Text(
-          'Sign in',
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+        paddings(Text(
+          tr('login'),
+          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         )),
         SignupButton(widget.user, true),
         paddings(
-            InputField('name@example.com', _controller, label: "Email", validateEmail: true, onChange: (_) {
+            InputField('name@example.com', _controller, label: tr('email'), validateEmail: true, onChange: (_) {
               setState(() {
                 error = null;
               });
             }),
             onlyBottom: true),
-        paddings(InputField('Enter Your Password', _controllerPassword, label: "Password", showIcon: true),
+        paddings(InputField(tr('enter_your_password'), _controllerPassword, label: tr('password'), showIcon: true),
             onlyBottom: true),
         TextButton(
-          child: const Text('Forgot Password?'),
+          child: Text(tr('forgot_password')),
           onPressed: () {
             Navigator.push(
               context,
@@ -61,7 +62,7 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
               ),
               onlyBottom: true),
         ElevatedButton(
-          child: loading ? const CircularProgressIndicator() : const Text('Login'),
+          child: loading ? const CircularProgressIndicator() : Text(tr('login')),
           onPressed: loading
               ? null
               : () async {
@@ -70,7 +71,7 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
                   });
                   try {
                     if (_controller.text.isEmpty || _controllerPassword.text.isEmpty) {
-                      error = 'Email and password are required';
+                      error = tr('email_and_password_are_required');
                       loading = false;
                     } else {
                       bool sended =
