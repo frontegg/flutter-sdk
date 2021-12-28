@@ -43,8 +43,7 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
               });
             }),
             onlyBottom: true),
-        paddings(InputField(tr('enter_your_password'), _controllerPassword, label: tr('password'), showIcon: true),
-            onlyBottom: true),
+        InputField(tr('enter_your_password'), _controllerPassword, label: tr('password'), showIcon: true),
         TextButton(
           child: Text(tr('forgot_password')),
           onPressed: () {

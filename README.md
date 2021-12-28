@@ -61,7 +61,7 @@ after login
 
 ## Localization
 
-If you need localization create folder localization in a root folder of application and json file `filename.json`(don't forget to add it in `pubspec.yaml`) and add it to package:
+If you need localization create folder localization in a root folder of application and json file `filename.json`(don't forget to add it in `pubspec.yaml`) and add it while initialization like:
 
 ```dart
 final frontegg = Frontegg("baseUrl", "logoImage", localizationFileName: 'filename.json');
@@ -259,15 +259,22 @@ Configure your app by setting a callbackUrl, this can be any url.
 
 Once registered, you’ll be given a OAuth token and OAuth secret.
 
-Create Frontegg like
+Initialize Frontegg like
 
 ```dart
  final frontegg = Frontegg("baseUrl", "logoImage",
-      gitHubSignIn:gitHubSignIn: {"clientId": "your-client-id", "clientSecret": "your-client-secret"});
+      gitHubSignIn: {"clientId": "your-client-id", "clientSecret": "your-client-secret"});
 ```
 
 ## Microsoft
 
-https://pub.dev/packages/aad_oauth
+For using this library you have to create an azure app at the [Azure App registration portal](https://apps.dev.microsoft.com/). Use native app as platform type (with callback URL: https://login.live.com/oauth20_desktop.srf).
 
-need to run with --no-sound-null-safety flag
+Initialize Frontegg like
+
+```dart
+ final frontegg = Frontegg("baseUrl", "logoImage",
+      microsoftConfig: {"tenant": "your-tenant-id", "clientId": "your-application(client)-id"});
+```
+
+<!-- need to run with --no-sound-null-safety flag -->

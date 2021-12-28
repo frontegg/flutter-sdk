@@ -1,3 +1,4 @@
+import 'package:aad_oauth/model/config.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/auth/screens/login/login_common.dart';
@@ -10,12 +11,21 @@ import 'frontegg_user.dart';
 class Frontegg {
   FronteggUser _user;
 
-  Frontegg(baseUrl, headerImage, {gitHubSignIn, localizationFileName})
+  Frontegg(baseUrl, headerImage, {gitHubSignIn, localizationFileName, microsoftConfig})
       : _user = FronteggUser(
-            git: GitHubSignIn(
-                clientId: gitHubSignIn['clientId'],
-                clientSecret: gitHubSignIn['clientSecret'],
-                redirectUrl: 'https://frontegg.com/')) {
+            git: gitHubSignIn != null
+                ? GitHubSignIn(
+                    clientId: gitHubSignIn['clientId'],
+                    clientSecret: gitHubSignIn['clientSecret'],
+                    redirectUrl: 'https://frontegg.com/')
+                : null,
+            microsoft: microsoftConfig != null
+                ? Config(
+                    tenant: microsoftConfig['tenant'],
+                    clientId: microsoftConfig['clientId'],
+                    scope: "openid profile offline_access",
+                    redirectUri: "msauth.com.example.testApp://auth")
+                : null) {
     url = baseUrl;
     logo = headerImage;
     localTranslations = LocalTranslations(localizationFileName);

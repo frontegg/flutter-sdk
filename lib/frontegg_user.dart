@@ -33,8 +33,11 @@ class FronteggUser {
 
   GitHubSignIn? _gitHubSignIn;
 
-  FronteggUser({GitHubSignIn? git}) {
+  FronteggUser({GitHubSignIn? git, Config? microsoft}) {
     _gitHubSignIn = git;
+    if (microsoft != null) {
+      _microsoftAuth = AadOAuth(microsoft);
+    }
   }
 
   Future<bool> loginPassword(String email, String password, BuildContext context) async {
@@ -201,11 +204,6 @@ class FronteggUser {
 
   Future<bool> loginOrSignUpMicrosoft(AuthType type) async {
     try {
-      _microsoftAuth = AadOAuth(Config(
-          tenant: "f8cdef31-a31e-4b4a-93e4-5f571e91255a",
-          clientId: "affcc54c-4ad9-4599-8da3-036a489686e5",
-          scope: "openid profile offline_access",
-          redirectUri: "msauth.com.example.testApp://auth"));
       await _microsoftAuth!.login();
       String? accessToken = await _microsoftAuth!.getAccessToken();
       print(accessToken);
