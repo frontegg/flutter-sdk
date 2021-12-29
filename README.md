@@ -59,6 +59,16 @@ after login
     user?.email, user?.name, user?.phoneNumber
 ```
 
+accessToken is saved in shared preferences, getting:
+
+```dart
+import 'package:shared_preferences/shared_preferences.dart';
+
+
+final SharedPreferences prefs = await SharedPreferences.getInstance();
+final String? token = prefs.getString('accessToken');
+```
+
 ## Localization
 
 If you need localization create folder localization in a root folder of application and json file `filename.json`(don't forget to add it in `pubspec.yaml`) and add it while initialization like:
