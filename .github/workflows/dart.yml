@@ -25,10 +25,10 @@ jobs:
           channel: 'stable'
 
       - run: flutter pub get
-      - run: flutter analyze .
       - run: cd example 
-      - run: flutter build apk
-      - run: flutter analyze .
+      - run: flutter build apk\
+#       - run: flutter analyze .
+
 
       # Consider passing '--fatal-infos' for slightly stricter analysis.
 #       - name: Analyze project source
