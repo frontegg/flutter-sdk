@@ -7,9 +7,9 @@ name: Dart
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -22,18 +22,13 @@ jobs:
       # You can specify other versions if desired, see documentation here:
       - uses: subosito/flutter-action@v1
         with:
-          channel: 'stable'
-          
-      - run: flutter clean
+          channel: "stable"
+
       - run: flutter pub get
-      - run: cd example 
-      - run: flutter build apk
-      - run: flutter clean
-      - run: flutter build ios --release
+      - run: sh ./scripts/run_example.sh
 #       - run: flutter analyze .
 
-
-      # Consider passing '--fatal-infos' for slightly stricter analysis.
+# Consider passing '--fatal-infos' for slightly stricter analysis.
 #       - name: Analyze project source
 #         run: dart analyze
 
