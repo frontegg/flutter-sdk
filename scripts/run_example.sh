@@ -7,7 +7,7 @@ for dir in */ ; do
     flutter clean
     flutter build apk --no-sound-null-safety
     flutter clean
-    flutter build ios --no-sound-null-safety
+    flutter build ios --release --no-codesign --no-sound-null-safety
     cd ..
     pwd
     if [ "$#" -gt 0 ]; then shift; fi
