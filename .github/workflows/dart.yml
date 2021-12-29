@@ -24,7 +24,6 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Install dependencies
       - run: flutter pub get
       - run: flutter analyze .
       - run: cd android 
