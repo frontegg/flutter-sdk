@@ -23,10 +23,13 @@ jobs:
       - uses: subosito/flutter-action@v1
         with:
           channel: 'stable'
-
+          
+      - run: flutter clean
       - run: flutter pub get
       - run: cd example 
-      - run: flutter build apk\
+      - run: flutter build apk
+      - run: flutter clean
+      - run: flutter build ios --release
 #       - run: flutter analyze .
 
 
