@@ -7,6 +7,9 @@ class Logo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (logo.isEmpty) {
+      return Container();
+    }
     if (logo.endsWith('.svg')) {
       return SvgPicture.network(logo);
     }

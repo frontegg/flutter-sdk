@@ -18,11 +18,13 @@ dependencies:
   shared_preferences: ^2.0.11
   flutter_facebook_auth: ^3.5.7
   aad_oauth: ^0.3.0
+  mockito: ^5.0.17
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0
+  build_runner: ^2.1.7
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
