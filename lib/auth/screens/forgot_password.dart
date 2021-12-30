@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
 import 'package:frontegg/auth/widget/logo.dart';
 import 'package:frontegg/frontegg_user.dart';

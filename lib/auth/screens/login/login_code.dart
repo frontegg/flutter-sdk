@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/widgets.dart';
 import 'package:frontegg/auth/widget/code_input_container.dart';
 import 'package:frontegg/auth/widget/signup_button.dart';
 import 'package:frontegg/frontegg_user.dart';
