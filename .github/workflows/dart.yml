@@ -26,8 +26,8 @@ jobs:
 
       - run: flutter pub get
       - run: sh ./scripts/run_example.sh
-#       - run: flutter analyze .
-
+      - run: flutter analyze .
+      - run: flutter test
 # Consider passing '--fatal-infos' for slightly stricter analysis.
 #       - name: Analyze project source
 #         run: dart analyze

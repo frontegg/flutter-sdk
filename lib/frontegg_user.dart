@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/constants.dart';
+import 'package:frontegg/locatization.dart';
 import 'package:github_sign_in/github_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -12,21 +13,21 @@ class FronteggUser {
   String? email;
   String? name;
   String? profilePictureUrl;
-  bool? _activatedForTenant;
-  DateTime? _createdAt;
-  String? _id;
-  bool? _isLocked;
-  DateTime? _lastLogin;
-  dynamic _metadata;
-  bool? _mfaEnrolled;
-  dynamic _permissions;
+  bool? activatedForTenant;
+  DateTime? createdAt;
+  String? id;
+  bool? isLocked;
+  DateTime? lastLogin;
+  dynamic metadata;
+  bool? mfaEnrolled;
+  // dynamic _permissions;
   String? phoneNumber;
-  String? _provider;
-  dynamic _roles;
-  String? _sub;
-  String? _tenantId;
-  dynamic _tenantIds;
-  dynamic _tenants;
+  // String? _provider;
+  // dynamic _roles;
+  // String? _sub;
+  String? tenantId;
+  // dynamic _tenantIds;
+  // dynamic _tenants;
   bool? verified;
   bool isAuthorized = false;
   final AuthApi _api = AuthApi();
@@ -50,7 +51,7 @@ class FronteggUser {
       setUserInfo(res);
       return true;
     } catch (e) {
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
@@ -58,7 +59,7 @@ class FronteggUser {
     try {
       return await _api.forgotPassword(email);
     } catch (e) {
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
@@ -66,22 +67,22 @@ class FronteggUser {
     try {
       name = data['name'];
       profilePictureUrl = data['profilePictureUrl'];
-      _activatedForTenant = data['activatedForTenant'];
-      _createdAt = DateTime.parse(data['createdAt']);
+      activatedForTenant = data['activatedForTenant'];
+      createdAt = DateTime.parse(data['createdAt']);
       email = data['email'];
-      _id = data['id'];
-      _isLocked = data['isLocked'];
-      _lastLogin = DateTime.parse(data['lastLogin']);
-      _metadata = data['metadata'];
-      _mfaEnrolled = data['mfaEnrolled'];
-      _permissions = data['permissions'];
+      id = data['id'];
+      isLocked = data['isLocked'];
+      lastLogin = DateTime.parse(data['lastLogin']);
+      metadata = data['metadata'];
+      mfaEnrolled = data['mfaEnrolled'];
+      // _permissions = data['permissions'];
       phoneNumber = data['phoneNumber'];
-      _provider = data['provider'];
-      _roles = data['roles'];
-      _sub = data['sub'];
-      _tenantId = data['tenantId'];
-      _tenantIds = data['tenantIds'];
-      _tenants = data['tenants'];
+      // _provider = data['provider'];
+      // _roles = data['roles'];
+      // _sub = data['sub'];
+      tenantId = data['tenantId'];
+      // _tenantIds = data['tenantIds'];
+      // _tenants = data['tenants'];
       verified = data['verified'];
       isAuthorized = true;
     } catch (e) {
@@ -94,7 +95,7 @@ class FronteggUser {
       this.email = email;
       return await _api.loginCode(email);
     } catch (e) {
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
@@ -112,7 +113,7 @@ class FronteggUser {
       this.email = email;
       return await _api.signup(email, name, company);
     } catch (e) {
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     }
   }
 
@@ -129,11 +130,8 @@ class FronteggUser {
       GoogleSignInAccount? account = await _googleSignIn!.signIn();
       if (account != null) {
         GoogleSignInAuthentication auth = await account.authentication;
-        // print(account.id);
-        // print(auth.serverAuthCode);
-        // print(auth.accessToken);
-        print(
-            'google ${account.id}\n ====> ${account.serverAuthCode}\n ===> ${account.displayName}\n ===> ${account.photoUrl}');
+        // print(
+        //     'google ${account.id}\n ====> ${account.serverAuthCode}\n ===> ${account.displayName}\n ===> ${account.photoUrl}');
         if (type == AuthType.login) {
           return await _api.loginGoogle(auth);
         } else {
@@ -141,9 +139,8 @@ class FronteggUser {
         }
       }
 
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -156,7 +153,7 @@ class FronteggUser {
           case GitHubSignInResultStatus.ok:
             if (type == AuthType.login) {
               final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token ?? '');
-              print('github 1 ${result.token} ');
+              // print('github 1 ${result.token} ');
               return await _api.loginGitHub(githubAuthCredential);
             } else {
               return true;
@@ -164,16 +161,12 @@ class FronteggUser {
 
           case GitHubSignInResultStatus.cancelled:
           case GitHubSignInResultStatus.failed:
-            print(result.errorMessage);
-            break;
+            throw result.errorMessage;
         }
       } else {
         throw 'Set GitHubSignIn';
       }
-
-      throw 'Invalid authentication';
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -186,16 +179,15 @@ class FronteggUser {
       if (_facebookLoginResult!.accessToken != null) {
         final OAuthCredential facebookAuthCredential =
             FacebookAuthProvider.credential(_facebookLoginResult!.accessToken!.token);
-        print('facebook 1 ${_facebookLoginResult!.accessToken!.token}');
+        // print('facebook 1 ${_facebookLoginResult!.accessToken!.token}');
         if (type == AuthType.login) {
           return await _api.loginFacebook(facebookAuthCredential);
         } else {
           return true;
         }
       }
-      throw 'Invalid authentication';
+      throw tr('invalid_authentication');
     } catch (e) {
-      print(e);
       rethrow;
     }
   }
@@ -206,15 +198,17 @@ class FronteggUser {
     try {
       await _microsoftAuth!.login();
       String? accessToken = await _microsoftAuth!.getAccessToken();
-      print(accessToken);
+      // print(accessToken);
+      if (accessToken == null) {
+        throw tr('invalid_authentication');
+      }
 
       if (type == AuthType.login) {
-        return true;
+        return await _api.loginMicrosoft(accessToken);
       } else {
         return true;
       }
     } catch (e) {
-      print(e);
       rethrow;
     }
   }

@@ -58,6 +58,7 @@ class AuthApi {
 
       final data = response.data;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('emailForRecover', email);
       if (data['mfaRequired'] != null && data['mfaRequired']) {
         prefs.setString('mfaToken', data['mfaToken']);
         final verified = await Navigator.push(
@@ -76,7 +77,6 @@ class AuthApi {
         prefs.setString('expires', data['expires']);
         prefs.setInt('expiresIn', data['expiresIn']);
         prefs.setString('refreshToken', data['refreshToken']);
-        prefs.setString('emailForRecover', email);
 
         return await getUserInfo();
       }
@@ -84,7 +84,6 @@ class AuthApi {
       if (e is DioError && e.response != null) {
         throw e.response!.data['errors'][0];
       }
-      print(e);
       throw tr('invalid_authentication');
     }
   }
@@ -92,8 +91,8 @@ class AuthApi {
   Future<bool> forgotPassword(String email) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
-      var response =
-          await dio.post('$url/frontegg/identity/resources/users/v1/passwords/reset', data: {"email": email});
+
+      await dio.post('$url/frontegg/identity/resources/users/v1/passwords/reset', data: {"email": email});
       return true;
     } catch (e) {
       if (e is DioError && e.response != null) {
@@ -108,7 +107,6 @@ class AuthApi {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? token = prefs.getString('mfaToken');
       dio.options.headers['content-Type'] = 'application/json';
-      print('$token $code');
       var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/verify',
           data: {"mfaToken": token, "value": code, "rememberDevice": rememberDevice});
 
@@ -131,7 +129,7 @@ class AuthApi {
       dio.options.headers['content-Type'] = 'application/json';
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? email = prefs.getString('emailForRecover');
-      var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/recover',
+      await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/recover',
           data: {"recoveryCode": code, 'email': email});
 
       return true;
@@ -213,7 +211,6 @@ class AuthApi {
     } catch (e) {
       if (e is DioError) {
         if (e.response != null) {
-          print('${e.response!.statusCode} ${e} ${e.response!.data['errors'][0]}');
           throw e.response!.data['errors'][0];
         }
       }
@@ -246,23 +243,19 @@ class AuthApi {
   Future<bool> loginGoogle(GoogleSignInAuthentication user) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
-      // var response = await dio.post(
-      //     '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=4%2F0AX4XfWiVzOVvVAjU3FK-zeG7iy18ne-cbZPTK-n2e95wI7jH2XtZulfV4w27F9NLE4AHTA&state=eyJ2ZW5kb3JJZCI6ImRjYmY0ZmI4LWI3NzItNGZjYi05ZWNkLTM5NjliMWQ0ZTA5NCIsInNlc3Npb25JZCI6ImVlNzVjZGE1LTJjMmMtNGY4Yi1hODM5LTc3Y2YwZjBhZjg0NCIsImJ5dGVzIjoicnl1UW10bzlXLWdPODNMUTI5MmFKVW1Cd2RtSnFfZFl1WTBOUjBRbUpmUSJ9',
-      //     data: {});
-
-      print('google 2 ${user.hashCode}\n!!! =>${user.accessToken}\n${user.idToken}');
+      // print('google 2 ${user.hashCode}\n!!! =>${user.accessToken}\n${user.idToken}');
 
       var response = await dio.post(
           '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=${user.hashCode}=${user.accessToken}',
           data: {});
 
-      final data = response.data;
-      print(response.statusCode);
+      // final data = response.data;
+      // print(response.statusCode);
       return response.statusCode == 200;
     } catch (e) {
-      print(e);
+      // print(e);
       if (e is DioError) {
-        print(e.response!.data);
+        // print(e.response!.data);
         rethrow;
       }
       throw tr('invalid_authentication');
@@ -272,17 +265,17 @@ class AuthApi {
   Future<bool> loginGitHub(OAuthCredential creds) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
-      print('github 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
+      // print('github 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
       var response =
           await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=&state=', data: {});
 
-      final data = response.data;
-      print(response.statusCode);
+      // final data = response.data;
+      // print(response.statusCode);
       return response.statusCode == 200;
     } catch (e) {
-      print(e);
+      // print(e);
       if (e is DioError) {
-        print(e.response!.data);
+        // print(e.response!.data);
         rethrow;
       }
       throw tr('invalid_authentication');
@@ -292,17 +285,34 @@ class AuthApi {
   Future<bool> loginFacebook(OAuthCredential creds) async {
     try {
       dio.options.headers['content-Type'] = 'application/json';
-      print('facebook 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
+      // print('facebook 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
       var response =
           await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?code=&state=', data: {});
 
-      final data = response.data;
-      print(response.statusCode);
+      // final data = response.data;
+      // print(response.statusCode);
       return response.statusCode == 200;
     } catch (e) {
-      print(e);
+      // print(e);
       if (e is DioError) {
-        print(e.response!.data);
+        // print(e.response!.data);
+        rethrow;
+      }
+      throw tr('invalid_authentication');
+    }
+  }
+
+  Future<bool> loginMicrosoft(String token) async {
+    try {
+      dio.options.headers['content-Type'] = 'application/json';
+      var response = await dio
+          .post('$url/frontegg/identity/resources/auth/v1/user/sso/microsoft/postlogin?code=&state=', data: {});
+
+      // final data = response.data;
+      // print(response.statusCode);
+      return response.statusCode == 200;
+    } catch (e) {
+      if (e is DioError) {
         rethrow;
       }
       throw tr('invalid_authentication');
