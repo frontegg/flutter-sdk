@@ -1,5 +1,6 @@
 import 'package:aad_oauth/aad_oauth.dart';
 import 'package:aad_oauth/model/config.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -30,7 +31,7 @@ class FronteggUser {
   // dynamic _tenants;
   bool? verified;
   bool isAuthorized = false;
-  final AuthApi _api = AuthApi();
+  final AuthApi _api = AuthApi(Dio());
 
   GitHubSignIn? _gitHubSignIn;
 

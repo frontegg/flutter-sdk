@@ -1,8 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontegg/auth/screens/login/login_code.dart';
+import 'package:frontegg/auth/screens/login/login_common.dart';
+import 'package:frontegg/auth/screens/login/login_password.dart';
+import 'package:frontegg/constants.dart';
 import 'package:frontegg/frontegg.dart';
 import 'package:frontegg/frontegg_class.dart';
-import 'package:http_mock_adapter/http_mock_adapter.dart';
+import 'package:frontegg/locatization.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 
@@ -10,67 +15,67 @@ import 'frontegg_test.mocks.dart';
 
 class MockFronteggUser extends Mock implements FronteggUser {}
 
-class DioAdapterMock extends Mock implements HttpClientAdapter {}
-
 @GenerateMocks([Dio])
 void main() {
-  // Frontegg frontegg = Frontegg('https://baseUrl', '');
-  // FronteggUser? user;
-  // MockFronteggUser mockUser = MockFronteggUser();
-  // late DioAdapter dioAdapter;
-  // late DioInterceptor dioInterceptor;
-  late Dio dio;
+  MockFronteggUser mockUser = MockFronteggUser();
   late MockDio _dioMock;
+  logo = '';
+  url = '';
 
   testWidgets('Can initialize the plugin', (WidgetTester tester) async {
     Frontegg frontegg = Frontegg('', '');
     expect(frontegg, isNotNull);
   });
+
+  Widget makeWidgetTestable(Widget child) {
+    return MaterialApp(
+      home: Material(
+        child: MediaQuery(
+            data: const MediaQueryData(), child: Directionality(textDirection: TextDirection.ltr, child: child)),
+      ),
+    );
+  }
+
   group('From Login screen', () {
     setUp(() {
-      dio = Dio();
-      // dioAdapter = DioAdapter(dio: dio);
-      // dioInterceptor = DioInterceptor(dio: dio);
       _dioMock = MockDio();
     });
-    testWidgets('Login can redirect to signup and back', (WidgetTester tester) async {
-      const path = 'https://baseUrl/frontegg/identity/resources/configurations/v1/public';
+    testWidgets(' password displays correct class', (WidgetTester tester) async {
+      final path = '$url/frontegg/identity/resources/configurations/v1/public';
 
-      // dioAdapter
-      //   ..onGet(path, (server) {
-      //     print('!!!!!');
-      //     server.reply(200, {"authStrategy": "EmailAndPassword"});
-      //   })
-      //   ..onPost(path, (server) => server.reply(200, {'message': 'success'}));
+      when(_dioMock.options).thenReturn(BaseOptions());
+      when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
+          requestOptions: RequestOptions(path: path, method: "GET"),
+          statusCode: 200,
+          data: {"authStrategy": "EmailAndPassword"})));
 
-      // dioInterceptor
-      //   ..onGet(
-      //     path,
-      //     (server) {
-      //       print('!!!!!');
-      //       server.reply(200, {"authStrategy": "EmailAndPassword"});
-      //     },
-      //     headers: {'Content-Type': 'application/json; charset=utf-8'},
-      //   )
-      //   ..onPost(path, (server) => server.reply(200, {'message': 'success'}));
-      // print('@@@@@@@@@@@@@');
+      await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+      await tester.pumpAndSettle();
+      expect(find.byType(LoginWithPassword), findsOneWidget);
+    });
+    testWidgets(' code displays correct class', (WidgetTester tester) async {
+      final path = '$url/frontegg/identity/resources/configurations/v1/public';
 
-      // when(_dioMock.options).thenReturn(BaseOptions(headers: {}));
-      when(_dioMock.get(path)).thenAnswer((_) {
-        print('!!!!!!');
-        return Future.value(Response(
-            requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {'message': 'Success'}));
-      });
-      print('@@@@@@@@@@@@@');
+      when(_dioMock.options).thenReturn(BaseOptions());
+      when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
+          requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {"authStrategy": "Code"})));
 
-      final response = await _dioMock.get(path);
-      print(response.data);
-      expect(response.statusCode, 200);
+      await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+      await tester.pumpAndSettle();
+      expect(find.byType(LoginWithCode), findsOneWidget);
+    });
+    testWidgets(' link sign in button', (WidgetTester tester) async {
+      final path = '$url/frontegg/identity/resources/configurations/v1/public';
 
-      // await tester.pumpWidget(LoginCommon(mockUser));
-      // print('@@@@@@@@@@@@@');
+      when(_dioMock.options).thenReturn(BaseOptions());
+      when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
+          requestOptions: RequestOptions(path: path, method: "GET"),
+          statusCode: 200,
+          data: {"authStrategy": "MagicLink"})));
 
-      expect(find.text('Sign in'), findsWidgets);
+      await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+      await tester.pumpAndSettle();
+      expect(find.text(tr('magic_link_error')), findsOneWidget);
     });
   });
 

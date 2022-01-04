@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/auth/widget/input_field.dart';
@@ -14,7 +15,7 @@ class RecoverMFA extends StatefulWidget {
 class _RecoverMFAState extends State<RecoverMFA> {
   bool loading = false;
   String? error;
-  final AuthApi _api = AuthApi();
+  final AuthApi _api = AuthApi(Dio());
   final TextEditingController _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {

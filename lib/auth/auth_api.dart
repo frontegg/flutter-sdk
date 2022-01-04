@@ -9,14 +9,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApi {
-  Dio dio = Dio();
+  AuthApi(this._dio);
+  final Dio _dio;
   List<String>? cookies;
 
   Future<LoginType> checkType() async {
     try {
-      print('jbkjbj');
-      dio.options.headers['content-Type'] = 'application/json';
-      var response = await dio.get('$url/frontegg/identity/resources/configurations/v1/public');
+      _dio.options.headers['content-Type'] = 'application/json';
+      var response = await _dio.get('$url/frontegg/identity/resources/configurations/v1/public');
 
       String data = response.data['authStrategy'];
       switch (data) {
@@ -39,8 +39,8 @@ class AuthApi {
 
   Future<List<Social>> checkSocials() async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
-      var response = await dio.get('$url/frontegg/identity/resources/sso/v2');
+      _dio.options.headers['content-Type'] = 'application/json';
+      var response = await _dio.get('$url/frontegg/identity/resources/sso/v2');
       final List<Social> res = response.data.map<Social>((e) => Social.fromJson(e)).toList();
       return res;
     } catch (e) {
@@ -53,9 +53,9 @@ class AuthApi {
 
   Future<dynamic> loginPassword(String email, String password, BuildContext context) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
-      var response =
-          await dio.post('$url/frontegg/identity/resources/auth/v1/user', data: {"email": email, "password": password});
+      _dio.options.headers['content-Type'] = 'application/json';
+      var response = await _dio
+          .post('$url/frontegg/identity/resources/auth/v1/user', data: {"email": email, "password": password});
 
       final data = response.data;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -91,9 +91,9 @@ class AuthApi {
 
   Future<bool> forgotPassword(String email) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
+      _dio.options.headers['content-Type'] = 'application/json';
 
-      await dio.post('$url/frontegg/identity/resources/users/v1/passwords/reset', data: {"email": email});
+      await _dio.post('$url/frontegg/identity/resources/users/v1/passwords/reset', data: {"email": email});
       return true;
     } catch (e) {
       if (e is DioError && e.response != null) {
@@ -107,8 +107,8 @@ class AuthApi {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? token = prefs.getString('mfaToken');
-      dio.options.headers['content-Type'] = 'application/json';
-      var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/verify',
+      _dio.options.headers['content-Type'] = 'application/json';
+      var response = await _dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/verify',
           data: {"mfaToken": token, "value": code, "rememberDevice": rememberDevice});
 
       final data = response.data;
@@ -127,10 +127,10 @@ class AuthApi {
 
   Future<bool> mfaRecover(String code) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
+      _dio.options.headers['content-Type'] = 'application/json';
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? email = prefs.getString('emailForRecover');
-      await dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/recover',
+      await _dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/recover',
           data: {"recoveryCode": code, 'email': email});
 
       return true;
@@ -146,9 +146,9 @@ class AuthApi {
     try {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String token = prefs.getString('accessToken') ?? '';
-      dio.options.headers['content-Type'] = 'application/json';
-      dio.options.headers["Authorization"] = "Bearer " + token;
-      var response = await dio.get('$url/frontegg/identity/resources/users/v2/me');
+      _dio.options.headers['content-Type'] = 'application/json';
+      _dio.options.headers["Authorization"] = "Bearer " + token;
+      var response = await _dio.get('$url/frontegg/identity/resources/users/v2/me');
       if (response.statusCode == 200) {
         return response.data;
       }
@@ -164,9 +164,9 @@ class AuthApi {
 
   Future<bool> loginCode(String email) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
-      var response =
-          await dio.post('$url/frontegg/identity/resources/auth/v1/passwordless/code/prelogin', data: {"email": email});
+      _dio.options.headers['content-Type'] = 'application/json';
+      var response = await _dio
+          .post('$url/frontegg/identity/resources/auth/v1/passwordless/code/prelogin', data: {"email": email});
       cookies = response.headers.map['set-cookie'];
 
       return true;
@@ -180,10 +180,10 @@ class AuthApi {
 
   Future<dynamic> checkCode(String code) async {
     try {
-      dio.options.headers["cookie"] = cookies?[0].split(';')[0];
-      dio.options.headers['content-Type'] = 'application/json';
+      _dio.options.headers["cookie"] = cookies?[0].split(';')[0];
+      _dio.options.headers['content-Type'] = 'application/json';
 
-      var response = await dio.post(
+      var response = await _dio.post(
         '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin',
         data: {"token": code},
       );
@@ -205,8 +205,8 @@ class AuthApi {
 
   Future<bool> signup(String email, String name, String company) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
-      var response = await dio.post('$url/frontegg/identity/resources/users/v1/signUp',
+      _dio.options.headers['content-Type'] = 'application/json';
+      var response = await _dio.post('$url/frontegg/identity/resources/users/v1/signUp',
           data: {"email": email, "name": name, "companyName": company});
       return response.statusCode == 201;
     } catch (e) {
@@ -221,8 +221,8 @@ class AuthApi {
 
   // Future<dynamic> refresh() async {
   //   try {
-  //     dio.options.headers['content-Type'] = 'application/json';
-  //     var response = await dio.post('$url/frontegg/identity/resources/auth/v1/user/token/refresh');
+  //     _dio.options.headers['content-Type'] = 'application/json';
+  //     var response = await _dio.post('$url/frontegg/identity/resources/auth/v1/user/token/refresh');
 
   //     final data = response.data;
   //     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -243,10 +243,10 @@ class AuthApi {
 
   Future<bool> loginGoogle(GoogleSignInAuthentication user) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
+      _dio.options.headers['content-Type'] = 'application/json';
       // print('google 2 ${user.hashCode}\n!!! =>${user.accessToken}\n${user.idToken}');
 
-      var response = await dio.post(
+      var response = await _dio.post(
           '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=${user.hashCode}=${user.accessToken}',
           data: {});
 
@@ -265,10 +265,10 @@ class AuthApi {
 
   Future<bool> loginGitHub(OAuthCredential creds) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
+      _dio.options.headers['content-Type'] = 'application/json';
       // print('github 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
       var response =
-          await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=&state=', data: {});
+          await _dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=&state=', data: {});
 
       // final data = response.data;
       // print(response.statusCode);
@@ -285,10 +285,10 @@ class AuthApi {
 
   Future<bool> loginFacebook(OAuthCredential creds) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
+      _dio.options.headers['content-Type'] = 'application/json';
       // print('facebook 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
-      var response =
-          await dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?code=&state=', data: {});
+      var response = await _dio
+          .post('$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?code=&state=', data: {});
 
       // final data = response.data;
       // print(response.statusCode);
@@ -305,8 +305,8 @@ class AuthApi {
 
   Future<bool> loginMicrosoft(String token) async {
     try {
-      dio.options.headers['content-Type'] = 'application/json';
-      var response = await dio
+      _dio.options.headers['content-Type'] = 'application/json';
+      var response = await _dio
           .post('$url/frontegg/identity/resources/auth/v1/user/sso/microsoft/postlogin?code=&state=', data: {});
 
       // final data = response.data;

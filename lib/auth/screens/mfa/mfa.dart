@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/auth/screens/login/login_code.dart';
@@ -16,7 +17,7 @@ class TwoFactor extends StatefulWidget {
 class _TwoFactorState extends State<TwoFactor> {
   String? error;
   bool loading = false;
-  final AuthApi _api = AuthApi();
+  final AuthApi _api = AuthApi(Dio());
   bool isChecked = false;
   List<InputCode> codeDigits = List.generate(6, (index) => InputCode(FocusNode(), TextEditingController()));
 

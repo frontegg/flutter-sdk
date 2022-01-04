@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/screens/login/login_common.dart';
 import 'package:frontegg/auth/signup.dart';
@@ -27,7 +28,7 @@ class SignupButton extends StatelessWidget {
                     builder: (context) => Scaffold(
                           body: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(child: signup ? Signup(user) : LoginCommon(user)),
+                            child: Center(child: signup ? Signup(user) : LoginCommon(user, Dio())),
                           ),
                         )),
               );
