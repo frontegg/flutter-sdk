@@ -14,6 +14,7 @@ class AuthApi {
 
   Future<LoginType> checkType() async {
     try {
+      print('jbkjbj');
       dio.options.headers['content-Type'] = 'application/json';
       var response = await dio.get('$url/frontegg/identity/resources/configurations/v1/public');
 

@@ -8,7 +8,7 @@ environment:
   flutter: ">=1.17.0"
 
 dependencies:
-  dio: ^4.0.4
+  dio: ^4.0.1
   flutter:
     sdk: flutter
   flutter_svg: ^1.0.0
@@ -18,13 +18,16 @@ dependencies:
   shared_preferences: ^2.0.11
   flutter_facebook_auth: ^3.5.7
   aad_oauth: ^0.3.0
-  mockito: ^5.0.17
+  mockito: ^5.0.15
+
+  # mocktail: ^0.0.1-dev.12
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^1.0.0
   build_runner: ^2.1.7
+  http_mock_adapter: ^0.3.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
