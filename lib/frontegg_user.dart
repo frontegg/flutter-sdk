@@ -31,15 +31,16 @@ class FronteggUser {
   // dynamic _tenants;
   bool? verified;
   bool isAuthorized = false;
-  final AuthApi _api = AuthApi(Dio());
+  late AuthApi _api;
 
   GitHubSignIn? _gitHubSignIn;
 
-  FronteggUser({GitHubSignIn? git, Config? microsoft}) {
+  FronteggUser({GitHubSignIn? git, Config? microsoft, Dio? dio}) {
     _gitHubSignIn = git;
     if (microsoft != null) {
       _microsoftAuth = AadOAuth(microsoft);
     }
+    _api = AuthApi(dio ?? Dio());
   }
 
   Future<bool> loginPassword(String email, String password, BuildContext context) async {
@@ -52,7 +53,7 @@ class FronteggUser {
       setUserInfo(res);
       return true;
     } catch (e) {
-      throw tr('invalid_authentication');
+      rethrow;
     }
   }
 
@@ -65,30 +66,30 @@ class FronteggUser {
   }
 
   Future<void> setUserInfo(dynamic data) async {
-    try {
-      name = data['name'];
-      profilePictureUrl = data['profilePictureUrl'];
-      activatedForTenant = data['activatedForTenant'];
-      createdAt = DateTime.parse(data['createdAt']);
-      email = data['email'];
-      id = data['id'];
-      isLocked = data['isLocked'];
-      lastLogin = DateTime.parse(data['lastLogin']);
-      metadata = data['metadata'];
-      mfaEnrolled = data['mfaEnrolled'];
-      // _permissions = data['permissions'];
-      phoneNumber = data['phoneNumber'];
-      // _provider = data['provider'];
-      // _roles = data['roles'];
-      // _sub = data['sub'];
-      tenantId = data['tenantId'];
-      // _tenantIds = data['tenantIds'];
-      // _tenants = data['tenants'];
-      verified = data['verified'];
-      isAuthorized = true;
-    } catch (e) {
-      throw 'Loading user error';
-    }
+    // try {
+    name = data['name'];
+    profilePictureUrl = data['profilePictureUrl'];
+    activatedForTenant = data['activatedForTenant'];
+    createdAt = DateTime.parse(data['createdAt']);
+    email = data['email'];
+    id = data['id'];
+    isLocked = data['isLocked'];
+    lastLogin = DateTime.parse(data['lastLogin']);
+    metadata = data['metadata'];
+    mfaEnrolled = data['mfaEnrolled'];
+    // _permissions = data['permissions'];
+    phoneNumber = data['phoneNumber'];
+    // _provider = data['provider'];
+    // _roles = data['roles'];
+    // _sub = data['sub'];
+    tenantId = data['tenantId'];
+    // _tenantIds = data['tenantIds'];
+    // _tenants = data['tenants'];
+    verified = data['verified'];
+    isAuthorized = true;
+    // } catch (e) {
+    //   throw 'Loading user error';
+    // }
   }
 
   Future<bool> loginCode(String email) async {

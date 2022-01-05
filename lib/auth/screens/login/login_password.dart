@@ -35,13 +35,15 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
         )),
         SignupButton(widget.user, true),
         paddings(
-            InputField('name@example.com', _controller, label: tr('email'), validateEmail: true, onChange: (_) {
-              setState(() {
-                error = null;
-              });
-            }),
-            onlyBottom: true),
-        InputField(tr('enter_your_password'), _controllerPassword, label: tr('password'), showIcon: true),
+          InputField('name@example.com', _controller, label: tr('email'), validateEmail: true, onChange: (_) {
+            setState(() {
+              error = null;
+            });
+          }, key: const Key('login')),
+          onlyBottom: true,
+        ),
+        InputField(tr('enter_your_password'), _controllerPassword,
+            label: tr('password'), showIcon: true, key: const Key('pass')),
         TextButton(
           child: Text(tr('forgot_password')),
           onPressed: () {
