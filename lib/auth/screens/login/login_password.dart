@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/screens/forgot_password.dart';
-import 'package:frontegg/auth/widget/input_field.dart';
-import 'package:frontegg/auth/widget/signup_button.dart';
+import 'package:frontegg/auth/widgets/input_field.dart';
+import 'package:frontegg/auth/widgets/signup_button.dart';
 import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/locatization.dart';
 

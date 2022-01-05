@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/auth/screens/login/login_code.dart';
 import 'package:frontegg/auth/screens/mfa/recover_mfa.dart';
-import 'package:frontegg/auth/widget/code_input_container.dart';
-import 'package:frontegg/auth/widget/logo.dart';
+import 'package:frontegg/auth/widgets/code_input_container.dart';
+import 'package:frontegg/auth/widgets/logo.dart';
 import 'package:frontegg/locatization.dart';
 
 class TwoFactor extends StatefulWidget {
-  const TwoFactor({Key? key}) : super(key: key);
+  final Dio dio;
+  const TwoFactor(this.dio, {Key? key}) : super(key: key);
 
   @override
   _TwoFactorState createState() => _TwoFactorState();
@@ -17,9 +18,15 @@ class TwoFactor extends StatefulWidget {
 class _TwoFactorState extends State<TwoFactor> {
   String? error;
   bool loading = false;
-  final AuthApi _api = AuthApi(Dio());
+  late AuthApi _api;
   bool isChecked = false;
   List<InputCode> codeDigits = List.generate(6, (index) => InputCode(FocusNode(), TextEditingController()));
+
+  @override
+  void initState() {
+    _api = AuthApi(widget.dio);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +74,7 @@ class _TwoFactorState extends State<TwoFactor> {
               style: const TextStyle(color: Colors.red),
             ),
           ElevatedButton(
+            key: const Key('mfaCheckButton'),
             child: Text(tr('continue')),
             onPressed: loading
                 ? null
@@ -91,15 +99,14 @@ class _TwoFactorState extends State<TwoFactor> {
           const SizedBox(height: 30),
           Text(tr('having_trouble'), style: const TextStyle(fontWeight: FontWeight.bold)),
           TextButton(
+              key: const Key('recoverMFA'),
               child: Text(
                 tr('disable_multifactor_with_code'),
                 textAlign: TextAlign.center,
               ),
               onPressed: () async {
                 final bool? res = await Navigator.push<bool>(
-                  context,
-                  MaterialPageRoute(builder: (context) => const RecoverMFA()),
-                );
+                    context, MaterialPageRoute(builder: (context) => RecoverMFA(widget.dio)));
                 if (res != null && res == true) {
                   Navigator.pop(context);
                 }

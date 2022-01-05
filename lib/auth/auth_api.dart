@@ -60,13 +60,10 @@ class AuthApi {
       final data = response.data;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.setString('emailForRecover', email);
+
       if (data['mfaRequired'] != null && data['mfaRequired']) {
         prefs.setString('mfaToken', data['mfaToken']);
-        final verified = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const TwoFactor(),
-            ));
+        final verified = await Navigator.push(context, MaterialPageRoute(builder: (context) => TwoFactor(_dio)));
         if (verified == null) {
           return false;
         }
@@ -108,6 +105,7 @@ class AuthApi {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? token = prefs.getString('mfaToken');
       _dio.options.headers['content-Type'] = 'application/json';
+
       var response = await _dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/verify',
           data: {"mfaToken": token, "value": code, "rememberDevice": rememberDevice});
 

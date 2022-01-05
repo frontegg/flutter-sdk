@@ -1,12 +1,13 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
-import 'package:frontegg/auth/widget/input_field.dart';
-import 'package:frontegg/auth/widget/logo.dart';
+import 'package:frontegg/auth/widgets/input_field.dart';
+import 'package:frontegg/auth/widgets/logo.dart';
 import 'package:frontegg/locatization.dart';
 
 class RecoverMFA extends StatefulWidget {
-  const RecoverMFA({Key? key}) : super(key: key);
+  final Dio dio;
+  const RecoverMFA(this.dio, {Key? key}) : super(key: key);
 
   @override
   _RecoverMFAState createState() => _RecoverMFAState();
@@ -15,8 +16,15 @@ class RecoverMFA extends StatefulWidget {
 class _RecoverMFAState extends State<RecoverMFA> {
   bool loading = false;
   String? error;
-  final AuthApi _api = AuthApi(Dio());
+  late AuthApi _api;
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    _api = AuthApi(widget.dio);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,26 +35,27 @@ class _RecoverMFAState extends State<RecoverMFA> {
           children: [
             const Logo(),
             const SizedBox(height: 30),
-            Text(
-              tr('recover_MFA'),
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-            ),
+            Text(tr('recover_MFA'), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22)),
             const SizedBox(height: 30),
             Text(tr('enter_MFA_recovery_code')),
             const SizedBox(height: 10),
-            InputField('', _controller, label: tr('code')),
+            InputField('', _controller, label: tr('code'), key: const Key('recoverCode')),
             if (error != null)
               Text(
                 error ?? '',
                 style: const TextStyle(color: Colors.red),
               ),
             ElevatedButton(
+              key: const Key('mfaRecover'),
               child: Text(tr('continue')),
               onPressed: loading
                   ? null
                   : () async {
                       if (_controller.text.isEmpty) {
-                        error = tr('input_code');
+                        setState(() {
+                          error = tr('input_code');
+                          loading = false;
+                        });
                       } else {
                         setState(() {
                           loading = true;
