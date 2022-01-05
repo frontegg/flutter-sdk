@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/screens/login/login_common.dart';
-import 'package:frontegg/auth/signup.dart';
+import 'package:frontegg/auth/screens/signup.dart';
 import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/locatization.dart';
 
