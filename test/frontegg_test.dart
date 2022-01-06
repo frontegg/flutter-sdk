@@ -6,6 +6,7 @@ import 'package:frontegg/auth/screens/login/login_common.dart';
 import 'package:frontegg/auth/screens/login/login_password.dart';
 import 'package:frontegg/auth/screens/mfa/mfa.dart';
 import 'package:frontegg/auth/screens/mfa/recover_mfa.dart';
+import 'package:frontegg/auth/screens/signup.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/frontegg.dart';
 import 'package:frontegg/locatization.dart';
@@ -21,6 +22,11 @@ void main() {
   late FronteggUser mockUser;
   logo = '';
   url = '';
+  setUp(() {
+    _dioMock = MockDio();
+    when(_dioMock.options).thenReturn(BaseOptions());
+    mockUser = FronteggUser(dioForTests: _dioMock);
+  });
 
   testWidgets('Can initialize the plugin', (WidgetTester tester) async {
     Frontegg frontegg = Frontegg('', '');
@@ -37,11 +43,6 @@ void main() {
   }
 
   group('From Login screen', () {
-    setUp(() {
-      _dioMock = MockDio();
-      when(_dioMock.options).thenReturn(BaseOptions());
-      mockUser = FronteggUser(dio: _dioMock);
-    });
     group('Password', () {
       setUp(() {
         final path = '$url/frontegg/identity/resources/configurations/v1/public';
@@ -69,12 +70,12 @@ void main() {
         SharedPreferences.setMockInitialValues({});
       });
       testWidgets('displays correct class', (WidgetTester tester) async {
-        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
         await tester.pumpAndSettle();
         expect(find.byType(LoginWithPassword), findsOneWidget);
       });
       testWidgets('requres correct pass and email', (WidgetTester tester) async {
-        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
         await tester.pumpAndSettle();
         expect(find.byType(ElevatedButton), findsOneWidget);
         await tester.tap(find.byType(ElevatedButton));
@@ -86,7 +87,7 @@ void main() {
         expect(find.text(tr('must_be_a_valid_email')), findsWidgets);
       });
       testWidgets('login without mfa works correct', (WidgetTester tester) async {
-        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key("login")), "example@gmail.com");
         await tester.enterText(find.byKey(const Key("pass")), "pass");
@@ -126,7 +127,7 @@ void main() {
 
         SharedPreferences.setMockInitialValues({});
 
-        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
         await tester.pumpAndSettle();
         await tester.enterText(find.byKey(const Key("login")), "example@gmail.com");
         await tester.enterText(find.byKey(const Key("pass")), "pass");
@@ -146,7 +147,7 @@ void main() {
         final data = {"recoveryCode": '123', 'email': null};
         when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
             Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200)));
-        await tester.pumpWidget(makeWidgetTestable(TwoFactor(_dioMock)));
+        await tester.pumpWidget(makeWidgetTestable(const TwoFactor()));
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('recoverMFA')));
         await tester.pumpAndSettle();
@@ -164,6 +165,14 @@ void main() {
         expect(find.byType(TwoFactor), findsNothing);
         expect(find.byType(RecoverMFA), findsNothing);
       });
+      testWidgets('can redirect to signup', (WidgetTester tester) async {
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('loginLabel')), findsOneWidget);
+        await tester.tap(find.byKey(const Key('redirectButton')));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('signupLabel')), findsOneWidget);
+      });
     });
     group('Code', () {
       testWidgets('displays correct class', (WidgetTester tester) async {
@@ -174,7 +183,7 @@ void main() {
             statusCode: 200,
             data: {"authStrategy": "Code"})));
 
-        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
         await tester.pumpAndSettle();
         expect(find.byType(LoginWithCode), findsOneWidget);
       });
@@ -188,12 +197,26 @@ void main() {
           statusCode: 200,
           data: {"authStrategy": "MagicLink"})));
 
-      await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser, _dioMock)));
+      await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
       await tester.pumpAndSettle();
       expect(find.text(tr('magic_link_error')), findsOneWidget);
     });
   });
-
+  group('From Signup screen', () {
+    testWidgets('can redirect to login', (WidgetTester tester) async {
+      final path = '$url/frontegg/identity/resources/configurations/v1/public';
+      when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
+          requestOptions: RequestOptions(path: path, method: "GET"),
+          statusCode: 200,
+          data: {"authStrategy": "EmailAndPassword"})));
+      await tester.pumpWidget(makeWidgetTestable(Signup(mockUser)));
+      expect(find.byKey(const Key('signupLabel')), findsOneWidget);
+      expect(find.byKey(const Key('redirectButton')), findsWidgets);
+      await tester.tap(find.byKey(const Key('redirectButton')));
+      await tester.pumpAndSettle();
+      expect(find.byType(LoginCommon), findsOneWidget);
+    });
+  });
   // testWidgets('Can call logout', (WidgetTester tester) async {
   //    when(httpMock.get(Uri.parse('baseUrl/frontegg/identity/resources/configurations/v1/public')))
   //       .thenAnswer((_) async => http.Response('{"authStrategy": "EmailAndPassword"}', 200));

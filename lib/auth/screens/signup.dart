@@ -32,6 +32,7 @@ class _SignupState extends State<Signup> {
         padding: const EdgeInsets.only(top: 30, bottom: 30),
         child: Text(
           tr('signup'),
+          key: const Key('signupLabel'),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         ),
       ),

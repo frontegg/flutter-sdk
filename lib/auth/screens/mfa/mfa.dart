@@ -1,15 +1,14 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/auth/screens/login/login_code.dart';
 import 'package:frontegg/auth/screens/mfa/recover_mfa.dart';
 import 'package:frontegg/auth/widgets/code_input_container.dart';
 import 'package:frontegg/auth/widgets/logo.dart';
+import 'package:frontegg/constants.dart';
 import 'package:frontegg/locatization.dart';
 
 class TwoFactor extends StatefulWidget {
-  final Dio dio;
-  const TwoFactor(this.dio, {Key? key}) : super(key: key);
+  const TwoFactor({Key? key}) : super(key: key);
 
   @override
   _TwoFactorState createState() => _TwoFactorState();
@@ -24,7 +23,7 @@ class _TwoFactorState extends State<TwoFactor> {
 
   @override
   void initState() {
-    _api = AuthApi(widget.dio);
+    _api = AuthApi(dio);
     super.initState();
   }
 
@@ -105,8 +104,8 @@ class _TwoFactorState extends State<TwoFactor> {
                 textAlign: TextAlign.center,
               ),
               onPressed: () async {
-                final bool? res = await Navigator.push<bool>(
-                    context, MaterialPageRoute(builder: (context) => RecoverMFA(widget.dio)));
+                final bool? res =
+                    await Navigator.push<bool>(context, MaterialPageRoute(builder: (context) => const RecoverMFA()));
                 if (res != null && res == true) {
                   Navigator.pop(context);
                 }

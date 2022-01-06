@@ -63,7 +63,7 @@ class AuthApi {
 
       if (data['mfaRequired'] != null && data['mfaRequired']) {
         prefs.setString('mfaToken', data['mfaToken']);
-        final verified = await Navigator.push(context, MaterialPageRoute(builder: (context) => TwoFactor(_dio)));
+        final verified = await Navigator.push(context, MaterialPageRoute(builder: (context) => const TwoFactor()));
         if (verified == null) {
           return false;
         }

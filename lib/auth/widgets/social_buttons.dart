@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:frontegg/auth/auth_api.dart';
@@ -18,7 +17,7 @@ class SocialButtons extends StatefulWidget {
 
 class _SocialButtonsState extends State<SocialButtons> {
   List<Social>? socials;
-  final AuthApi _api = AuthApi(Dio());
+  final AuthApi _api = AuthApi(dio);
   String? socialError;
 
   checkSocials() async {

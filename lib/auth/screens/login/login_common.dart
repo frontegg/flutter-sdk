@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/auth/screens/login/login_code.dart';
@@ -12,8 +11,7 @@ import '../../../constants.dart';
 
 class LoginCommon extends StatefulWidget {
   final FronteggUser user;
-  final Dio dio;
-  const LoginCommon(this.user, this.dio, {Key? key}) : super(key: key);
+  const LoginCommon(this.user, {Key? key}) : super(key: key);
 
   @override
   _LoginCommonState createState() => _LoginCommonState();
@@ -27,7 +25,7 @@ class _LoginCommonState extends State<LoginCommon> {
 
   @override
   void initState() {
-    _api = AuthApi(widget.dio);
+    _api = AuthApi(dio);
     checkType();
     super.initState();
   }

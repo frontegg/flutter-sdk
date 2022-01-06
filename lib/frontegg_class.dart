@@ -1,5 +1,4 @@
 import 'package:aad_oauth/model/config.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/auth/screens/login/login_common.dart';
@@ -39,7 +38,7 @@ class Frontegg {
           builder: (context) => Scaffold(
                 body: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Center(child: LoginCommon(_user, Dio())),
+                  child: Center(child: LoginCommon(_user)),
                 ),
               )),
     );

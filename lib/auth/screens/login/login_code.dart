@@ -38,6 +38,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
             children: [
               paddings(Text(
                 tr('login'),
+                key: const Key('loginLabel'),
                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
               )),
               SignupButton(widget.user, true),

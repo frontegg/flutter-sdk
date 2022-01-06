@@ -1,13 +1,12 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
 import 'package:frontegg/auth/widgets/input_field.dart';
 import 'package:frontegg/auth/widgets/logo.dart';
+import 'package:frontegg/constants.dart';
 import 'package:frontegg/locatization.dart';
 
 class RecoverMFA extends StatefulWidget {
-  final Dio dio;
-  const RecoverMFA(this.dio, {Key? key}) : super(key: key);
+  const RecoverMFA({Key? key}) : super(key: key);
 
   @override
   _RecoverMFAState createState() => _RecoverMFAState();
@@ -21,7 +20,7 @@ class _RecoverMFAState extends State<RecoverMFA> {
 
   @override
   void initState() {
-    _api = AuthApi(widget.dio);
+    _api = AuthApi(dio);
     super.initState();
   }
 

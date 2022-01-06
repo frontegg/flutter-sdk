@@ -1,4 +1,3 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/screens/login/login_common.dart';
 import 'package:frontegg/auth/screens/signup.dart';
@@ -20,6 +19,7 @@ class SignupButton extends StatelessWidget {
           Text(signup ? tr('dont_have_an_account') : tr('already_have_an_account')),
           const SizedBox(width: 5),
           TextButton(
+            key: const Key('redirectButton'),
             child: Text(signup ? tr('signup') : tr('login')),
             onPressed: () {
               Navigator.pushReplacement(
@@ -28,7 +28,7 @@ class SignupButton extends StatelessWidget {
                     builder: (context) => Scaffold(
                           body: Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: Center(child: signup ? Signup(user) : LoginCommon(user, Dio())),
+                            child: Center(child: signup ? Signup(user) : LoginCommon(user)),
                           ),
                         )),
               );

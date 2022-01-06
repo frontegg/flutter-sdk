@@ -31,6 +31,7 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
       children: [
         paddings(Text(
           tr('login'),
+          key: const Key('loginLabel'),
           style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
         )),
         SignupButton(widget.user, true),
