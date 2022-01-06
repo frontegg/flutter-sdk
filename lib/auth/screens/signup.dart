@@ -39,19 +39,21 @@ class _SignupState extends State<Signup> {
     ];
     List<Widget> notSigned = [
       SignupButton(widget.user, false),
-      InputField(tr('enter_email'), _controllerEmail, label: tr('email'), validateEmail: true, onChange: (_) {
+      InputField(tr('enter_email'), _controllerEmail, label: tr('email'), key: const Key('email'), validateEmail: true,
+          onChange: (_) {
         setState(() {
           error = null;
         });
       }),
       const SizedBox(height: 10),
-      InputField(tr('enter_name'), _controllerName, label: tr('name'), onChange: (_) {
+      InputField(tr('enter_name'), _controllerName, label: tr('name'), key: const Key('name'), onChange: (_) {
         setState(() {
           error = null;
         });
       }),
       const SizedBox(height: 10),
-      InputField(tr('enter_company_name'), _controllerCompany, label: tr('company_name'), onChange: (_) {
+      InputField(tr('enter_company_name'), _controllerCompany, label: tr('company_name'), key: const Key('company'),
+          onChange: (_) {
         setState(() {
           error = null;
         });

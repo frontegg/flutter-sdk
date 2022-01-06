@@ -43,6 +43,26 @@ void main() {
   }
 
   group('From Login screen', () {
+    setUp(() {
+      final pathMe = '$url/frontegg/identity/resources/users/v2/me';
+      when(_dioMock.get(pathMe)).thenAnswer((_) async =>
+          Future.value(Response(requestOptions: RequestOptions(path: pathMe, method: "GET"), statusCode: 200, data: {
+            'activatedForTenant': true,
+            'createdAt': DateTime.now().toString(),
+            'email': "example@gmail.com",
+            'id': "id",
+            'isLocked': false,
+            'lastLogin': DateTime.now().toString(),
+            'mfaEnrolled': true,
+            'name': "name",
+            'profilePictureUrl': "",
+            'provider': "local",
+            'tenantId': "id",
+            'verified': true
+          })));
+
+      SharedPreferences.setMockInitialValues({});
+    });
     group('Password', () {
       setUp(() {
         final path = '$url/frontegg/identity/resources/configurations/v1/public';
@@ -50,24 +70,6 @@ void main() {
             requestOptions: RequestOptions(path: path, method: "GET"),
             statusCode: 200,
             data: {"authStrategy": "EmailAndPassword"})));
-        final pathMe = '$url/frontegg/identity/resources/users/v2/me';
-        when(_dioMock.get(pathMe)).thenAnswer((_) async =>
-            Future.value(Response(requestOptions: RequestOptions(path: pathMe, method: "GET"), statusCode: 200, data: {
-              'activatedForTenant': true,
-              'createdAt': DateTime.now().toString(),
-              'email': "example@gmail.com",
-              'id': "id",
-              'isLocked': false,
-              'lastLogin': DateTime.now().toString(),
-              'mfaEnrolled': true,
-              'name': "name",
-              'profilePictureUrl': "",
-              'provider': "local",
-              'tenantId': "id",
-              'verified': true
-            })));
-
-        SharedPreferences.setMockInitialValues({});
       });
       testWidgets('displays correct class', (WidgetTester tester) async {
         await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
@@ -173,23 +175,97 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.byKey(const Key('signupLabel')), findsOneWidget);
       });
+      testWidgets('reset password works correct', (WidgetTester tester) async {
+        final path = '$url/frontegg/identity/resources/users/v1/passwords/reset';
+        final data = {'email': 'example@gmail.com'};
+        when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
+            Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200)));
+
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('forgot_pass_button')), findsOneWidget);
+        await tester.tap(find.byKey(const Key('forgot_pass_button')));
+        await tester.pumpAndSettle();
+        expect(find.text(tr('enter_email_to_reset_password')), findsOneWidget);
+
+        await tester.enterText(find.byKey(const Key("reset_pass_email")), "example@gmail.com");
+        await tester.pump();
+
+        await tester.tap(find.byKey(const Key('remind_button')));
+        await tester.pumpAndSettle();
+        expect(find.text(tr('password_reset_email_has_been_sent')), findsWidgets);
+      });
     });
     group('Code', () {
-      testWidgets('displays correct class', (WidgetTester tester) async {
+      setUp(() {
         final path = '$url/frontegg/identity/resources/configurations/v1/public';
-
         when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
             requestOptions: RequestOptions(path: path, method: "GET"),
             statusCode: 200,
             data: {"authStrategy": "Code"})));
-
+        final pathPrelogin = '$url/frontegg/identity/resources/auth/v1/passwordless/code/prelogin';
+        when(_dioMock.post(pathPrelogin, data: {"email": 'example@gmail.com'})).thenAnswer((_) async => Future.value(
+            Response(requestOptions: RequestOptions(path: pathPrelogin, method: "POST"), statusCode: 200)));
+      });
+      testWidgets('displays correct class', (WidgetTester tester) async {
         await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
         await tester.pumpAndSettle();
         expect(find.byType(LoginWithCode), findsOneWidget);
       });
-    });
+      testWidgets('requres correct email', (WidgetTester tester) async {
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('send_code_button')));
+        await tester.pumpAndSettle();
+        expect(find.text(tr('email_required')), findsWidgets);
 
-    testWidgets(' link sign in button', (WidgetTester tester) async {
+        await tester.enterText(find.byKey(const Key("login")), "example");
+        await tester.pumpAndSettle();
+        expect(find.text(tr('must_be_a_valid_email')), findsWidgets);
+      });
+      testWidgets('login works correct', (WidgetTester tester) async {
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byKey(const Key("login")), "example@gmail.com");
+        await tester.pump();
+
+        await tester.tap(find.byKey(const Key('send_code_button')));
+        await tester.pumpAndSettle();
+        expect(find.text(tr('enter_code_below')), findsWidgets);
+        for (int i = 0; i < 6; i++) {
+          await tester.enterText(find.byKey(Key('input_code_$i')), "1");
+        }
+
+        final pathCode = '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin';
+        final dataCode = {"token": '111111'};
+        when(_dioMock.post(pathCode, data: dataCode)).thenAnswer((_) async => Future.value(
+                Response(requestOptions: RequestOptions(path: pathCode, method: "POST"), statusCode: 200, data: {
+              'accessToken': "token",
+              'expires': DateTime.now().toString(),
+              'expiresIn': 86400,
+              'mfaRequired': false,
+              'refreshToken': "refresh",
+              'mfaToken': 'token'
+            })));
+
+        await tester.tap(find.byKey(const Key('login_button')));
+        await tester.pumpAndSettle();
+        expect(mockUser.isAuthorized, true);
+        expect(find.byType(LoginWithCode), findsNothing);
+      });
+      testWidgets('can resend code', (WidgetTester tester) async {
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byKey(const Key("login")), "example@gmail.com");
+        await tester.pump();
+
+        await tester.tap(find.byKey(const Key('send_code_button')));
+        await tester.pumpAndSettle();
+        await tester.tap(find.byKey(const Key('resend_code_button')));
+        expect(find.text(tr('enter_code_below')), findsOneWidget);
+      });
+    });
+    testWidgets('show error on link login', (WidgetTester tester) async {
       final path = '$url/frontegg/identity/resources/configurations/v1/public';
 
       when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
@@ -216,11 +292,31 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.byType(LoginCommon), findsOneWidget);
     });
+    testWidgets('sign up works correct', (WidgetTester tester) async {
+      await tester.pumpWidget(makeWidgetTestable(Signup(mockUser)));
+      await tester.enterText(find.byKey(const Key("email")), "example@gmail.com");
+      await tester.enterText(find.byKey(const Key("name")), "name");
+      await tester.enterText(find.byKey(const Key("company")), "company");
+      await tester.pump();
+      final path = '$url/frontegg/identity/resources/users/v1/signUp';
+      final data = {"email": "example@gmail.com", "name": "name", "companyName": "company"};
+      when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
+          Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 201)));
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+      expect(find.text(tr('thanks_for_signing_up')), findsOneWidget);
+    });
+    testWidgets('validates field', (WidgetTester tester) async {
+      await tester.pumpWidget(makeWidgetTestable(Signup(mockUser)));
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+      expect(find.text(tr('data_required')), findsOneWidget);
+      await tester.enterText(find.byKey(const Key("email")), "example");
+      await tester.enterText(find.byKey(const Key("name")), "name");
+      await tester.enterText(find.byKey(const Key("company")), "company");
+      await tester.tap(find.byType(ElevatedButton));
+      await tester.pumpAndSettle();
+      expect(find.text(tr('must_be_a_valid_email')), findsOneWidget);
+    });
   });
-  // testWidgets('Can call logout', (WidgetTester tester) async {
-  //    when(httpMock.get(Uri.parse('baseUrl/frontegg/identity/resources/configurations/v1/public')))
-  //       .thenAnswer((_) async => http.Response('{"authStrategy": "EmailAndPassword"}', 200));
-  //   user = await frontegg?.logout();
-  //   expect(user, isNull);
-  // });
 }

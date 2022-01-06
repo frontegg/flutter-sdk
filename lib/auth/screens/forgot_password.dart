@@ -39,13 +39,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               textAlign: TextAlign.center,
               style: const TextStyle(color: Colors.green),
             )
-          : InputField('name@example.com', _controller, label: tr('email'), validateEmail: true, onChange: (_) {
+          : InputField('name@example.com', _controller,
+              label: tr('email'), validateEmail: true, key: const Key('reset_pass_email'), onChange: (_) {
               setState(() {
                 error = null;
               });
             }),
       const SizedBox(height: 30),
       ElevatedButton(
+        key: const Key('remind_button'),
         child: Text(tr('remind_me'), style: const TextStyle(fontSize: 18)),
         onPressed: () async {
           try {

@@ -43,7 +43,8 @@ class _LoginWithCodeState extends State<LoginWithCode> {
               )),
               SignupButton(widget.user, true),
               paddings(
-                  InputField('name@example.com', _controller, label: tr('email'), validateEmail: true, onChange: (_) {
+                  InputField('name@example.com', _controller,
+                      label: tr('email'), key: const Key("login"), validateEmail: true, onChange: (_) {
                     setState(() {
                       error = null;
                     });
@@ -58,13 +59,19 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                     onlyBottom: true),
               ElevatedButton(
                 child: Text(tr('continue')),
+                key: const Key('send_code_button'),
                 onPressed: () async {
-                  email = _controller.text;
-                  try {
-                    sended = await widget.user.loginCode(_controller.text);
-                    error = null;
-                  } catch (e) {
-                    error = e.toString();
+                  if (_controller.text.isEmpty) {
+                    error = tr('email_required');
+                    loading = false;
+                  } else {
+                    email = _controller.text;
+                    try {
+                      sended = await widget.user.loginCode(_controller.text);
+                      error = null;
+                    } catch (e) {
+                      error = e.toString();
+                    }
                   }
                   setState(() {});
                 },
@@ -88,6 +95,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
               Row(mainAxisAlignment: MainAxisAlignment.center, children: codeInputs),
               const SizedBox(height: 30),
               ElevatedButton(
+                key: const Key('login_button'),
                 child: loading
                     ? const CircularProgressIndicator()
                     : Text(tr('continue'), style: const TextStyle(fontSize: 18)),
@@ -98,19 +106,19 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                           loading = true;
                         });
                         try {
-                          if (_controller.text.isEmpty) {
-                            error = tr('email_required');
-                            loading = false;
-                          } else {
-                            bool sended = await widget.user.checkCode(_controller.text);
-                            if (sended) {
-                              Navigator.pop(context, widget.user.isAuthorized);
-                            }
+                          String value = '';
+                          for (final i in codeDigits) {
+                            value += i.controller.text[0];
+                          }
+                          bool sended = await widget.user.checkCode(value);
+                          if (sended) {
+                            Navigator.pop(context, widget.user.isAuthorized);
                           }
                         } catch (e) {
                           error = e.toString();
                           loading = false;
                         }
+                        setState(() {});
                       },
               ),
               if (error != null) Text(error!),
@@ -121,6 +129,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                       Text(tr('havent_received_it')),
                       const SizedBox(width: 5),
                       TextButton(
+                        key: const Key('resend_code_button'),
                         child: Text(tr('resend_code')),
                         onPressed: () async {
                           sended = await widget.user.loginCode(email ?? _controller.text);

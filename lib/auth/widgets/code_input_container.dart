@@ -14,6 +14,7 @@ class CodeInputContainer extends StatelessWidget {
         width: 50,
         height: 50,
         child: TextFormField(
+          key: Key('input_code_$index'),
           onTap: () {
             if (clearError != null) {
               clearError!();

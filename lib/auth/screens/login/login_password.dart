@@ -47,6 +47,7 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
             label: tr('password'), showIcon: true, key: const Key('pass')),
         TextButton(
           child: Text(tr('forgot_password')),
+          key: const Key('forgot_pass_button'),
           onPressed: () {
             Navigator.push(
               context,
