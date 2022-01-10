@@ -11,7 +11,7 @@ import 'frontegg_user.dart';
 class Frontegg {
   FronteggUser _user;
 
-  Frontegg(baseUrl, headerImage, {gitHubSignIn, localizationFileName, microsoftConfig})
+  Frontegg(baseUrl, headerImage, {gitHubSignIn, localizationFileName, microsoftConfig, dio})
       : _user = FronteggUser(
             git: gitHubSignIn != null
                 ? GitHubSignIn(
@@ -25,7 +25,8 @@ class Frontegg {
                     clientId: microsoftConfig['clientId'],
                     scope: "openid profile offline_access",
                     redirectUri: "msauth.com.example.testApp://auth")
-                : null) {
+                : null,
+            dioForTests: dio) {
     url = baseUrl;
     logo = headerImage;
     localTranslations = LocalTranslations(localizationFileName);

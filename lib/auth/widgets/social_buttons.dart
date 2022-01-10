@@ -58,6 +58,7 @@ class _SocialButtonsState extends State<SocialButtons> {
               const SizedBox(height: 10),
               ...socials!.map((e) => e.active ?? false
                   ? SizedBox(
+                      key: Key(e.type ?? 'social'),
                       width: MediaQuery.of(context).size.width * .7,
                       child: ElevatedButton.icon(
                         style: ButtonStyle(
@@ -70,7 +71,10 @@ class _SocialButtonsState extends State<SocialButtons> {
                           style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.secondary),
                         ),
                         onPressed: () async {
-                          login(e.socialType);
+                          final bool res = await login(e.socialType);
+                          if (res) {
+                            Navigator.pop(context, widget.user.isAuthorized);
+                          }
                         },
                       ),
                     )
@@ -88,17 +92,13 @@ class _SocialButtonsState extends State<SocialButtons> {
   login(SocialType? socType) {
     switch (socType) {
       case SocialType.facebook:
-        widget.user.loginOrSignUpFacebook(widget.type);
-        break;
+        return widget.user.loginOrSignUpFacebook(widget.type);
       case SocialType.github:
-        widget.user.loginOrSignUpGithub(widget.type, context);
-        break;
+        return widget.user.loginOrSignUpGithub(widget.type, context);
       case SocialType.google:
-        widget.user.loginOrSignUpGoogle(widget.type);
-        break;
+        return widget.user.loginOrSignUpGoogle(widget.type);
       case SocialType.microsoft:
-        widget.user.loginOrSignUpMicrosoft(widget.type);
-        break;
+        return widget.user.loginOrSignUpMicrosoft(widget.type);
       case SocialType.gitlab:
       case SocialType.linkedin:
       default:

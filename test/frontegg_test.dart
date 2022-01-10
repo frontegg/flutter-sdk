@@ -7,6 +7,7 @@ import 'package:frontegg/auth/screens/login/login_password.dart';
 import 'package:frontegg/auth/screens/mfa/mfa.dart';
 import 'package:frontegg/auth/screens/mfa/recover_mfa.dart';
 import 'package:frontegg/auth/screens/signup.dart';
+import 'package:frontegg/auth/widgets/social_buttons.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/frontegg.dart';
 import 'package:frontegg/locatization.dart';
@@ -63,6 +64,7 @@ void main() {
 
       SharedPreferences.setMockInitialValues({});
     });
+
     group('Password', () {
       setUp(() {
         final path = '$url/frontegg/identity/resources/configurations/v1/public';
@@ -71,11 +73,37 @@ void main() {
             statusCode: 200,
             data: {"authStrategy": "EmailAndPassword"})));
       });
+      testWidgets('displays login screen', (WidgetTester tester) async {
+        final frontegg = Frontegg("", "", dio: _dioMock);
+
+        await tester.pumpWidget(makeWidgetTestable(
+          Builder(builder: (BuildContext context) {
+            return Scaffold(
+              body: Column(
+                children: [
+                  TextButton(
+                      key: const Key('button1'),
+                      child: const Text('login'),
+                      onPressed: () async {
+                        frontegg.login(context);
+                      }),
+                ],
+              ),
+            );
+          }),
+        ));
+        expect(find.byKey(const Key('button1')), findsOneWidget);
+        await tester.tap(find.byKey(const Key('button1')));
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('loginLabel')), findsOneWidget);
+        expect(find.byType(LoginCommon), findsWidgets);
+      });
       testWidgets('displays correct class', (WidgetTester tester) async {
         await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
         await tester.pumpAndSettle();
         expect(find.byType(LoginWithPassword), findsOneWidget);
       });
+
       testWidgets('requres correct pass and email', (WidgetTester tester) async {
         await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
         await tester.pumpAndSettle();
@@ -195,6 +223,25 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text(tr('password_reset_email_has_been_sent')), findsWidgets);
       });
+      testWidgets('displays social login buttons', (WidgetTester tester) async {
+        final path = '$url/frontegg/identity/resources/sso/v2';
+        when(_dioMock.get(path)).thenAnswer((_) async =>
+            Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
+              {"type": "github", "active": true},
+              {"type": "google", "active": true},
+              {"type": "microsoft", "active": true},
+              {"type": "facebook", "active": true}
+            })));
+
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
+        await tester.pumpAndSettle();
+        expect(find.byType(SocialButtons), findsOneWidget);
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('github')), findsOneWidget);
+        expect(find.byKey(const Key('google')), findsOneWidget);
+        expect(find.byKey(const Key('microsoft')), findsOneWidget);
+        expect(find.byKey(const Key('facebook')), findsOneWidget);
+      });
     });
     group('Code', () {
       setUp(() {
@@ -279,6 +326,31 @@ void main() {
     });
   });
   group('From Signup screen', () {
+    testWidgets('displays signup screen', (WidgetTester tester) async {
+      final frontegg = Frontegg("", "", dio: _dioMock);
+
+      await tester.pumpWidget(makeWidgetTestable(
+        Builder(builder: (BuildContext context) {
+          return Scaffold(
+            body: Column(
+              children: [
+                TextButton(
+                    key: const Key('button1'),
+                    child: const Text('login'),
+                    onPressed: () async {
+                      frontegg.signup(context);
+                    }),
+              ],
+            ),
+          );
+        }),
+      ));
+      expect(find.byKey(const Key('button1')), findsOneWidget);
+      await tester.tap(find.byKey(const Key('button1')));
+      await tester.pumpAndSettle();
+      expect(find.byKey(const Key('signupLabel')), findsOneWidget);
+      expect(find.byType(Signup), findsWidgets);
+    });
     testWidgets('can redirect to login', (WidgetTester tester) async {
       final path = '$url/frontegg/identity/resources/configurations/v1/public';
       when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(

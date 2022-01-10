@@ -217,44 +217,37 @@ class AuthApi {
     }
   }
 
-  // Future<dynamic> refresh() async {
-  //   try {
-  //     _dio.options.headers['content-Type'] = 'application/json';
-  //     var response = await _dio.post('$url/frontegg/identity/resources/auth/v1/user/token/refresh');
+  Future<dynamic> refresh() async {
+    try {
+      _dio.options.headers["cookie"] = cookies?[0].split(';')[0];
+      _dio.options.headers['content-Type'] = 'application/json';
+      var response = await _dio.post('$url/frontegg/identity/resources/auth/v1/user/token/refresh');
 
-  //     final data = response.data;
-  //     final SharedPreferences prefs = await SharedPreferences.getInstance();
-  //     prefs.setString('accessToken', data['accessToken']);
-  //     prefs.setString('expires', data['expires']);
-  //     prefs.setInt('expiresIn', data['expiresIn']);
-  //     prefs.setBool('mfaRequired', data['mfaRequired']);
-  //     prefs.setString('refreshToken', data['refreshToken']);
-  //     return await getUserInfo();
-  //   } catch (e) {
-  //     print(e);
-  //     if (e is DioError) {
-  //       rethrow;
-  //     }
-  //     throw tr('invalid_authentication');
-  //   }
-  // }
+      final data = response.data;
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('accessToken', data['accessToken']);
+      prefs.setString('expires', data['expires']);
+      prefs.setInt('expiresIn', data['expiresIn']);
+      prefs.setBool('mfaRequired', data['mfaRequired']);
+      prefs.setString('refreshToken', data['refreshToken']);
+      return await getUserInfo();
+    } catch (e) {
+      if (e is DioError) {
+        rethrow;
+      }
+      throw tr('invalid_authentication');
+    }
+  }
 
   Future<bool> loginGoogle(GoogleSignInAuthentication user) async {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
-      // print('google 2 ${user.hashCode}\n!!! =>${user.accessToken}\n${user.idToken}');
-
-      var response = await _dio.post(
-          '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?code=${user.hashCode}=${user.accessToken}',
-          data: {});
-
-      // final data = response.data;
-      // print(response.statusCode);
+      var response = await _dio
+          .post('$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?access_token=${user.accessToken}');
+      cookies = response.headers.map['set-cookie'];
       return response.statusCode == 200;
     } catch (e) {
-      // print(e);
       if (e is DioError) {
-        // print(e.response!.data);
         rethrow;
       }
       throw tr('invalid_authentication');

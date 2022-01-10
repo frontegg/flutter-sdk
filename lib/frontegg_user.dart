@@ -133,10 +133,11 @@ class FronteggUser {
       GoogleSignInAccount? account = await _googleSignIn!.signIn();
       if (account != null) {
         GoogleSignInAuthentication auth = await account.authentication;
-        // print(
-        //     'google ${account.id}\n ====> ${account.serverAuthCode}\n ===> ${account.displayName}\n ===> ${account.photoUrl}');
         if (type == AuthType.login) {
-          return await _api.loginGoogle(auth);
+          final bool succeed = await _api.loginGoogle(auth);
+          if (!succeed) return false;
+          setUserInfo(await _api.refresh());
+          return true;
         } else {
           return true;
         }
