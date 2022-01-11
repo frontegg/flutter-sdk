@@ -19,6 +19,7 @@ class _SocialButtonsState extends State<SocialButtons> {
   List<Social>? socials;
   final AuthApi _api = AuthApi(dio);
   String? socialError;
+  bool loading = false;
 
   checkSocials() async {
     try {
@@ -49,44 +50,55 @@ class _SocialButtonsState extends State<SocialButtons> {
       }
     }
 
-    return oneExist
-        ? Column(
-            children: [
-              const SizedBox(height: 10),
-              Text(
-                  '------${tr('or').toUpperCase()} ${widget.type == AuthType.login ? tr('login').toUpperCase() : tr('signup').toUpperCase()} ${tr('with').toUpperCase()}------'),
-              const SizedBox(height: 10),
-              ...socials!.map((e) => e.active ?? false
-                  ? SizedBox(
-                      key: Key(e.type ?? 'social'),
-                      width: MediaQuery.of(context).size.width * .7,
-                      child: ElevatedButton.icon(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                        ),
-                        icon:
-                            SvgPicture.asset('asset/${e.type}.svg', width: 30, height: 30, semanticsLabel: 'Acme Logo'),
-                        label: Text(
-                          e.type != null ? '${e.type![0].toUpperCase()}${e.type!.substring(1)}' : '',
-                          style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.secondary),
-                        ),
-                        onPressed: () async {
-                          final bool res = await login(e.socialType);
-                          if (res) {
-                            Navigator.pop(context, widget.user.isAuthorized);
-                          }
-                        },
-                      ),
+    return loading
+        ? const Center(child: CircularProgressIndicator())
+        : oneExist
+            ? Column(
+                children: [
+                  const SizedBox(height: 10),
+                  Text(
+                      '------${tr('or').toUpperCase()} ${widget.type == AuthType.login ? tr('login').toUpperCase() : tr('signup').toUpperCase()} ${tr('with').toUpperCase()}------'),
+                  const SizedBox(height: 10),
+                  ...socials!.map((e) => e.active ?? false
+                      ? SizedBox(
+                          key: Key(e.type ?? 'social'),
+                          width: MediaQuery.of(context).size.width * .7,
+                          child: ElevatedButton.icon(
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                            ),
+                            icon: SvgPicture.asset('asset/${e.type}.svg',
+                                width: 30, height: 30, semanticsLabel: 'Acme Logo'),
+                            label: Text(
+                              e.type != null ? '${e.type![0].toUpperCase()}${e.type!.substring(1)}' : '',
+                              style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.secondary),
+                            ),
+                            onPressed: () async {
+                              try {
+                                setState(() {
+                                  loading = true;
+                                });
+                                final bool res = await login(e.socialType);
+                                if (res) {
+                                  Navigator.pop(context, widget.user.isAuthorized);
+                                }
+                              } catch (e) {
+                                loading = false;
+                                rethrow;
+                              }
+                              setState(() {});
+                            },
+                          ),
+                        )
+                      : Container()),
+                  if (socialError != null)
+                    Text(
+                      socialError!,
+                      style: const TextStyle(color: Colors.red),
                     )
-                  : Container()),
-              if (socialError != null)
-                Text(
-                  socialError!,
-                  style: const TextStyle(color: Colors.red),
-                )
-            ],
-          )
-        : Container();
+                ],
+              )
+            : Container();
   }
 
   login(SocialType? socType) {
