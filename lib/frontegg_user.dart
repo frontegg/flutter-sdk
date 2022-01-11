@@ -134,10 +134,7 @@ class FronteggUser {
       if (account != null) {
         GoogleSignInAuthentication auth = await account.authentication;
         if (type == AuthType.login) {
-          final bool succeed = await _api.loginGoogle(auth);
-          if (!succeed) return false;
-          setUserInfo(await _api.refresh());
-          return true;
+          return await socialLogin(auth, 'google');
         } else {
           return true;
         }
@@ -155,10 +152,9 @@ class FronteggUser {
         final GitHubSignInResult result = await _gitHubSignIn!.signIn(context);
         switch (result.status) {
           case GitHubSignInResultStatus.ok:
+            final OAuthCredential auth = GithubAuthProvider.credential(result.token ?? '');
             if (type == AuthType.login) {
-              final OAuthCredential githubAuthCredential = GithubAuthProvider.credential(result.token ?? '');
-              // print('github 1 ${result.token} ');
-              return await _api.loginGitHub(githubAuthCredential);
+              return await socialLogin(auth, 'github');
             } else {
               return true;
             }
@@ -180,15 +176,9 @@ class FronteggUser {
   Future<bool> loginOrSignUpFacebook(AuthType type) async {
     try {
       _facebookLoginResult = await FacebookAuth.instance.login();
+      final OAuthCredential auth = FacebookAuthProvider.credential(_facebookLoginResult!.accessToken!.token);
       if (_facebookLoginResult!.accessToken != null) {
-        final OAuthCredential facebookAuthCredential =
-            FacebookAuthProvider.credential(_facebookLoginResult!.accessToken!.token);
-        // print('facebook 1 ${_facebookLoginResult!.accessToken!.token}');
-        if (type == AuthType.login) {
-          return await _api.loginFacebook(facebookAuthCredential);
-        } else {
-          return true;
-        }
+        return await socialLogin(auth, 'facebook');
       }
       throw tr('invalid_authentication');
     } catch (e) {
@@ -202,19 +192,30 @@ class FronteggUser {
     try {
       await _microsoftAuth!.login();
       String? accessToken = await _microsoftAuth!.getAccessToken();
-      // print(accessToken);
       if (accessToken == null) {
         throw tr('invalid_authentication');
       }
-
       if (type == AuthType.login) {
-        return await _api.loginMicrosoft(accessToken);
+        final bool succeed = await _api.socialLogin(accessToken, 'microsoft');
+        if (!succeed) return false;
+        setUserInfo(await _api.refresh());
+        return true;
       } else {
         return true;
       }
     } catch (e) {
       rethrow;
     }
+  }
+
+  Future<bool> socialLogin(dynamic auth, String type) async {
+    if (auth.accessToken == null) {
+      throw tr('invalid_authentication');
+    }
+    final bool succeed = await _api.socialLogin(auth.accessToken!, type);
+    if (!succeed) return false;
+    setUserInfo(await _api.refresh());
+    return true;
   }
 
   Future<void> logOut() async {

@@ -239,69 +239,12 @@ class AuthApi {
     }
   }
 
-  Future<bool> loginGoogle(GoogleSignInAuthentication user) async {
+  Future<bool> socialLogin(String token, String type) async {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
-      var response = await _dio
-          .post('$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?access_token=${user.accessToken}');
-      cookies = response.headers.map['set-cookie'];
-      return response.statusCode == 200;
-    } catch (e) {
-      if (e is DioError) {
-        rethrow;
-      }
-      throw tr('invalid_authentication');
-    }
-  }
-
-  Future<bool> loginGitHub(OAuthCredential creds) async {
-    try {
-      _dio.options.headers['content-Type'] = 'application/json';
-      // print('github 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
       var response =
-          await _dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?code=&state=', data: {});
-
-      // final data = response.data;
-      // print(response.statusCode);
-      return response.statusCode == 200;
-    } catch (e) {
-      // print(e);
-      if (e is DioError) {
-        // print(e.response!.data);
-        rethrow;
-      }
-      throw tr('invalid_authentication');
-    }
-  }
-
-  Future<bool> loginFacebook(OAuthCredential creds) async {
-    try {
-      _dio.options.headers['content-Type'] = 'application/json';
-      // print('facebook 2 ${creds.idToken}\n===> ${creds.secret}\n===> ${creds.accessToken}');
-      var response = await _dio
-          .post('$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?code=&state=', data: {});
-
-      // final data = response.data;
-      // print(response.statusCode);
-      return response.statusCode == 200;
-    } catch (e) {
-      // print(e);
-      if (e is DioError) {
-        // print(e.response!.data);
-        rethrow;
-      }
-      throw tr('invalid_authentication');
-    }
-  }
-
-  Future<bool> loginMicrosoft(String token) async {
-    try {
-      _dio.options.headers['content-Type'] = 'application/json';
-      var response = await _dio
-          .post('$url/frontegg/identity/resources/auth/v1/user/sso/microsoft/postlogin?code=&state=', data: {});
-
-      // final data = response.data;
-      // print(response.statusCode);
+          await _dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/$type/postlogin?access_token=$token');
+      cookies = response.headers.map['set-cookie'];
       return response.statusCode == 200;
     } catch (e) {
       if (e is DioError) {
