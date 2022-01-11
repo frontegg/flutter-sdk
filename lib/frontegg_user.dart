@@ -122,7 +122,7 @@ class FronteggUser {
 
   GoogleSignIn? _googleSignIn;
 
-  Future<bool> loginOrSignUpGoogle(AuthType type) async {
+  Future<bool> loginOrSignUpGoogle() async {
     try {
       _googleSignIn = GoogleSignIn(
         scopes: [
@@ -133,11 +133,7 @@ class FronteggUser {
       GoogleSignInAccount? account = await _googleSignIn!.signIn();
       if (account != null) {
         GoogleSignInAuthentication auth = await account.authentication;
-        if (type == AuthType.login) {
-          return await socialLogin(auth, 'google');
-        } else {
-          return true;
-        }
+        return await socialLogin(auth, 'google');
       }
 
       throw tr('invalid_authentication');
@@ -146,18 +142,14 @@ class FronteggUser {
     }
   }
 
-  Future<bool> loginOrSignUpGithub(AuthType type, BuildContext context) async {
+  Future<bool> loginOrSignUpGithub(BuildContext context) async {
     try {
       if (_gitHubSignIn != null) {
         final GitHubSignInResult result = await _gitHubSignIn!.signIn(context);
         switch (result.status) {
           case GitHubSignInResultStatus.ok:
             final OAuthCredential auth = GithubAuthProvider.credential(result.token ?? '');
-            if (type == AuthType.login) {
-              return await socialLogin(auth, 'github');
-            } else {
-              return true;
-            }
+            return await socialLogin(auth, 'github');
 
           case GitHubSignInResultStatus.cancelled:
           case GitHubSignInResultStatus.failed:
@@ -173,7 +165,7 @@ class FronteggUser {
 
   LoginResult? _facebookLoginResult;
 
-  Future<bool> loginOrSignUpFacebook(AuthType type) async {
+  Future<bool> loginOrSignUpFacebook() async {
     try {
       _facebookLoginResult = await FacebookAuth.instance.login();
       final OAuthCredential auth = FacebookAuthProvider.credential(_facebookLoginResult!.accessToken!.token);
@@ -188,21 +180,17 @@ class FronteggUser {
 
   AadOAuth? _microsoftAuth;
 
-  Future<bool> loginOrSignUpMicrosoft(AuthType type) async {
+  Future<bool> loginOrSignUpMicrosoft() async {
     try {
       await _microsoftAuth!.login();
       String? accessToken = await _microsoftAuth!.getAccessToken();
       if (accessToken == null) {
         throw tr('invalid_authentication');
       }
-      if (type == AuthType.login) {
-        final bool succeed = await _api.socialLogin(accessToken, 'microsoft');
-        if (!succeed) return false;
-        setUserInfo(await _api.refresh());
-        return true;
-      } else {
-        return true;
-      }
+      final bool succeed = await _api.socialLogin(accessToken, 'microsoft');
+      if (!succeed) return false;
+      setUserInfo(await _api.refresh());
+      return true;
     } catch (e) {
       rethrow;
     }

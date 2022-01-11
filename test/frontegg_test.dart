@@ -223,25 +223,6 @@ void main() {
         await tester.pumpAndSettle();
         expect(find.text(tr('password_reset_email_has_been_sent')), findsWidgets);
       });
-      testWidgets('displays social login buttons', (WidgetTester tester) async {
-        final path = '$url/frontegg/identity/resources/sso/v2';
-        when(_dioMock.get(path)).thenAnswer((_) async =>
-            Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
-              {"type": "github", "active": true},
-              {"type": "google", "active": true},
-              {"type": "microsoft", "active": true},
-              {"type": "facebook", "active": true}
-            })));
-
-        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
-        await tester.pumpAndSettle();
-        expect(find.byType(SocialButtons), findsOneWidget);
-        await tester.pumpAndSettle();
-        expect(find.byKey(const Key('github')), findsOneWidget);
-        expect(find.byKey(const Key('google')), findsOneWidget);
-        expect(find.byKey(const Key('microsoft')), findsOneWidget);
-        expect(find.byKey(const Key('facebook')), findsOneWidget);
-      });
     });
     group('Code', () {
       setUp(() {
@@ -310,6 +291,28 @@ void main() {
         await tester.pumpAndSettle();
         await tester.tap(find.byKey(const Key('resend_code_button')));
         expect(find.text(tr('enter_code_below')), findsOneWidget);
+      });
+      group('social login', () {
+        setUp(() {
+          final path = '$url/frontegg/identity/resources/sso/v2';
+          when(_dioMock.get(path)).thenAnswer((_) async =>
+              Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
+                {"type": "github", "active": true},
+                {"type": "google", "active": true},
+                {"type": "microsoft", "active": true},
+                {"type": "facebook", "active": true}
+              })));
+        });
+        testWidgets('displays social login buttons', (WidgetTester tester) async {
+          await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
+          await tester.pumpAndSettle();
+          expect(find.byType(SocialButtons), findsOneWidget);
+          await tester.pumpAndSettle();
+          expect(find.byKey(const Key('github')), findsOneWidget);
+          expect(find.byKey(const Key('google')), findsOneWidget);
+          expect(find.byKey(const Key('microsoft')), findsOneWidget);
+          expect(find.byKey(const Key('facebook')), findsOneWidget);
+        });
       });
     });
     testWidgets('show error on link login', (WidgetTester tester) async {

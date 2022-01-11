@@ -1,11 +1,9 @@
 import 'package:dio/dio.dart';
-import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/screens/mfa/mfa.dart';
 import 'package:frontegg/auth/social_class.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/locatization.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApi {
