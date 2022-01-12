@@ -197,13 +197,17 @@ class FronteggUser {
   }
 
   Future<bool> socialLogin(dynamic auth, String type) async {
-    if (auth.accessToken == null) {
-      throw tr('invalid_authentication');
+    try {
+      if (auth.accessToken == null) {
+        throw tr('invalid_authentication');
+      }
+      final bool succeed = await _api.socialLogin(auth.accessToken!, type);
+      if (!succeed) return false;
+      setUserInfo(await _api.refresh());
+      return true;
+    } catch (e) {
+      rethrow;
     }
-    final bool succeed = await _api.socialLogin(auth.accessToken!, type);
-    if (!succeed) return false;
-    setUserInfo(await _api.refresh());
-    return true;
   }
 
   Future<void> logOut() async {

@@ -27,6 +27,24 @@ void main() {
     _dioMock = MockDio();
     when(_dioMock.options).thenReturn(BaseOptions());
     mockUser = FronteggUser(dioForTests: _dioMock);
+    final pathMe = '$url/frontegg/identity/resources/users/v2/me';
+    when(_dioMock.get(pathMe)).thenAnswer((_) async =>
+        Future.value(Response(requestOptions: RequestOptions(path: pathMe, method: "GET"), statusCode: 200, data: {
+          'activatedForTenant': true,
+          'createdAt': DateTime.now().toString(),
+          'email': "example@gmail.com",
+          'id': "id",
+          'isLocked': false,
+          'lastLogin': DateTime.now().toString(),
+          'mfaEnrolled': true,
+          'name': "name",
+          'profilePictureUrl': "",
+          'provider': "local",
+          'tenantId': "id",
+          'verified': true
+        })));
+
+    SharedPreferences.setMockInitialValues({});
   });
 
   testWidgets('Can initialize the plugin', (WidgetTester tester) async {
@@ -44,27 +62,6 @@ void main() {
   }
 
   group('From Login screen', () {
-    setUp(() {
-      final pathMe = '$url/frontegg/identity/resources/users/v2/me';
-      when(_dioMock.get(pathMe)).thenAnswer((_) async =>
-          Future.value(Response(requestOptions: RequestOptions(path: pathMe, method: "GET"), statusCode: 200, data: {
-            'activatedForTenant': true,
-            'createdAt': DateTime.now().toString(),
-            'email': "example@gmail.com",
-            'id': "id",
-            'isLocked': false,
-            'lastLogin': DateTime.now().toString(),
-            'mfaEnrolled': true,
-            'name': "name",
-            'profilePictureUrl': "",
-            'provider': "local",
-            'tenantId': "id",
-            'verified': true
-          })));
-
-      SharedPreferences.setMockInitialValues({});
-    });
-
     group('Password', () {
       setUp(() {
         final path = '$url/frontegg/identity/resources/configurations/v1/public';
@@ -292,27 +289,24 @@ void main() {
         await tester.tap(find.byKey(const Key('resend_code_button')));
         expect(find.text(tr('enter_code_below')), findsOneWidget);
       });
-      group('social login', () {
-        setUp(() {
-          final path = '$url/frontegg/identity/resources/sso/v2';
-          when(_dioMock.get(path)).thenAnswer((_) async =>
-              Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
-                {"type": "github", "active": true},
-                {"type": "google", "active": true},
-                {"type": "microsoft", "active": true},
-                {"type": "facebook", "active": true}
-              })));
-        });
-        testWidgets('displays social login buttons', (WidgetTester tester) async {
-          await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
-          await tester.pumpAndSettle();
-          expect(find.byType(SocialButtons), findsOneWidget);
-          await tester.pumpAndSettle();
-          expect(find.byKey(const Key('github')), findsOneWidget);
-          expect(find.byKey(const Key('google')), findsOneWidget);
-          expect(find.byKey(const Key('microsoft')), findsOneWidget);
-          expect(find.byKey(const Key('facebook')), findsOneWidget);
-        });
+
+      testWidgets('social login displays social login buttons', (WidgetTester tester) async {
+        final path = '$url/frontegg/identity/resources/sso/v2';
+        when(_dioMock.get(path)).thenAnswer((_) async =>
+            Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
+              {"type": "github", "active": true},
+              {"type": "google", "active": true},
+              {"type": "microsoft", "active": true},
+              {"type": "facebook", "active": true}
+            })));
+        await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
+        await tester.pumpAndSettle();
+        expect(find.byType(SocialButtons), findsOneWidget);
+        await tester.pumpAndSettle();
+        expect(find.byKey(const Key('github')), findsOneWidget);
+        expect(find.byKey(const Key('google')), findsOneWidget);
+        expect(find.byKey(const Key('microsoft')), findsOneWidget);
+        expect(find.byKey(const Key('facebook')), findsOneWidget);
       });
     });
     testWidgets('show error on link login', (WidgetTester tester) async {
@@ -394,4 +388,75 @@ void main() {
       expect(find.text(tr('must_be_a_valid_email')), findsOneWidget);
     });
   });
+  group('Social Login', () {
+    setUp(() {
+      final path = '$url/frontegg/identity/resources/sso/v2';
+      when(_dioMock.get(path)).thenAnswer((_) async =>
+          Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
+            {"type": "github", "active": true},
+            {"type": "google", "active": true},
+            {"type": "microsoft", "active": true},
+            {"type": "facebook", "active": true}
+          })));
+
+      final pathRefresh = '$url/frontegg/identity/resources/auth/v1/user/token/refresh';
+      when(_dioMock.post(pathRefresh)).thenAnswer((_) async => Future.value(
+              Response(requestOptions: RequestOptions(path: pathRefresh, method: "POST"), statusCode: 200, data: {
+            'accessToken': "token",
+            'expires': DateTime.now().toString(),
+            'expiresIn': 86400,
+            'mfaRequired': false,
+            'refreshToken': "refresh",
+            'mfaToken': 'token'
+          })));
+    });
+
+    testWidgets('google', (WidgetTester tester) async {
+      final path = '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?access_token=token';
+      final headers = Headers();
+      headers.set('set-cookie', 'value');
+      when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
+          Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200, headers: headers)));
+      final res = await mockUser.socialLogin(Auth(), 'google');
+      expect(res, true);
+      expect(mockUser.isAuthorized, true);
+    });
+    testWidgets('github', (WidgetTester tester) async {
+      final path = '$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?access_token=token';
+      final headers = Headers();
+      headers.set('set-cookie', 'value');
+      when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
+          Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200, headers: headers)));
+      final res = await mockUser.socialLogin(Auth(), 'github');
+      expect(res, true);
+      expect(mockUser.isAuthorized, true);
+    });
+    testWidgets('microsoft', (WidgetTester tester) async {
+      final path = '$url/frontegg/identity/resources/auth/v1/user/sso/microsoft/postlogin?access_token=token';
+      final headers = Headers();
+      headers.set('set-cookie', 'value');
+      when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
+          Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200, headers: headers)));
+      final res = await mockUser.socialLogin(Auth(), 'microsoft');
+      expect(res, true);
+      expect(mockUser.isAuthorized, true);
+    });
+    testWidgets('facebook', (WidgetTester tester) async {
+      final path = '$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?access_token=token';
+      final headers = Headers();
+      headers.set('set-cookie', 'value');
+      when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
+          Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200, headers: headers)));
+      final res = await mockUser.socialLogin(Auth(), 'facebook');
+      expect(res, true);
+      expect(mockUser.isAuthorized, true);
+    });
+  });
+}
+
+class Auth {
+  String? accessToken;
+  Auth() {
+    accessToken = 'token';
+  }
 }
