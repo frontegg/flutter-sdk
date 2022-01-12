@@ -10,6 +10,8 @@ import 'frontegg_user.dart';
 
 class Frontegg {
   FronteggUser _user;
+  dynamic git;
+  dynamic microsoft;
 
   Frontegg(baseUrl, headerImage, {gitHubSignIn, localizationFileName, microsoftConfig, dio})
       : _user = FronteggUser(
@@ -30,6 +32,8 @@ class Frontegg {
     url = baseUrl;
     logo = headerImage;
     localTranslations = LocalTranslations(localizationFileName);
+    git = gitHubSignIn;
+    microsoft = microsoftConfig;
   }
 
   Future<FronteggUser?> login(BuildContext context) async {
@@ -70,7 +74,18 @@ class Frontegg {
 
   Future<FronteggUser?> logout() async {
     await _user.logOut();
-    _user = FronteggUser();
+    _user = FronteggUser(
+        git: git != null
+            ? GitHubSignIn(
+                clientId: git['clientId'], clientSecret: git['clientSecret'], redirectUrl: 'https://frontegg.com/')
+            : null,
+        microsoft: microsoft != null
+            ? Config(
+                tenant: microsoft['tenant'],
+                clientId: microsoft['clientId'],
+                scope: "openid profile offline_access",
+                redirectUri: "msauth.com.example.testApp://auth")
+            : null);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
     await prefs.remove('expires');

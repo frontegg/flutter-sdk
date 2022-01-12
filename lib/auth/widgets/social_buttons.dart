@@ -82,11 +82,15 @@ class _SocialButtonsState extends State<SocialButtons> {
                                 if (res) {
                                   Navigator.pop(context, widget.user.isAuthorized);
                                 }
+                                setState(() {
+                                  loading = false;
+                                });
                               } catch (e) {
-                                loading = false;
+                                setState(() {
+                                  loading = false;
+                                });
                                 rethrow;
                               }
-                              setState(() {});
                             },
                           ),
                         )
