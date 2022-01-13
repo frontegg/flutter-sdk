@@ -3,6 +3,7 @@ description: Frontegg is a web platform where SaaS companies can set up their fu
 version: 0.0.1
 homepage: https://github.com/frontegg/flutter-sdk
 repository: https://github.com/frontegg/flutter-sdk
+issue_tracker: https://github.com/frontegg/flutter-sdk/issues
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
