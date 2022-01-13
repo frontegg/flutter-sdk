@@ -9,6 +9,7 @@ import 'package:frontegg/constants.dart';
 import 'package:frontegg/locatization.dart';
 import 'package:github_sign_in/github_sign_in.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FronteggUser {
   String? email;
@@ -211,6 +212,9 @@ class FronteggUser {
   }
 
   Future<void> logOut() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('accessToken');
+
     if (_googleSignIn != null) {
       _googleSignIn!.signOut();
     }

@@ -68,7 +68,7 @@ class _SocialButtonsState extends State<SocialButtons> {
                               backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
                             ),
                             icon: SvgPicture.asset('asset/${e.type}.svg',
-                                package: 'frongegg', width: 30, height: 30, semanticsLabel: 'Acme Logo'),
+                                width: 30, height: 30, semanticsLabel: 'Acme Logo'),
                             label: Text(
                               e.type != null ? '${e.type![0].toUpperCase()}${e.type!.substring(1)}' : '',
                               style: TextStyle(fontSize: 18, color: Theme.of(context).colorScheme.secondary),
