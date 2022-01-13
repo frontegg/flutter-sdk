@@ -1,7 +1,8 @@
 name: frontegg
 description: Frontegg is a web platform where SaaS companies can set up their fully managed, scalable and brand aware - SaaS features and integrate them into their SaaS portals in up to 5 lines of code.
 version: 0.0.1
-homepage:
+homepage: https://github.com/frontegg/flutter-sdk
+repository: https://github.com/frontegg/flutter-sdk
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
