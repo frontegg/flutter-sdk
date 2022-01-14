@@ -257,9 +257,16 @@ void main() {
         await tester.tap(find.byKey(const Key('send_code_button')));
         await tester.pumpAndSettle();
         expect(find.text(tr('enter_code_below')), findsWidgets);
-        for (int i = 0; i < 6; i++) {
-          await tester.enterText(find.byKey(Key('input_code_$i')), "1");
-        }
+        await tester.tap(find.byKey(const Key('login_button')));
+        await tester.pumpAndSettle();
+        expect(find.text(tr('wrong_code')), findsWidgets);
+        await tester.tap(find.byKey(const Key('login_button')));
+        await tester.pumpAndSettle();
+        await tester.enterText(find.byKey(const Key('input_code')), "1111112");
+        await tester.pump();
+        expect(find.text(tr('wrong_code')), findsWidgets);
+
+        await tester.enterText(find.byKey(const Key('input_code')), "111111");
 
         final pathCode = '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin';
         final dataCode = {"token": '111111'};

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg/auth/auth_api.dart';
-import 'package:frontegg/auth/screens/login/login_code.dart';
 import 'package:frontegg/auth/screens/mfa/recover_mfa.dart';
-import 'package:frontegg/auth/widgets/code_input_container.dart';
+import 'package:frontegg/auth/widgets/input_field.dart';
 import 'package:frontegg/auth/widgets/logo.dart';
 import 'package:frontegg/constants.dart';
 import 'package:frontegg/locatization.dart';
@@ -19,7 +18,8 @@ class _TwoFactorState extends State<TwoFactor> {
   bool loading = false;
   late AuthApi _api;
   bool isChecked = false;
-  List<InputCode> codeDigits = List.generate(6, (index) => InputCode(FocusNode(), TextEditingController()));
+
+  final TextEditingController _codeController = TextEditingController();
 
   @override
   void initState() {
@@ -29,13 +29,6 @@ class _TwoFactorState extends State<TwoFactor> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> codeInputs = List.generate(6, (index) {
-      return CodeInputContainer(index, codeDigits, clearError: () {
-        setState(() {
-          error = null;
-        });
-      });
-    });
     return Scaffold(
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -50,7 +43,7 @@ class _TwoFactorState extends State<TwoFactor> {
           const SizedBox(height: 30),
           Text(tr('enter_code_from_app'), textAlign: TextAlign.center),
           const SizedBox(height: 10),
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: codeInputs),
+          InputField('6-digit code', _codeController, key: const Key('input_code')),
           const SizedBox(height: 30),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -82,11 +75,7 @@ class _TwoFactorState extends State<TwoFactor> {
                       loading = true;
                     });
                     try {
-                      String code = '';
-                      for (final i in codeDigits) {
-                        code += i.controller.text;
-                      }
-                      final res = await _api.mfaCheck(code, isChecked);
+                      final res = await _api.mfaCheck(_codeController.text, isChecked);
                       Navigator.pop(context, res);
                     } catch (e) {
                       error = e.toString();

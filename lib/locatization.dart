@@ -85,6 +85,7 @@ class LocalTranslations {
       "data_required": "All data is required",
       "thanks_for_signing_up": "Thanks for signing up!",
       "check_inbox_to_activate_account": "Please check your inbox in order to activate your account.",
+      'wrong_code': "Wrong Code"
     };
   }
 }

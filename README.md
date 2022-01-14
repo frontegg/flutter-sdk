@@ -67,6 +67,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final SharedPreferences prefs = await SharedPreferences.getInstance();
 final String? token = prefs.getString('accessToken');
+final String? refreshToken = prefs.getString('refreshToken');
+
 ```
 
 ## Localization
@@ -126,6 +128,7 @@ FronteggUser? user;
       "data_required": "All data is required",
       "thanks_for_signing_up": "Thanks for signing up!",
       "check_inbox_to_activate_account": "Please check your inbox in order to activate your account.",
+      'wrong_code': "Wrong Code"
     }
 ```
 

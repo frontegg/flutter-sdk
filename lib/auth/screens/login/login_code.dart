@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/widgets/code_input_container.dart';
 import 'package:frontegg/auth/widgets/signup_button.dart';
 import 'package:frontegg/frontegg_user.dart';
 import 'package:frontegg/auth/widgets/input_field.dart';
@@ -21,16 +20,13 @@ class _LoginWithCodeState extends State<LoginWithCode> {
     return Padding(padding: EdgeInsets.only(top: onlyBottom ? 0 : 30, bottom: 30), child: child);
   }
 
-  List<InputCode> codeDigits = List.generate(6, (index) => InputCode(FocusNode(), TextEditingController()));
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _codeController = TextEditingController();
+
   String? error;
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> codeInputs = List.generate(6, (index) {
-      return CodeInputContainer(index, codeDigits);
-    });
-
     return !sended
         ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -92,8 +88,13 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                   Text(tr('enter_code_below'),
                       style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
                   onlyBottom: true),
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: codeInputs),
+              InputField('6-digit code', _codeController, key: const Key('input_code')),
               const SizedBox(height: 30),
+              if (error != null)
+                Text(
+                  error!,
+                  style: const TextStyle(color: Colors.red),
+                ),
               ElevatedButton(
                 key: const Key('login_button'),
                 child: loading
@@ -102,26 +103,25 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                 onPressed: loading
                     ? null
                     : () async {
-                        setState(() {
-                          loading = true;
-                        });
-                        try {
-                          String value = '';
-                          for (final i in codeDigits) {
-                            value += i.controller.text[0];
+                        if (_codeController.text.length != 6) {
+                          error = tr('wrong_code');
+                        } else {
+                          setState(() {
+                            loading = true;
+                          });
+                          try {
+                            bool sended = await widget.user.checkCode(_codeController.text);
+                            if (sended) {
+                              Navigator.pop(context, widget.user.isAuthorized);
+                            }
+                          } catch (e) {
+                            error = e.toString();
+                            loading = false;
                           }
-                          bool sended = await widget.user.checkCode(value);
-                          if (sended) {
-                            Navigator.pop(context, widget.user.isAuthorized);
-                          }
-                        } catch (e) {
-                          error = e.toString();
-                          loading = false;
                         }
                         setState(() {});
                       },
               ),
-              if (error != null) Text(error!),
               paddings(
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -142,10 +142,4 @@ class _LoginWithCodeState extends State<LoginWithCode> {
             ],
           );
   }
-}
-
-class InputCode {
-  FocusNode focusNode = FocusNode();
-  TextEditingController controller = TextEditingController();
-  InputCode(this.focusNode, this.controller);
 }
