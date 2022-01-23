@@ -75,9 +75,9 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
                       error = tr('email_and_password_are_required');
                       loading = false;
                     } else {
-                      bool sended =
+                      bool sent =
                           await widget.user.loginPassword(_controller.text, _controllerPassword.text, context);
-                      if (sended) {
+                      if (sent) {
                         Navigator.pop(context, widget.user.isAuthorized);
                       }
                       loading = false;

@@ -42,7 +42,7 @@ class LocalTranslations {
   getDefaultValues() {
     _defaultLocalisedValues = {
       "login": "Sign in",
-      "signup": "Sign Up",
+      "signup": "Account Sign Up",
       "email": "Email",
       "enter_your_password": "Enter Your Password",
       "password": "Password",
@@ -53,7 +53,7 @@ class LocalTranslations {
       "dont_have_an_account": "Don't have an account?",
       "already_have_an_account": "Already have an account?",
       "something_went_wrong": "Something went wrong",
-      "magic_link_error": "Authentification with Magic Link is not available on mobile devices",
+      "magic_link_error": "Authentication with Magic Link is not available on mobile devices",
       "or": "or",
       "with": "with",
       "continue": "Continue",

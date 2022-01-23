@@ -15,12 +15,12 @@ class ForgotPassword extends StatefulWidget {
 class _ForgotPasswordState extends State<ForgotPassword> {
   String? error;
   bool loading = false;
-  bool sended = false;
+  bool sent = false;
   final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> notSended = [
+    List<Widget> notSent = [
       Padding(
         padding: const EdgeInsets.only(top: 30, bottom: 30),
         child: Text(
@@ -33,7 +33,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         child: Text(tr('enter_email_to_reset_password'),
             style: const TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center),
       ),
-      sended
+      sent
           ? Text(
               tr('password_reset_email_has_been_sent'),
               textAlign: TextAlign.center,
@@ -55,7 +55,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
               error = tr('email_required');
               loading = false;
             } else {
-              sended = await widget.user.forgotPassword(_controller.text);
+              sent = await widget.user.forgotPassword(_controller.text);
             }
           } catch (e) {
             error = e.toString();
@@ -78,7 +78,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: [const Logo(), if (!sended) ...notSended, if (sended) ...child],
+            children: [const Logo(), if (!sent) ...notSent, if (sent) ...child],
           ),
         ),
       ),

@@ -29,8 +29,9 @@ class Frontegg {
                     redirectUri: "msauth.com.example.testApp://auth")
                 : null,
             dioForTests: dio) {
-    url = baseUrl;
-    logo = headerImage;
+    baseUrl = baseUrl;
+    // TODO: use a default logo here
+    logo = headerImage = '';
     localTranslations = LocalTranslations(localizationFileName);
     git = gitHubSignIn;
     microsoft = microsoftConfig;

@@ -21,7 +21,7 @@ class _SignupState extends State<Signup> {
   final TextEditingController _controllerCompany = TextEditingController();
   bool loading = false;
   String? error;
-  bool sended = false;
+  bool sent = false;
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class _SignupState extends State<Signup> {
                     error = tr('data_required');
                     loading = false;
                   } else {
-                    sended =
+                    sent =
                         await widget.user.signup(_controllerEmail.text, _controllerName.text, _controllerCompany.text);
                     loading = false;
                   }
@@ -111,7 +111,7 @@ class _SignupState extends State<Signup> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
-          children: [...common, if (!sended) ...notSigned, if (sended) ...signed],
+          children: [...common, if (!sent) ...notSigned, if (sent) ...signed],
         ),
       ),
     );

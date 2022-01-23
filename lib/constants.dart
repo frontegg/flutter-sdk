@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-late String url;
+late String baseUrl;
 late String logo;
 late Dio dio;
 

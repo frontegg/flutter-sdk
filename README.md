@@ -1,10 +1,21 @@
-## Features
+## Frontegg Flutter SDK
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+This packages enables the usage of core Frontegg features in mobile applications built with flutter.
+Using this package, you'll be able to integrate Frontegg's login and signup flows.
+
+User management (administration box) capabilities are not available using the flutter SDk.
+
 
 ## Getting started
 
+In pubspec.yaml:
+```yaml
+  frontegg: ...version
+```
+Import in project
+```dart
 import 'package:frontegg/frontegg.dart';
+```
 
 ```dart
 final frontegg = Frontegg("baseUrl", "logoImage");
@@ -17,7 +28,7 @@ Login
 
 ```dart
 TextButton(
-  hild: Text('login'),
+  child: Text('login'),
   onPressed: () async {
     user = await frontegg.login(context);
     setState(() {});
@@ -59,7 +70,7 @@ after login
     user?.email, user?.name, user?.phoneNumber
 ```
 
-accessToken is saved in shared preferences, getting:
+accessToken is saved in shared preferences, in order to get it, use:
 
 ```dart
 import 'package:shared_preferences/shared_preferences.dart';
@@ -73,7 +84,7 @@ final String? refreshToken = prefs.getString('refreshToken');
 
 ## Localization
 
-If you need localization create folder localization in a root folder of application and json file `filename.json`(don't forget to add it in `pubspec.yaml`) and add it while initialization like:
+If you need localization (i18n), create a folder called localization in a root directory of the application and a json file that will contain the translations (e.g. `filename.json`. don't forget to add it in `pubspec.yaml`) and add it while initialization like:
 
 ```dart
 final frontegg = Frontegg("baseUrl", "logoImage", localizationFileName: 'filename.json');
@@ -82,7 +93,7 @@ FronteggUser? user;
 
 ### Example of localization file
 
-```xml
+```json
 {
       "login": "Sign in",
       "signup": "Sign Up",
@@ -90,13 +101,13 @@ FronteggUser? user;
       "enter_your_password": "Enter Your Password",
       "password": "Password",
       "forgot_password": "Forgot Password?",
-      "email_and_password_are_required": 'Email and password are required',
+      "email_and_password_are_required": "Email and password are required",
       "required": "Required",
       "must_be_a_valid_email": "Must be a valid email",
       "dont_have_an_account": "Don't have an account?",
       "already_have_an_account": "Already have an account?",
       "something_went_wrong": "Something went wrong",
-      "magic_link_error": "Authentification with Magic Link is not available on mobile devices",
+      "magic_link_error": "Authentication with Magic Link is not available on mobile devices",
       "or": "or",
       "with": "with",
       "continue": "Continue",
@@ -128,7 +139,7 @@ FronteggUser? user;
       "data_required": "All data is required",
       "thanks_for_signing_up": "Thanks for signing up!",
       "check_inbox_to_activate_account": "Please check your inbox in order to activate your account.",
-      'wrong_code': "Wrong Code"
+      "wrong_code": "Wrong Code"
     }
 ```
 
