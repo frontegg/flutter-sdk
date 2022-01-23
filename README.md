@@ -1,6 +1,10 @@
-## Features
+## Frontegg/Flutter SDK
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+This packages enables the usage of core Frontegg features in mobile applications built with flutter.
+Using this package, you'll be able to integrate Frontegg's login and signup flows.
+
+User management (administration box) capabilities are not available using the flutter SDk.
+
 
 ## Getting started
 
