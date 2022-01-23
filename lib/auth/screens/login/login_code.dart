@@ -13,7 +13,7 @@ class LoginWithCode extends StatefulWidget {
 }
 
 class _LoginWithCodeState extends State<LoginWithCode> {
-  bool sended = false;
+  bool sent = false;
   String? email;
   bool loading = false;
   Widget paddings(Widget child, {bool onlyBottom = false}) {
@@ -27,7 +27,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
 
   @override
   Widget build(BuildContext context) {
-    return !sended
+    return !sent
         ? Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -63,7 +63,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                   } else {
                     email = _controller.text;
                     try {
-                      sended = await widget.user.loginCode(_controller.text);
+                      sent = await widget.user.loginCode(_controller.text);
                       error = null;
                     } catch (e) {
                       error = e.toString();
@@ -110,8 +110,8 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                             loading = true;
                           });
                           try {
-                            bool sended = await widget.user.checkCode(_codeController.text);
-                            if (sended) {
+                            bool sent = await widget.user.checkCode(_codeController.text);
+                            if (sent) {
                               Navigator.pop(context, widget.user.isAuthorized);
                             }
                           } catch (e) {
@@ -132,7 +132,7 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                         key: const Key('resend_code_button'),
                         child: Text(tr('resend_code')),
                         onPressed: () async {
-                          sended = await widget.user.loginCode(email ?? _controller.text);
+                          sent = await widget.user.loginCode(email ?? _controller.text);
                           setState(() {});
                         },
                       )

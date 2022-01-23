@@ -22,12 +22,12 @@ void main() {
   late MockDio _dioMock;
   late FronteggUser mockUser;
   logo = '';
-  url = '';
+  baseUrl = '';
   setUp(() {
     _dioMock = MockDio();
     when(_dioMock.options).thenReturn(BaseOptions());
     mockUser = FronteggUser(dioForTests: _dioMock);
-    final pathMe = '$url/frontegg/identity/resources/users/v2/me';
+    final pathMe = '$baseUrl/frontegg/identity/resources/users/v2/me';
     when(_dioMock.get(pathMe)).thenAnswer((_) async =>
         Future.value(Response(requestOptions: RequestOptions(path: pathMe, method: "GET"), statusCode: 200, data: {
           'activatedForTenant': true,
@@ -64,7 +64,7 @@ void main() {
   group('From Login screen', () {
     group('Password', () {
       setUp(() {
-        final path = '$url/frontegg/identity/resources/configurations/v1/public';
+        final path = '$baseUrl/frontegg/identity/resources/configurations/v1/public';
         when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
             requestOptions: RequestOptions(path: path, method: "GET"),
             statusCode: 200,
@@ -119,7 +119,7 @@ void main() {
         await tester.enterText(find.byKey(const Key("login")), "example@gmail.com");
         await tester.enterText(find.byKey(const Key("pass")), "pass");
         await tester.pumpAndSettle();
-        final pathLogin = '$url/frontegg/identity/resources/auth/v1/user';
+        final pathLogin = '$baseUrl/frontegg/identity/resources/auth/v1/user';
         final data = {"email": 'example@gmail.com', "password": 'pass'};
         when(_dioMock.post(pathLogin, data: data)).thenAnswer((_) async => Future.value(
                 Response(requestOptions: RequestOptions(path: pathLogin, method: "POST"), statusCode: 200, data: {
@@ -136,7 +136,7 @@ void main() {
         expect(find.byType(LoginWithPassword), findsNothing);
       });
       testWidgets('login with mfa works correct', (WidgetTester tester) async {
-        final pathLogin = '$url/frontegg/identity/resources/auth/v1/user';
+        final pathLogin = '$baseUrl/frontegg/identity/resources/auth/v1/user';
         final data = {"email": 'example@gmail.com', "password": 'pass'};
         final Response res =
             Response(requestOptions: RequestOptions(path: pathLogin, method: "POST"), statusCode: 200, data: {
@@ -148,7 +148,7 @@ void main() {
           'mfaToken': 'token'
         });
         when(_dioMock.post(pathLogin, data: data)).thenAnswer((_) async => Future.value(res));
-        final pathCodeCheck = '$url/frontegg/identity/resources/auth/v1/user/mfa/verify';
+        final pathCodeCheck = '$baseUrl/frontegg/identity/resources/auth/v1/user/mfa/verify';
         final dataCodeCheck = {"mfaToken": 'token', "value": '', "rememberDevice": false};
         when(_dioMock.post(pathCodeCheck, data: dataCodeCheck)).thenAnswer((_) async => Future.value(res));
 
@@ -170,7 +170,7 @@ void main() {
         expect(find.byType(LoginWithPassword), findsNothing);
       });
       testWidgets('recover mfa works correct', (WidgetTester tester) async {
-        final path = '$url/frontegg/identity/resources/auth/v1/user/mfa/recover';
+        final path = '$baseUrl/frontegg/identity/resources/auth/v1/user/mfa/recover';
         final data = {"recoveryCode": '123', 'email': null};
         when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
             Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200)));
@@ -201,7 +201,7 @@ void main() {
         expect(find.byKey(const Key('signupLabel')), findsOneWidget);
       });
       testWidgets('reset password works correct', (WidgetTester tester) async {
-        final path = '$url/frontegg/identity/resources/users/v1/passwords/reset';
+        final path = '$baseUrl/frontegg/identity/resources/users/v1/passwords/reset';
         final data = {'email': 'example@gmail.com'};
         when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
             Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200)));
@@ -223,12 +223,12 @@ void main() {
     });
     group('Code', () {
       setUp(() {
-        final path = '$url/frontegg/identity/resources/configurations/v1/public';
+        final path = '$baseUrl/frontegg/identity/resources/configurations/v1/public';
         when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
             requestOptions: RequestOptions(path: path, method: "GET"),
             statusCode: 200,
             data: {"authStrategy": "Code"})));
-        final pathPrelogin = '$url/frontegg/identity/resources/auth/v1/passwordless/code/prelogin';
+        final pathPrelogin = '$baseUrl/frontegg/identity/resources/auth/v1/passwordless/code/prelogin';
         when(_dioMock.post(pathPrelogin, data: {"email": 'example@gmail.com'})).thenAnswer((_) async => Future.value(
             Response(requestOptions: RequestOptions(path: pathPrelogin, method: "POST"), statusCode: 200)));
       });
@@ -268,7 +268,7 @@ void main() {
 
         await tester.enterText(find.byKey(const Key('input_code')), "111111");
 
-        final pathCode = '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin';
+        final pathCode = '$baseUrl/frontegg/identity/resources/auth/v1/passwordless/code/postlogin';
         final dataCode = {"token": '111111'};
         when(_dioMock.post(pathCode, data: dataCode)).thenAnswer((_) async => Future.value(
                 Response(requestOptions: RequestOptions(path: pathCode, method: "POST"), statusCode: 200, data: {
@@ -298,7 +298,7 @@ void main() {
       });
 
       testWidgets('social login displays social login buttons', (WidgetTester tester) async {
-        final path = '$url/frontegg/identity/resources/sso/v2';
+        final path = '$baseUrl/frontegg/identity/resources/sso/v2';
         when(_dioMock.get(path)).thenAnswer((_) async =>
             Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
               {"type": "github", "active": true},
@@ -317,7 +317,7 @@ void main() {
       });
     });
     testWidgets('show error on link login', (WidgetTester tester) async {
-      final path = '$url/frontegg/identity/resources/configurations/v1/public';
+      final path = '$baseUrl/frontegg/identity/resources/configurations/v1/public';
 
       when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
           requestOptions: RequestOptions(path: path, method: "GET"),
@@ -356,7 +356,7 @@ void main() {
       expect(find.byType(Signup), findsWidgets);
     });
     testWidgets('can redirect to login', (WidgetTester tester) async {
-      final path = '$url/frontegg/identity/resources/configurations/v1/public';
+      final path = '$baseUrl/frontegg/identity/resources/configurations/v1/public';
       when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
           requestOptions: RequestOptions(path: path, method: "GET"),
           statusCode: 200,
@@ -374,7 +374,7 @@ void main() {
       await tester.enterText(find.byKey(const Key("name")), "name");
       await tester.enterText(find.byKey(const Key("company")), "company");
       await tester.pump();
-      final path = '$url/frontegg/identity/resources/users/v1/signUp';
+      final path = '$baseUrl/frontegg/identity/resources/users/v1/signUp';
       final data = {"email": "example@gmail.com", "name": "name", "companyName": "company"};
       when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
           Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 201)));
@@ -397,7 +397,7 @@ void main() {
   });
   group('Social Login', () {
     setUp(() {
-      final path = '$url/frontegg/identity/resources/sso/v2';
+      final path = '$baseUrl/frontegg/identity/resources/sso/v2';
       when(_dioMock.get(path)).thenAnswer((_) async =>
           Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
             {"type": "github", "active": true},
@@ -406,7 +406,7 @@ void main() {
             {"type": "facebook", "active": true}
           })));
 
-      final pathRefresh = '$url/frontegg/identity/resources/auth/v1/user/token/refresh';
+      final pathRefresh = '$baseUrl/frontegg/identity/resources/auth/v1/user/token/refresh';
       when(_dioMock.post(pathRefresh)).thenAnswer((_) async => Future.value(
               Response(requestOptions: RequestOptions(path: pathRefresh, method: "POST"), statusCode: 200, data: {
             'accessToken': "token",
@@ -419,7 +419,7 @@ void main() {
     });
 
     testWidgets('google', (WidgetTester tester) async {
-      final path = '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?access_token=token';
+      final path = '$baseUrl/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?access_token=token';
       final headers = Headers();
       headers.set('set-cookie', 'value');
       when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
@@ -429,7 +429,7 @@ void main() {
       expect(mockUser.isAuthorized, true);
     });
     testWidgets('github', (WidgetTester tester) async {
-      final path = '$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?access_token=token';
+      final path = '$baseUrl/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?access_token=token';
       final headers = Headers();
       headers.set('set-cookie', 'value');
       when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
@@ -439,7 +439,7 @@ void main() {
       expect(mockUser.isAuthorized, true);
     });
     testWidgets('microsoft', (WidgetTester tester) async {
-      final path = '$url/frontegg/identity/resources/auth/v1/user/sso/microsoft/postlogin?access_token=token';
+      final path = '$baseUrl/frontegg/identity/resources/auth/v1/user/sso/microsoft/postlogin?access_token=token';
       final headers = Headers();
       headers.set('set-cookie', 'value');
       when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
@@ -449,7 +449,7 @@ void main() {
       expect(mockUser.isAuthorized, true);
     });
     testWidgets('facebook', (WidgetTester tester) async {
-      final path = '$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?access_token=token';
+      final path = '$baseUrl/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?access_token=token';
       final headers = Headers();
       headers.set('set-cookie', 'value');
       when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
