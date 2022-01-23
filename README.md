@@ -1,4 +1,4 @@
-## Frontegg/Flutter SDK
+## Frontegg Flutter SDK
 
 This packages enables the usage of core Frontegg features in mobile applications built with flutter.
 Using this package, you'll be able to integrate Frontegg's login and signup flows.
