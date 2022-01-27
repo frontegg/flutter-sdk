@@ -6,8 +6,6 @@
 <h1 align="center">Frontegg-Flutter</h1>
 <div align="center">
 
-[Flutter Web](https://flutter.dev/web) pre-built Component for faster and simpler integration with Frontegg services.
-
 </div>
 
 ## Frontegg Flutter SDK
