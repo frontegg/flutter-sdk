@@ -1,3 +1,13 @@
+<p align="center">
+  <a href="https://www.frontegg.com/" rel="noopener" target="_blank">
+    <img style="margin-top:40px" height="50" src="https://frontegg.com/wp-content/uploads/2020/04/logo_frrontegg.svg" alt="Frontegg logo">
+  </a>
+</p>
+<h1 align="center">Frontegg-Flutter</h1>
+<div align="center">
+
+</div>
+
 ## Frontegg Flutter SDK
 
 This packages enables the usage of core Frontegg features in mobile applications built with flutter.
@@ -5,16 +15,18 @@ Using this package, you'll be able to integrate Frontegg's login and signup flow
 
 User management (administration box) capabilities are not available using the flutter SDk.
 
-
 ## Getting started
 
 In pubspec.yaml:
+
 ```yaml
-  frontegg: ...version
+frontegg: ...version
 ```
+
 Import in project
+
 ```dart
-import 'package:frontegg/frontegg.dart';
+import 'package:frontegg_mobile/frontegg.dart';
 ```
 
 ```dart
@@ -95,52 +107,51 @@ FronteggUser? user;
 
 ```json
 {
-      "login": "Sign in",
-      "signup": "Sign Up",
-      "email": "Email",
-      "enter_your_password": "Enter Your Password",
-      "password": "Password",
-      "forgot_password": "Forgot Password?",
-      "email_and_password_are_required": "Email and password are required",
-      "required": "Required",
-      "must_be_a_valid_email": "Must be a valid email",
-      "dont_have_an_account": "Don't have an account?",
-      "already_have_an_account": "Already have an account?",
-      "something_went_wrong": "Something went wrong",
-      "magic_link_error": "Authentication with Magic Link is not available on mobile devices",
-      "or": "or",
-      "with": "with",
-      "continue": "Continue",
-      "check_our_email": "Check your email",
-      "we_sent_code_at": "We sent you a six digit code at",
-      "enter_code_below": "Enter the generated 6-digit code below",
-      "email_required": "Email is required",
-      "havent_received_it": "Haven’t received it?",
-      "resend_code": "Resend a new code",
-      "twofactor_authentication": "Two-Factor authentication",
-      "enter_code_from_app": "Please enter the 6 digit code from your authenticator app",
-      "dont_ask_for_365_days": "Don't ask again on this device for 365 days",
-      "having_trouble": "Having trouble?",
-      "disable_multifactor_with_code": "Click here to disable Multi-Factor with recovery code",
-      "recover_MFA": "Recover MFA",
-      "enter_MFA_recovery_code": "Please enter your MFA recovery code",
-      "code": "Code",
-      "input_code": "Input code",
-      "enter_email_to_reset_password":
-          "Enter the email address associated with your account and we'll send you a link to reset your password",
-      "password_reset_email_has_been_sent": "A password reset email has been sent to your registered email address",
-      "remind_me": "Remind me",
-      "invalid_authentication": "Invalid authentication",
-      "enter_email": "Enter your email",
-      "enter_name": "Enter your name",
-      "name": "Name",
-      "enter_company_name": "Enter your company name",
-      "company_name": "Company name",
-      "data_required": "All data is required",
-      "thanks_for_signing_up": "Thanks for signing up!",
-      "check_inbox_to_activate_account": "Please check your inbox in order to activate your account.",
-      "wrong_code": "Wrong Code"
-    }
+  "login": "Sign in",
+  "signup": "Sign Up",
+  "email": "Email",
+  "enter_your_password": "Enter Your Password",
+  "password": "Password",
+  "forgot_password": "Forgot Password?",
+  "email_and_password_are_required": "Email and password are required",
+  "required": "Required",
+  "must_be_a_valid_email": "Must be a valid email",
+  "dont_have_an_account": "Don't have an account?",
+  "already_have_an_account": "Already have an account?",
+  "something_went_wrong": "Something went wrong",
+  "magic_link_error": "Authentication with Magic Link is not available on mobile devices",
+  "or": "or",
+  "with": "with",
+  "continue": "Continue",
+  "check_our_email": "Check your email",
+  "we_sent_code_at": "We sent you a six digit code at",
+  "enter_code_below": "Enter the generated 6-digit code below",
+  "email_required": "Email is required",
+  "havent_received_it": "Haven’t received it?",
+  "resend_code": "Resend a new code",
+  "twofactor_authentication": "Two-Factor authentication",
+  "enter_code_from_app": "Please enter the 6 digit code from your authenticator app",
+  "dont_ask_for_365_days": "Don't ask again on this device for 365 days",
+  "having_trouble": "Having trouble?",
+  "disable_multifactor_with_code": "Click here to disable Multi-Factor with recovery code",
+  "recover_MFA": "Recover MFA",
+  "enter_MFA_recovery_code": "Please enter your MFA recovery code",
+  "code": "Code",
+  "input_code": "Input code",
+  "enter_email_to_reset_password": "Enter the email address associated with your account and we'll send you a link to reset your password",
+  "password_reset_email_has_been_sent": "A password reset email has been sent to your registered email address",
+  "remind_me": "Remind me",
+  "invalid_authentication": "Invalid authentication",
+  "enter_email": "Enter your email",
+  "enter_name": "Enter your name",
+  "name": "Name",
+  "enter_company_name": "Enter your company name",
+  "company_name": "Company name",
+  "data_required": "All data is required",
+  "thanks_for_signing_up": "Thanks for signing up!",
+  "check_inbox_to_activate_account": "Please check your inbox in order to activate your account.",
+  "wrong_code": "Wrong Code"
+}
 ```
 
 # Social Login and Signup

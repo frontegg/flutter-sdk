@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/auth_api.dart';
-import 'package:frontegg/auth/screens/login/login_code.dart';
-import 'package:frontegg/auth/screens/login/login_password.dart';
-import 'package:frontegg/auth/widgets/logo.dart';
-import 'package:frontegg/auth/widgets/social_buttons.dart';
-import 'package:frontegg/frontegg_user.dart';
-import 'package:frontegg/locatization.dart';
+import 'package:frontegg_mobile/auth/auth_api.dart';
+import 'package:frontegg_mobile/auth/screens/login/login_code.dart';
+import 'package:frontegg_mobile/auth/screens/login/login_password.dart';
+import 'package:frontegg_mobile/auth/widgets/logo.dart';
+import 'package:frontegg_mobile/auth/widgets/social_buttons.dart';
+import 'package:frontegg_mobile/frontegg_user.dart';
+import 'package:frontegg_mobile/locatization.dart';
 
 import '../../../constants.dart';
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/screens/forgot_password.dart';
-import 'package:frontegg/auth/widgets/input_field.dart';
-import 'package:frontegg/auth/widgets/signup_button.dart';
-import 'package:frontegg/frontegg_user.dart';
-import 'package:frontegg/locatization.dart';
+import 'package:frontegg_mobile/auth/screens/forgot_password.dart';
+import 'package:frontegg_mobile/auth/widgets/input_field.dart';
+import 'package:frontegg_mobile/auth/widgets/signup_button.dart';
+import 'package:frontegg_mobile/frontegg_user.dart';
+import 'package:frontegg_mobile/locatization.dart';
 
 class LoginWithPassword extends StatefulWidget {
   final FronteggUser user;
@@ -75,8 +75,7 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
                       error = tr('email_and_password_are_required');
                       loading = false;
                     } else {
-                      bool sent =
-                          await widget.user.loginPassword(_controller.text, _controllerPassword.text, context);
+                      bool sent = await widget.user.loginPassword(_controller.text, _controllerPassword.text, context);
                       if (sent) {
                         Navigator.pop(context, widget.user.isAuthorized);
                       }

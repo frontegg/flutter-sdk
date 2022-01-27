@@ -5,12 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "frontegg",
+            "name": "frontegg_mobile",
             "request": "launch",
             "type": "dart"
         },
         {
-            "name": "frontegg (profile mode)",
+            "name": "frontegg_mobile (profile mode)",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile"

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:frontegg/constants.dart';
+import 'package:frontegg_mobile/constants.dart';
 
 class Logo extends StatelessWidget {
   const Logo({Key? key}) : super(key: key);

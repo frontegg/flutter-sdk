@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:frontegg/auth/auth_api.dart';
-import 'package:frontegg/auth/social_class.dart';
-import 'package:frontegg/constants.dart';
-import 'package:frontegg/frontegg_user.dart';
-import 'package:frontegg/locatization.dart';
+import 'package:frontegg_mobile/auth/auth_api.dart';
+import 'package:frontegg_mobile/auth/social_class.dart';
+import 'package:frontegg_mobile/constants.dart';
+import 'package:frontegg_mobile/frontegg_user.dart';
+import 'package:frontegg_mobile/locatization.dart';
 
 class SocialButtons extends StatefulWidget {
   final AuthType type;

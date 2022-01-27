@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontegg/frontegg.dart';
+import 'package:frontegg_mobile/frontegg.dart';
 
 void main() {
   runApp(const MyApp());
