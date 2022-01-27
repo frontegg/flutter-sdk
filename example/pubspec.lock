@@ -242,7 +242,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.4.0"
-  frontegg:
+  frontegg_mobile:
     dependency: "direct main"
     description:
       path: ".."
