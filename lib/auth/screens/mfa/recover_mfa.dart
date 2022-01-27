@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/auth_api.dart';
-import 'package:frontegg/auth/widgets/input_field.dart';
-import 'package:frontegg/auth/widgets/logo.dart';
-import 'package:frontegg/constants.dart';
-import 'package:frontegg/locatization.dart';
+import 'package:frontegg_mobile/auth/auth_api.dart';
+import 'package:frontegg_mobile/auth/widgets/input_field.dart';
+import 'package:frontegg_mobile/auth/widgets/logo.dart';
+import 'package:frontegg_mobile/constants.dart';
+import 'package:frontegg_mobile/locatization.dart';
 
 class RecoverMFA extends StatefulWidget {
   const RecoverMFA({Key? key}) : super(key: key);

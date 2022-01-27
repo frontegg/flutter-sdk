@@ -28,7 +28,7 @@ frontegg: ...version
 Import in project
 
 ```dart
-import 'package:frontegg/frontegg.dart';
+import 'package:frontegg_mobile/frontegg.dart';
 ```
 
 ```dart

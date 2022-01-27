@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/widgets/signup_button.dart';
-import 'package:frontegg/frontegg_user.dart';
-import 'package:frontegg/auth/widgets/input_field.dart';
-import 'package:frontegg/locatization.dart';
+import 'package:frontegg_mobile/auth/widgets/signup_button.dart';
+import 'package:frontegg_mobile/frontegg_user.dart';
+import 'package:frontegg_mobile/auth/widgets/input_field.dart';
+import 'package:frontegg_mobile/locatization.dart';
 
 class LoginWithCode extends StatefulWidget {
   final FronteggUser user;

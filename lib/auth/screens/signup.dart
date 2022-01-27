@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/widgets/input_field.dart';
-import 'package:frontegg/auth/widgets/logo.dart';
-import 'package:frontegg/auth/widgets/signup_button.dart';
-import 'package:frontegg/auth/widgets/social_buttons.dart';
-import 'package:frontegg/constants.dart';
-import 'package:frontegg/frontegg_user.dart';
-import 'package:frontegg/locatization.dart';
+import 'package:frontegg_mobile/auth/widgets/input_field.dart';
+import 'package:frontegg_mobile/auth/widgets/logo.dart';
+import 'package:frontegg_mobile/auth/widgets/signup_button.dart';
+import 'package:frontegg_mobile/auth/widgets/social_buttons.dart';
+import 'package:frontegg_mobile/constants.dart';
+import 'package:frontegg_mobile/frontegg_user.dart';
+import 'package:frontegg_mobile/locatization.dart';
 
 class Signup extends StatefulWidget {
   final FronteggUser user;

@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/screens/mfa/mfa.dart';
-import 'package:frontegg/auth/social_class.dart';
-import 'package:frontegg/constants.dart';
-import 'package:frontegg/locatization.dart';
+import 'package:frontegg_mobile/auth/screens/mfa/mfa.dart';
+import 'package:frontegg_mobile/auth/social_class.dart';
+import 'package:frontegg_mobile/constants.dart';
+import 'package:frontegg_mobile/locatization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApi {

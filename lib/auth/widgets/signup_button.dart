@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg/auth/screens/login/login_common.dart';
-import 'package:frontegg/auth/screens/signup.dart';
-import 'package:frontegg/frontegg_user.dart';
-import 'package:frontegg/locatization.dart';
+import 'package:frontegg_mobile/auth/screens/login/login_common.dart';
+import 'package:frontegg_mobile/auth/screens/signup.dart';
+import 'package:frontegg_mobile/frontegg_user.dart';
+import 'package:frontegg_mobile/locatization.dart';
 
 class SignupButton extends StatelessWidget {
   final FronteggUser user;
