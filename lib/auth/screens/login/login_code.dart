@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg_mobile/auth/widgets/signup_button.dart';
-import 'package:frontegg_mobile/frontegg_user.dart';
+import 'package:frontegg_mobile/models/frontegg_user.dart';
 import 'package:frontegg_mobile/auth/widgets/input_field.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 class LoginWithCode extends StatefulWidget {
   final FronteggUser user;
   const LoginWithCode(this.user, {Key? key}) : super(key: key);
 
   @override
-  _LoginWithCodeState createState() => _LoginWithCodeState();
+  LoginWithCodeState createState() => LoginWithCodeState();
 }
 
-class _LoginWithCodeState extends State<LoginWithCode> {
+class LoginWithCodeState extends State<LoginWithCode> {
   bool sent = false;
   String? email;
   bool loading = false;
@@ -54,8 +54,8 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                     ),
                     onlyBottom: true),
               ElevatedButton(
-                child: Text(tr('continue')),
                 key: const Key('send_code_button'),
+                child: Text(tr('continue')),
                 onPressed: () async {
                   if (_controller.text.isEmpty) {
                     error = tr('email_required');
@@ -97,9 +97,6 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                 ),
               ElevatedButton(
                 key: const Key('login_button'),
-                child: loading
-                    ? const CircularProgressIndicator()
-                    : Text(tr('continue'), style: const TextStyle(fontSize: 18)),
                 onPressed: loading
                     ? null
                     : () async {
@@ -121,6 +118,9 @@ class _LoginWithCodeState extends State<LoginWithCode> {
                         }
                         setState(() {});
                       },
+                child: loading
+                    ? const CircularProgressIndicator()
+                    : Text(tr('continue'), style: const TextStyle(fontSize: 18)),
               ),
               paddings(
                   Row(

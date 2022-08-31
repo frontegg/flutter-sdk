@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 class InputField extends StatefulWidget {
   final String hint;

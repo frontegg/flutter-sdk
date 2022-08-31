@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:frontegg_mobile/constants.dart';
 import 'package:frontegg_mobile/auth/screens/login/login_common.dart';
 import 'package:frontegg_mobile/auth/screens/signup.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 import 'package:github_sign_in/github_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'frontegg_user.dart';

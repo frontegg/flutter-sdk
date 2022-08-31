@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:frontegg_mobile/auth/auth_api.dart';
-import 'package:frontegg_mobile/auth/social_class.dart';
+import 'package:frontegg_mobile/api/auth_api.dart';
+import 'package:frontegg_mobile/models/social_class.dart';
 import 'package:frontegg_mobile/constants.dart';
-import 'package:frontegg_mobile/frontegg_user.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/models/frontegg_user.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 class SocialButtons extends StatefulWidget {
   final AuthType type;
@@ -12,10 +12,10 @@ class SocialButtons extends StatefulWidget {
   const SocialButtons(this.type, this.user, {Key? key}) : super(key: key);
 
   @override
-  _SocialButtonsState createState() => _SocialButtonsState();
+  SocialButtonsState createState() => SocialButtonsState();
 }
 
-class _SocialButtonsState extends State<SocialButtons> {
+class SocialButtonsState extends State<SocialButtons> {
   List<Social>? socials;
   final AuthApi _api = AuthApi(dio);
   String? socialError;

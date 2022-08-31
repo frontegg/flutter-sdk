@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg_mobile/auth/auth_api.dart';
+import 'package:frontegg_mobile/api/auth_api.dart';
 import 'package:frontegg_mobile/auth/widgets/input_field.dart';
 import 'package:frontegg_mobile/auth/widgets/logo.dart';
 import 'package:frontegg_mobile/constants.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 class RecoverMFA extends StatefulWidget {
   const RecoverMFA({Key? key}) : super(key: key);
 
   @override
-  _RecoverMFAState createState() => _RecoverMFAState();
+  RecoverMFAState createState() => RecoverMFAState();
 }
 
-class _RecoverMFAState extends State<RecoverMFA> {
+class RecoverMFAState extends State<RecoverMFA> {
   bool loading = false;
   String? error;
   late AuthApi _api;
@@ -46,7 +46,6 @@ class _RecoverMFAState extends State<RecoverMFA> {
               ),
             ElevatedButton(
               key: const Key('mfaRecover'),
-              child: Text(tr('continue')),
               onPressed: loading
                   ? null
                   : () async {
@@ -71,6 +70,7 @@ class _RecoverMFAState extends State<RecoverMFA> {
                         setState(() {});
                       }
                     },
+              child: Text(tr('continue')),
             ),
           ],
         ),

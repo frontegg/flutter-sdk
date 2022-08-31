@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg_mobile/auth/screens/mfa/mfa.dart';
-import 'package:frontegg_mobile/auth/social_class.dart';
+import 'package:frontegg_mobile/models/social_class.dart';
 import 'package:frontegg_mobile/constants.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApi {
@@ -143,7 +143,7 @@ class AuthApi {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String token = prefs.getString('accessToken') ?? '';
       _dio.options.headers['content-Type'] = 'application/json';
-      _dio.options.headers["Authorization"] = "Bearer " + token;
+      _dio.options.headers["Authorization"] = "Bearer $token";
       var response = await _dio.get('$url/frontegg/identity/resources/users/v2/me');
       if (response.statusCode == 200) {
         return response.data;

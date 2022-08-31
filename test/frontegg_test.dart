@@ -10,7 +10,7 @@ import 'package:frontegg_mobile/auth/screens/signup.dart';
 import 'package:frontegg_mobile/auth/widgets/social_buttons.dart';
 import 'package:frontegg_mobile/constants.dart';
 import 'package:frontegg_mobile/frontegg.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 import 'package:mockito/mockito.dart';
 import 'package:mockito/annotations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,16 +19,16 @@ import 'frontegg_test.mocks.dart';
 
 @GenerateMocks([Dio])
 void main() {
-  late MockDio _dioMock;
+  late MockDio dioMock;
   late FronteggUser mockUser;
   logo = '';
   url = '';
   setUp(() {
-    _dioMock = MockDio();
-    when(_dioMock.options).thenReturn(BaseOptions());
-    mockUser = FronteggUser(dioForTests: _dioMock);
+    dioMock = MockDio();
+    when(dioMock.options).thenReturn(BaseOptions());
+    mockUser = FronteggUser(dioForTests: dioMock);
     final pathMe = '$url/frontegg/identity/resources/users/v2/me';
-    when(_dioMock.get(pathMe)).thenAnswer((_) async =>
+    when(dioMock.get(pathMe)).thenAnswer((_) async =>
         Future.value(Response(requestOptions: RequestOptions(path: pathMe, method: "GET"), statusCode: 200, data: {
           'activatedForTenant': true,
           'createdAt': DateTime.now().toString(),
@@ -65,13 +65,13 @@ void main() {
     group('Password', () {
       setUp(() {
         final path = '$url/frontegg/identity/resources/configurations/v1/public';
-        when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
+        when(dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
             requestOptions: RequestOptions(path: path, method: "GET"),
             statusCode: 200,
             data: {"authStrategy": "EmailAndPassword"})));
       });
       testWidgets('displays login screen', (WidgetTester tester) async {
-        final frontegg = Frontegg("", "", dio: _dioMock);
+        final frontegg = Frontegg("", "", dio: dioMock);
 
         await tester.pumpWidget(makeWidgetTestable(
           Builder(builder: (BuildContext context) {
@@ -121,7 +121,7 @@ void main() {
         await tester.pumpAndSettle();
         final pathLogin = '$url/frontegg/identity/resources/auth/v1/user';
         final data = {"email": 'example@gmail.com', "password": 'pass'};
-        when(_dioMock.post(pathLogin, data: data)).thenAnswer((_) async => Future.value(
+        when(dioMock.post(pathLogin, data: data)).thenAnswer((_) async => Future.value(
                 Response(requestOptions: RequestOptions(path: pathLogin, method: "POST"), statusCode: 200, data: {
               'accessToken': "token",
               'expires': DateTime.now().toString(),
@@ -147,10 +147,10 @@ void main() {
           'refreshToken': "refresh",
           'mfaToken': 'token'
         });
-        when(_dioMock.post(pathLogin, data: data)).thenAnswer((_) async => Future.value(res));
+        when(dioMock.post(pathLogin, data: data)).thenAnswer((_) async => Future.value(res));
         final pathCodeCheck = '$url/frontegg/identity/resources/auth/v1/user/mfa/verify';
         final dataCodeCheck = {"mfaToken": 'token', "value": '', "rememberDevice": false};
-        when(_dioMock.post(pathCodeCheck, data: dataCodeCheck)).thenAnswer((_) async => Future.value(res));
+        when(dioMock.post(pathCodeCheck, data: dataCodeCheck)).thenAnswer((_) async => Future.value(res));
 
         SharedPreferences.setMockInitialValues({});
 
@@ -172,7 +172,7 @@ void main() {
       testWidgets('recover mfa works correct', (WidgetTester tester) async {
         final path = '$url/frontegg/identity/resources/auth/v1/user/mfa/recover';
         final data = {"recoveryCode": '123', 'email': null};
-        when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
+        when(dioMock.post(path, data: data)).thenAnswer((_) async =>
             Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200)));
         await tester.pumpWidget(makeWidgetTestable(const TwoFactor()));
         await tester.pumpAndSettle();
@@ -203,7 +203,7 @@ void main() {
       testWidgets('reset password works correct', (WidgetTester tester) async {
         final path = '$url/frontegg/identity/resources/users/v1/passwords/reset';
         final data = {'email': 'example@gmail.com'};
-        when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
+        when(dioMock.post(path, data: data)).thenAnswer((_) async =>
             Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200)));
 
         await tester.pumpWidget(makeWidgetTestable(LoginCommon(mockUser)));
@@ -224,12 +224,12 @@ void main() {
     group('Code', () {
       setUp(() {
         final path = '$url/frontegg/identity/resources/configurations/v1/public';
-        when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
+        when(dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
             requestOptions: RequestOptions(path: path, method: "GET"),
             statusCode: 200,
             data: {"authStrategy": "Code"})));
         final pathPrelogin = '$url/frontegg/identity/resources/auth/v1/passwordless/code/prelogin';
-        when(_dioMock.post(pathPrelogin, data: {"email": 'example@gmail.com'})).thenAnswer((_) async => Future.value(
+        when(dioMock.post(pathPrelogin, data: {"email": 'example@gmail.com'})).thenAnswer((_) async => Future.value(
             Response(requestOptions: RequestOptions(path: pathPrelogin, method: "POST"), statusCode: 200)));
       });
       testWidgets('displays correct class', (WidgetTester tester) async {
@@ -270,7 +270,7 @@ void main() {
 
         final pathCode = '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin';
         final dataCode = {"token": '111111'};
-        when(_dioMock.post(pathCode, data: dataCode)).thenAnswer((_) async => Future.value(
+        when(dioMock.post(pathCode, data: dataCode)).thenAnswer((_) async => Future.value(
                 Response(requestOptions: RequestOptions(path: pathCode, method: "POST"), statusCode: 200, data: {
               'accessToken': "token",
               'expires': DateTime.now().toString(),
@@ -299,7 +299,7 @@ void main() {
 
       testWidgets('social login displays social login buttons', (WidgetTester tester) async {
         final path = '$url/frontegg/identity/resources/sso/v2';
-        when(_dioMock.get(path)).thenAnswer((_) async =>
+        when(dioMock.get(path)).thenAnswer((_) async =>
             Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
               {"type": "github", "active": true},
               {"type": "google", "active": true},
@@ -319,7 +319,7 @@ void main() {
     testWidgets('show error on link login', (WidgetTester tester) async {
       final path = '$url/frontegg/identity/resources/configurations/v1/public';
 
-      when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
+      when(dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
           requestOptions: RequestOptions(path: path, method: "GET"),
           statusCode: 200,
           data: {"authStrategy": "MagicLink"})));
@@ -331,7 +331,7 @@ void main() {
   });
   group('From Signup screen', () {
     testWidgets('displays signup screen', (WidgetTester tester) async {
-      final frontegg = Frontegg("", "", dio: _dioMock);
+      final frontegg = Frontegg("", "", dio: dioMock);
 
       await tester.pumpWidget(makeWidgetTestable(
         Builder(builder: (BuildContext context) {
@@ -357,7 +357,7 @@ void main() {
     });
     testWidgets('can redirect to login', (WidgetTester tester) async {
       final path = '$url/frontegg/identity/resources/configurations/v1/public';
-      when(_dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
+      when(dioMock.get(path)).thenAnswer((_) async => Future.value(Response(
           requestOptions: RequestOptions(path: path, method: "GET"),
           statusCode: 200,
           data: {"authStrategy": "EmailAndPassword"})));
@@ -376,7 +376,7 @@ void main() {
       await tester.pump();
       final path = '$url/frontegg/identity/resources/users/v1/signUp';
       final data = {"email": "example@gmail.com", "name": "name", "companyName": "company"};
-      when(_dioMock.post(path, data: data)).thenAnswer((_) async =>
+      when(dioMock.post(path, data: data)).thenAnswer((_) async =>
           Future.value(Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 201)));
       await tester.tap(find.byType(ElevatedButton));
       await tester.pumpAndSettle();
@@ -398,7 +398,7 @@ void main() {
   group('Social Login', () {
     setUp(() {
       final path = '$url/frontegg/identity/resources/sso/v2';
-      when(_dioMock.get(path)).thenAnswer((_) async =>
+      when(dioMock.get(path)).thenAnswer((_) async =>
           Future.value(Response(requestOptions: RequestOptions(path: path, method: "GET"), statusCode: 200, data: {
             {"type": "github", "active": true},
             {"type": "google", "active": true},
@@ -407,7 +407,7 @@ void main() {
           })));
 
       final pathRefresh = '$url/frontegg/identity/resources/auth/v1/user/token/refresh';
-      when(_dioMock.post(pathRefresh)).thenAnswer((_) async => Future.value(
+      when(dioMock.post(pathRefresh)).thenAnswer((_) async => Future.value(
               Response(requestOptions: RequestOptions(path: pathRefresh, method: "POST"), statusCode: 200, data: {
             'accessToken': "token",
             'expires': DateTime.now().toString(),
@@ -422,7 +422,7 @@ void main() {
       final path = '$url/frontegg/identity/resources/auth/v1/user/sso/google/postlogin?access_token=token';
       final headers = Headers();
       headers.set('set-cookie', 'value');
-      when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
+      when(dioMock.post(path)).thenAnswer((_) async => Future.value(
           Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200, headers: headers)));
       final res = await mockUser.socialLogin(Auth(), 'google');
       expect(res, true);
@@ -432,7 +432,7 @@ void main() {
       final path = '$url/frontegg/identity/resources/auth/v1/user/sso/github/postlogin?access_token=token';
       final headers = Headers();
       headers.set('set-cookie', 'value');
-      when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
+      when(dioMock.post(path)).thenAnswer((_) async => Future.value(
           Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200, headers: headers)));
       final res = await mockUser.socialLogin(Auth(), 'github');
       expect(res, true);
@@ -442,7 +442,7 @@ void main() {
       final path = '$url/frontegg/identity/resources/auth/v1/user/sso/microsoft/postlogin?access_token=token';
       final headers = Headers();
       headers.set('set-cookie', 'value');
-      when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
+      when(dioMock.post(path)).thenAnswer((_) async => Future.value(
           Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200, headers: headers)));
       final res = await mockUser.socialLogin(Auth(), 'microsoft');
       expect(res, true);
@@ -452,7 +452,7 @@ void main() {
       final path = '$url/frontegg/identity/resources/auth/v1/user/sso/facebook/postlogin?access_token=token';
       final headers = Headers();
       headers.set('set-cookie', 'value');
-      when(_dioMock.post(path)).thenAnswer((_) async => Future.value(
+      when(dioMock.post(path)).thenAnswer((_) async => Future.value(
           Response(requestOptions: RequestOptions(path: path, method: "POST"), statusCode: 200, headers: headers)));
       final res = await mockUser.socialLogin(Auth(), 'facebook');
       expect(res, true);

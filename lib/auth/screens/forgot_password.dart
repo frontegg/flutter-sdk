@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:frontegg_mobile/auth/widgets/input_field.dart';
 import 'package:frontegg_mobile/auth/widgets/logo.dart';
-import 'package:frontegg_mobile/frontegg_user.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/models/frontegg_user.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 class ForgotPassword extends StatefulWidget {
   final FronteggUser user;

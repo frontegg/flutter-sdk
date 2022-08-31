@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg_mobile/auth/auth_api.dart';
+import 'package:frontegg_mobile/api/auth_api.dart';
 import 'package:frontegg_mobile/auth/screens/login/login_code.dart';
 import 'package:frontegg_mobile/auth/screens/login/login_password.dart';
 import 'package:frontegg_mobile/auth/widgets/logo.dart';
 import 'package:frontegg_mobile/auth/widgets/social_buttons.dart';
-import 'package:frontegg_mobile/frontegg_user.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/models/frontegg_user.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 import '../../../constants.dart';
 
@@ -14,10 +14,10 @@ class LoginCommon extends StatefulWidget {
   const LoginCommon(this.user, {Key? key}) : super(key: key);
 
   @override
-  _LoginCommonState createState() => _LoginCommonState();
+  LoginCommonState createState() => LoginCommonState();
 }
 
-class _LoginCommonState extends State<LoginCommon> {
+class LoginCommonState extends State<LoginCommon> {
   LoginType? type;
   String? error;
 
