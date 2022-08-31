@@ -311,7 +311,7 @@ Initialize Frontegg like
 
 ```dart
  final frontegg = Frontegg("baseUrl", "logoImage",
-      microsoftConfig: {"tenant": "your-tenant-id", "clientId": "your-application(client)-id"});
+      microsoftConfig: {"tenant": "your-tenant-id", "clientId": "your-application(client)-id", "redirectUri": "yout-redirect-uri"});
 ```
 
 <!-- need to run with --no-sound-null-safety flag -->
