@@ -7,28 +7,27 @@ issue_tracker: https://github.com/frontegg/flutter-sdk/issues
 
 environment:
   sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
 
 dependencies:
-  dio: ^4.0.1
   flutter:
     sdk: flutter
-  flutter_svg: ^1.0.0
-  google_sign_in: ^5.2.1
-  github_sign_in: ^0.0.4
-  firebase_auth_platform_interface: ^6.1.9
-  shared_preferences: ^2.0.11
-  flutter_facebook_auth: ^3.5.7
-  aad_oauth: ^0.3.0
-  mockito: ^5.0.15
+  dio: ^4.0.6
+  flutter_svg: ^1.1.4
+  google_sign_in: ^5.4.1
+  github_sign_in: ^0.0.5-dev.4
+  firebase_auth_platform_interface: ^6.6.0
+  shared_preferences: ^2.0.15
+  flutter_facebook_auth: ^4.4.1
+  aad_oauth: ^0.4.0
+  mockito: ^5.3.0
 
   # mocktail: ^0.0.1-dev.12
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^1.0.0
-  build_runner: ^2.1.7
+  flutter_lints: ^2.0.1
+  build_runner: ^2.2.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

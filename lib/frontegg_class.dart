@@ -8,6 +8,8 @@ import 'package:github_sign_in/github_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'frontegg_user.dart';
 
+final navigatorKey = GlobalKey<NavigatorState>();
+
 class Frontegg {
   FronteggUser _user;
   dynamic git;
@@ -26,10 +28,11 @@ class Frontegg {
                     tenant: microsoftConfig['tenant'],
                     clientId: microsoftConfig['clientId'],
                     scope: "openid profile offline_access",
-                    redirectUri: "msauth.com.example.testApp://auth")
+                    redirectUri: "msauth.com.example.testApp://auth",
+                    navigatorKey: navigatorKey)
                 : null,
             dioForTests: dio) {
-    baseUrl = baseUrl;
+    url = baseUrl;
     // TODO: use a default logo here
     logo = headerImage = '';
     localTranslations = LocalTranslations(localizationFileName);
@@ -85,7 +88,8 @@ class Frontegg {
                 tenant: microsoft['tenant'],
                 clientId: microsoft['clientId'],
                 scope: "openid profile offline_access",
-                redirectUri: "msauth.com.example.testApp://auth")
+                redirectUri: "msauth.com.example.testApp://auth",
+                navigatorKey: navigatorKey)
             : null);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');

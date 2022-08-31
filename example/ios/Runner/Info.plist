@@ -52,6 +52,8 @@
 	</array>
     <key>FacebookAppID</key>
         <string>{Your FB App Id}</string>
+	<key>FacebookClientToken</key>
+    	<string>{Your client-token}</string>
     <key>FacebookDisplayName</key>
     <string>{Your FB App Disaplay Name}</string>
     <key>LSApplicationQueriesSchemes</key>
@@ -84,5 +86,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>
