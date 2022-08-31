@@ -32,13 +32,9 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final frontegg = Frontegg("{base_url}", "{image_url}", gitHubSignIn: {
-    'clientId': 'clientId',
-    'clientSecret': 'clientSecret'
-  }, microsoftConfig: {
-    'tenant': "tenant",
-    'clientId': "clientId",
-  });
+  final frontegg = Frontegg("{base_url}", "{image_url}",
+      gitHubSignIn: {'clientId': 'clientId', 'clientSecret': 'clientSecret'},
+      microsoftConfig: {'tenant': "tenant", 'clientId': "clientId", 'redirectUri': "redirectUri"});
   FronteggUser? user;
 
   @override

@@ -28,7 +28,7 @@ class Frontegg {
                     tenant: microsoftConfig['tenant'],
                     clientId: microsoftConfig['clientId'],
                     scope: "openid profile offline_access",
-                    redirectUri: "msauth.com.example.testApp://auth",
+                    redirectUri: microsoftConfig['redirectUri'],
                     navigatorKey: navigatorKey)
                 : null,
             dioForTests: dio) {
@@ -88,7 +88,7 @@ class Frontegg {
                 tenant: microsoft['tenant'],
                 clientId: microsoft['clientId'],
                 scope: "openid profile offline_access",
-                redirectUri: "msauth.com.example.testApp://auth",
+                redirectUri: microsoft['redirectUri'],
                 navigatorKey: navigatorKey)
             : null);
     final SharedPreferences prefs = await SharedPreferences.getInstance();
