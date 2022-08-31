@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:frontegg_mobile/auth/screens/forgot_password.dart';
 import 'package:frontegg_mobile/auth/widgets/input_field.dart';
 import 'package:frontegg_mobile/auth/widgets/signup_button.dart';
-import 'package:frontegg_mobile/frontegg_user.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/models/frontegg_user.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 class LoginWithPassword extends StatefulWidget {
   final FronteggUser user;
   const LoginWithPassword(this.user, {Key? key}) : super(key: key);
 
   @override
-  _LoginWithPasswordState createState() => _LoginWithPasswordState();
+  LoginWithPasswordState createState() => LoginWithPasswordState();
 }
 
-class _LoginWithPasswordState extends State<LoginWithPassword> {
+class LoginWithPasswordState extends State<LoginWithPassword> {
   bool loading = false;
   Widget paddings(Widget child, {bool onlyBottom = false}) {
     return Padding(padding: EdgeInsets.only(top: onlyBottom ? 0 : 30, bottom: 30), child: child);
@@ -46,8 +46,8 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
         InputField(tr('enter_your_password'), _controllerPassword,
             label: tr('password'), showIcon: true, key: const Key('pass')),
         TextButton(
-          child: Text(tr('forgot_password')),
           key: const Key('forgot_pass_button'),
+          child: Text(tr('forgot_password')),
           onPressed: () {
             Navigator.push(
               context,
@@ -63,7 +63,6 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
               ),
               onlyBottom: true),
         ElevatedButton(
-          child: loading ? const CircularProgressIndicator() : Text(tr('login')),
           onPressed: loading
               ? null
               : () async {
@@ -77,7 +76,8 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
                     } else {
                       bool sent = await widget.user.loginPassword(_controller.text, _controllerPassword.text, context);
                       if (sent) {
-                        Navigator.pop(context, widget.user.isAuthorized);
+                        if (!mounted) return;
+                        Navigator.of(context).pop(widget.user.isAuthorized);
                       }
                       loading = false;
                     }
@@ -87,6 +87,7 @@ class _LoginWithPasswordState extends State<LoginWithPassword> {
                   }
                   setState(() {});
                 },
+          child: loading ? const CircularProgressIndicator() : Text(tr('login')),
         )
       ],
     );

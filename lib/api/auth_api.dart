@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:frontegg_mobile/auth/screens/mfa/mfa.dart';
-import 'package:frontegg_mobile/auth/social_class.dart';
+import 'package:frontegg_mobile/models/social_class.dart';
 import 'package:frontegg_mobile/constants.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthApi {
@@ -14,7 +14,7 @@ class AuthApi {
   Future<LoginType> checkType() async {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
-      var response = await _dio.get('$baseUrl/frontegg/identity/resources/configurations/v1/public');
+      var response = await _dio.get('$url/frontegg/identity/resources/configurations/v1/public');
 
       String data = response.data['authStrategy'];
       switch (data) {
@@ -38,7 +38,7 @@ class AuthApi {
   Future<List<Social>> checkSocials() async {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
-      var response = await _dio.get('$baseUrl/frontegg/identity/resources/sso/v2');
+      var response = await _dio.get('$url/frontegg/identity/resources/sso/v2');
       final List<Social> res = response.data.map<Social>((e) => Social.fromJson(e)).toList();
       return res;
     } catch (e) {
@@ -53,7 +53,7 @@ class AuthApi {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
       var response = await _dio
-          .post('$baseUrl/frontegg/identity/resources/auth/v1/user', data: {"email": email, "password": password});
+          .post('$url/frontegg/identity/resources/auth/v1/user', data: {"email": email, "password": password});
 
       final data = response.data;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -61,7 +61,8 @@ class AuthApi {
 
       if (data['mfaRequired'] != null && data['mfaRequired']) {
         prefs.setString('mfaToken', data['mfaToken']);
-        final verified = await Navigator.push(context, MaterialPageRoute(builder: (context) => const TwoFactor()));
+        // ignore: use_build_context_synchronously
+        final verified = await Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TwoFactor()));
         if (verified == null) {
           return false;
         }
@@ -88,7 +89,7 @@ class AuthApi {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
 
-      await _dio.post('$baseUrl/frontegg/identity/resources/users/v1/passwords/reset', data: {"email": email});
+      await _dio.post('$url/frontegg/identity/resources/users/v1/passwords/reset', data: {"email": email});
       return true;
     } catch (e) {
       if (e is DioError && e.response != null) {
@@ -104,7 +105,7 @@ class AuthApi {
       final String? token = prefs.getString('mfaToken');
       _dio.options.headers['content-Type'] = 'application/json';
 
-      var response = await _dio.post('$baseUrl/frontegg/identity/resources/auth/v1/user/mfa/verify',
+      var response = await _dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/verify',
           data: {"mfaToken": token, "value": code, "rememberDevice": rememberDevice});
 
       final data = response.data;
@@ -126,7 +127,7 @@ class AuthApi {
       _dio.options.headers['content-Type'] = 'application/json';
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String? email = prefs.getString('emailForRecover');
-      await _dio.post('$baseUrl/frontegg/identity/resources/auth/v1/user/mfa/recover',
+      await _dio.post('$url/frontegg/identity/resources/auth/v1/user/mfa/recover',
           data: {"recoveryCode": code, 'email': email});
 
       return true;
@@ -143,8 +144,8 @@ class AuthApi {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
       final String token = prefs.getString('accessToken') ?? '';
       _dio.options.headers['content-Type'] = 'application/json';
-      _dio.options.headers["Authorization"] = "Bearer " + token;
-      var response = await _dio.get('$baseUrl/frontegg/identity/resources/users/v2/me');
+      _dio.options.headers["Authorization"] = "Bearer $token";
+      var response = await _dio.get('$url/frontegg/identity/resources/users/v2/me');
       if (response.statusCode == 200) {
         return response.data;
       }
@@ -162,7 +163,7 @@ class AuthApi {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
       var response = await _dio
-          .post('$baseUrl/frontegg/identity/resources/auth/v1/passwordless/code/prelogin', data: {"email": email});
+          .post('$url/frontegg/identity/resources/auth/v1/passwordless/code/prelogin', data: {"email": email});
       cookies = response.headers.map['set-cookie'];
 
       return true;
@@ -180,7 +181,7 @@ class AuthApi {
       _dio.options.headers['content-Type'] = 'application/json';
 
       var response = await _dio.post(
-        '$baseUrl/frontegg/identity/resources/auth/v1/passwordless/code/postlogin',
+        '$url/frontegg/identity/resources/auth/v1/passwordless/code/postlogin',
         data: {"token": code},
       );
 
@@ -202,7 +203,7 @@ class AuthApi {
   Future<bool> signup(String email, String name, String companyName) async {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
-      var response = await _dio.post('$baseUrl/frontegg/identity/resources/users/v1/signUp',
+      var response = await _dio.post('$url/frontegg/identity/resources/users/v1/signUp',
           // TODO: do we want tenant sign up here? if so, companyName should be removed
           data: {"email": email, "name": name, "companyName": companyName});
       return response.statusCode == 201;
@@ -220,7 +221,7 @@ class AuthApi {
     try {
       _dio.options.headers["cookie"] = cookies?[0].split(';')[0];
       _dio.options.headers['content-Type'] = 'application/json';
-      var response = await _dio.post('$baseUrl/frontegg/identity/resources/auth/v1/user/token/refresh');
+      var response = await _dio.post('$url/frontegg/identity/resources/auth/v1/user/token/refresh');
 
       final data = response.data;
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -242,7 +243,7 @@ class AuthApi {
     try {
       _dio.options.headers['content-Type'] = 'application/json';
       var response =
-          await _dio.post('$baseUrl/frontegg/identity/resources/auth/v1/user/sso/$type/postlogin?access_token=$token');
+          await _dio.post('$url/frontegg/identity/resources/auth/v1/user/sso/$type/postlogin?access_token=$token');
       cookies = response.headers.map['set-cookie'];
       return response.statusCode == 200;
     } catch (e) {

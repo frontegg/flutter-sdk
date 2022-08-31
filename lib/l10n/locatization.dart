@@ -17,20 +17,20 @@ class LocalTranslations {
 
   load() async {
     if (path != null) {
-      final _localisedJsonContent = await rootBundle.loadString('localization/$path');
-      _localisedValues = json.decode(_localisedJsonContent);
+      final localisedJsonContent = await rootBundle.loadString('localization/$path');
+      _localisedValues = json.decode(localisedJsonContent);
     }
   }
 
   static String _translate(String key) {
     if (_localisedValues != null) {
-      final String? localizedValue = _localisedValues![key] as String;
+      final String? localizedValue = _localisedValues![key] as String?;
       if (localizedValue?.isNotEmpty ?? false) {
         return localizedValue!;
       }
     }
     if (_defaultLocalisedValues != null) {
-      final String? defaultValue = _defaultLocalisedValues![key] as String;
+      final String? defaultValue = _defaultLocalisedValues![key] as String?;
       if (defaultValue?.isNotEmpty ?? false) {
         return defaultValue!;
       }

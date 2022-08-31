@@ -4,18 +4,18 @@ import 'package:frontegg_mobile/auth/widgets/logo.dart';
 import 'package:frontegg_mobile/auth/widgets/signup_button.dart';
 import 'package:frontegg_mobile/auth/widgets/social_buttons.dart';
 import 'package:frontegg_mobile/constants.dart';
-import 'package:frontegg_mobile/frontegg_user.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/models/frontegg_user.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 class Signup extends StatefulWidget {
   final FronteggUser user;
   const Signup(this.user, {Key? key}) : super(key: key);
 
   @override
-  _SignupState createState() => _SignupState();
+  SignupState createState() => SignupState();
 }
 
-class _SignupState extends State<Signup> {
+class SignupState extends State<Signup> {
   final TextEditingController _controllerEmail = TextEditingController();
   final TextEditingController _controllerName = TextEditingController();
   final TextEditingController _controllerCompany = TextEditingController();
@@ -68,7 +68,6 @@ class _SignupState extends State<Signup> {
         ),
       const SizedBox(height: 30),
       ElevatedButton(
-        child: loading ? const CircularProgressIndicator() : const Text('Sign Up'),
         onPressed: loading
             ? null
             : () async {
@@ -92,6 +91,7 @@ class _SignupState extends State<Signup> {
                 }
                 setState(() {});
               },
+        child: loading ? const CircularProgressIndicator() : const Text('Sign Up'),
       ),
       SocialButtons(AuthType.signup, widget.user),
       const SizedBox(height: 50)

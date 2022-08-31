@@ -256,7 +256,7 @@ Registration Of Android Platform
 
 ### **iOS integration**
 
-Set ios minimal Deployment target to 10
+Set ios minimal Deployment target to 14
 Please add the below code in `Info.plist` file.
 
 ```xml
@@ -274,6 +274,8 @@ Please add the below code in `Info.plist` file.
 	</array>
 	<key>FacebookAppID</key>
 	<string>{Your FB App Id}</string>
+  <key>FacebookClientToken</key>
+  <string>{Your client-token}</string>
 	<key>FacebookDisplayName</key>
 	<string>{Your FB App Name}</string>
 	<key>LSApplicationQueriesSchemes</key>

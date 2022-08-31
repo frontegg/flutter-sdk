@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:frontegg_mobile/auth/auth_api.dart';
+import 'package:frontegg_mobile/api/auth_api.dart';
 import 'package:frontegg_mobile/auth/screens/mfa/recover_mfa.dart';
 import 'package:frontegg_mobile/auth/widgets/input_field.dart';
 import 'package:frontegg_mobile/auth/widgets/logo.dart';
 import 'package:frontegg_mobile/constants.dart';
-import 'package:frontegg_mobile/locatization.dart';
+import 'package:frontegg_mobile/l10n/locatization.dart';
 
 class TwoFactor extends StatefulWidget {
   const TwoFactor({Key? key}) : super(key: key);
 
   @override
-  _TwoFactorState createState() => _TwoFactorState();
+  TwoFactorState createState() => TwoFactorState();
 }
 
-class _TwoFactorState extends State<TwoFactor> {
+class TwoFactorState extends State<TwoFactor> {
   String? error;
   bool loading = false;
   late AuthApi _api;
@@ -67,7 +67,6 @@ class _TwoFactorState extends State<TwoFactor> {
             ),
           ElevatedButton(
             key: const Key('mfaCheckButton'),
-            child: Text(tr('continue')),
             onPressed: loading
                 ? null
                 : () async {
@@ -76,13 +75,15 @@ class _TwoFactorState extends State<TwoFactor> {
                     });
                     try {
                       final res = await _api.mfaCheck(_codeController.text, isChecked);
-                      Navigator.pop(context, res);
+                      if (!mounted) return;
+                      Navigator.of(context).pop(res);
                     } catch (e) {
                       error = e.toString();
                     }
                     loading = false;
                     setState(() {});
                   },
+            child: Text(tr('continue')),
           ),
           const SizedBox(height: 30),
           Text(tr('having_trouble'), style: const TextStyle(fontWeight: FontWeight.bold)),
@@ -96,7 +97,8 @@ class _TwoFactorState extends State<TwoFactor> {
                 final bool? res =
                     await Navigator.push<bool>(context, MaterialPageRoute(builder: (context) => const RecoverMFA()));
                 if (res != null && res == true) {
-                  Navigator.pop(context);
+                  if (!mounted) return;
+                  Navigator.of(context).pop();
                 }
               })
         ],
