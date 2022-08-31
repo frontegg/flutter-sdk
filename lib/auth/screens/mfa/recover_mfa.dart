@@ -61,7 +61,8 @@ class RecoverMFAState extends State<RecoverMFA> {
                         try {
                           final res = await _api.mfaRecover(_controller.text);
                           if (res) {
-                            Navigator.pop(context, true);
+                            if (!mounted) return;
+                            Navigator.of(context).pop(true);
                           }
                         } catch (e) {
                           error = e.toString();

@@ -75,7 +75,8 @@ class TwoFactorState extends State<TwoFactor> {
                     });
                     try {
                       final res = await _api.mfaCheck(_codeController.text, isChecked);
-                      Navigator.pop(context, res);
+                      if (!mounted) return;
+                      Navigator.of(context).pop(res);
                     } catch (e) {
                       error = e.toString();
                     }
@@ -96,7 +97,8 @@ class TwoFactorState extends State<TwoFactor> {
                 final bool? res =
                     await Navigator.push<bool>(context, MaterialPageRoute(builder: (context) => const RecoverMFA()));
                 if (res != null && res == true) {
-                  Navigator.pop(context);
+                  if (!mounted) return;
+                  Navigator.of(context).pop();
                 }
               })
         ],

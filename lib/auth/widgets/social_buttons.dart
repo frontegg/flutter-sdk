@@ -80,7 +80,8 @@ class SocialButtonsState extends State<SocialButtons> {
                                 });
                                 final bool res = await login(e.socialType);
                                 if (res) {
-                                  Navigator.pop(context, widget.user.isAuthorized);
+                                  if (!mounted) return;
+                                  Navigator.of(context).pop(widget.user.isAuthorized);
                                 }
                                 setState(() {
                                   loading = false;

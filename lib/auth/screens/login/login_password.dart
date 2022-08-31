@@ -76,7 +76,8 @@ class LoginWithPasswordState extends State<LoginWithPassword> {
                     } else {
                       bool sent = await widget.user.loginPassword(_controller.text, _controllerPassword.text, context);
                       if (sent) {
-                        Navigator.pop(context, widget.user.isAuthorized);
+                        if (!mounted) return;
+                        Navigator.of(context).pop(widget.user.isAuthorized);
                       }
                       loading = false;
                     }

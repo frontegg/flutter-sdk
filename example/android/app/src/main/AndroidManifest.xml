@@ -2,7 +2,8 @@
     package="com.example.test_app">
    <application
         android:label="test_app"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:name="${applicationName}">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

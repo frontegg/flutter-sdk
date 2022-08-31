@@ -109,7 +109,8 @@ class LoginWithCodeState extends State<LoginWithCode> {
                           try {
                             bool sent = await widget.user.checkCode(_codeController.text);
                             if (sent) {
-                              Navigator.pop(context, widget.user.isAuthorized);
+                              if (!mounted) return;
+                              Navigator.of(context).pop(widget.user.isAuthorized);
                             }
                           } catch (e) {
                             error = e.toString();
