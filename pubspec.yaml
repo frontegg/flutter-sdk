@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^4.0.6
+  dio: ">=4.0.6 <6.0.0"
   flutter_svg: ^1.1.4
   google_sign_in: ^5.4.1
   github_sign_in: ^0.0.5-dev.4
